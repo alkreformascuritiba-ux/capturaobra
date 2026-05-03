@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CAPTURAOBRA · Sistema Operacional · ALK Reformas</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --bg:#0d0f18;--sb:#090b13;--card:#151822;--card2:#1c1f2e;--border:#252840;
+  --q:#ef4444;--m:#f59e0b;--f:#3b82f6;--ac:#6366f1;--ac2:#8b5cf6;
+  --g:#22c55e;--tl:#14b8a6;--or:#f97316;
+  --tx:#e2e8f0;--mu:#64748b;--mu2:#94a3b8;
+  --sbw:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sbw);flex-shrink:0;background:var(--sb);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-logo-icon{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(99,102,241,.35);}
+.sb-logo h1{font-size:13px;font-weight:800;letter-spacing:-.3px;}
+.sb-logo span{font-size:10px;color:var(--mu2);display:block;margin-top:1px;}
+.sb-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mu);padding:14px 16px 5px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--mu2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;}
+.sb-item:hover{background:rgba(99,102,241,.07);color:var(--tx);}
+.sb-item.active{background:rgba(99,102,241,.12);color:var(--ac);border-left-color:var(--ac);font-weight:600;}
+.sb-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-badge{margin-left:auto;background:var(--q);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;}
+.sb-badge.g{background:var(--g);}
+.sb-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);}
+.sb-footer p{font-size:10px;color:var(--mu);line-height:1.5;}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sbw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-left h2{font-size:16px;font-weight:700;}
+.topbar-left p{font-size:11px;color:var(--mu2);margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tbadge{padding:4px 12px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid;}
+.tbadge.green{background:rgba(34,197,94,.1);color:var(--g);border-color:rgba(34,197,94,.25);}
+.tbadge.purple{background:rgba(99,102,241,.12);color:var(--ac);border-color:rgba(99,102,241,.3);}
+.content{padding:22px 28px;flex:1;}
+.page{display:none;}.page.active{display:block;}
+
+/* ─── KPI ─── */
+.kpi-grid{display:grid;gap:12px;margin-bottom:20px;}
+.g6{grid-template-columns:repeat(6,1fr);}
+.g5{grid-template-columns:repeat(5,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 17px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.kp::after{background:linear-gradient(90deg,var(--ac),var(--ac2));}
+.kpi.kq::after{background:var(--q);}
+.kpi.km::after{background:var(--m);}
+.kpi.kg::after{background:var(--g);}
+.kpi.kt::after{background:var(--tl);}
+.kpi.ko::after{background:var(--or);}
+.kpi-l{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--mu2);margin-bottom:5px;}
+.kpi-v{font-size:30px;font-weight:800;line-height:1;}
+.kpi.kp .kpi-v{color:var(--ac);}
+.kpi.kq .kpi-v{color:var(--q);}
+.kpi.km .kpi-v{color:var(--m);}
+.kpi.kg .kpi-v{color:var(--g);}
+.kpi.kt .kpi-v{color:var(--tl);}
+.kpi.ko .kpi-v{color:var(--or);}
+.kpi-s{font-size:11px;color:var(--mu);margin-top:4px;}
+
+/* ─── CARD ─── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mu2);margin-bottom:14px;}
+.chart-h{position:relative;height:200px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.mb16{margin-bottom:16px;}.mb20{margin-bottom:20px;}
+
+/* ─── TABLE ─── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{text-align:left;padding:8px 11px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid rgba(37,40,64,.5);transition:background .1s;}
+tbody tr:hover{background:rgba(99,102,241,.04);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
+
+/* ─── PILLS ─── */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap;}
+.dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.pQ{background:rgba(239,68,68,.12);color:var(--q);}
+.pM{background:rgba(245,158,11,.12);color:var(--m);}
+.pF{background:rgba(59,130,246,.12);color:var(--f);}
+.pA{background:rgba(99,102,241,.14);color:var(--ac);}
+.pG{background:rgba(34,197,94,.12);color:var(--g);}
+.pT{background:rgba(20,184,166,.12);color:var(--tl);}
+.pO{background:rgba(249,115,22,.12);color:var(--or);}
+.pRA{background:rgba(239,68,68,.12);color:var(--q);}
+.pRM{background:rgba(245,158,11,.12);color:var(--m);}
+.pRB{background:rgba(34,197,94,.12);color:var(--g);}
+.pOA{background:rgba(99,102,241,.14);color:var(--ac);}
+.pOM{background:rgba(20,184,166,.12);color:var(--tl);}
+.pOB{background:rgba(100,116,139,.12);color:var(--mu2);}
+
+/* ─── FILTERS ─── */
+.frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ftab{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--mu2);transition:all .15s;}
+.ftab:hover{color:var(--tx);}
+.ftab.fa{background:rgba(99,102,241,.15);color:var(--ac);border-color:rgba(99,102,241,.35);}
+.ftab.fq{background:rgba(239,68,68,.12);color:var(--q);border-color:rgba(239,68,68,.3);}
+.ftab.fm{background:rgba(245,158,11,.12);color:var(--m);border-color:rgba(245,158,11,.3);}
+.ftab.fg{background:rgba(34,197,94,.12);color:var(--g);border-color:rgba(34,197,94,.3);}
+.ftab.ft{background:rgba(20,184,166,.12);color:var(--tl);border-color:rgba(20,184,166,.3);}
+
+/* ─── SCORE ─── */
+.score-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border:2px solid;flex-shrink:0;}
+.score-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:3px;}
+
+/* ─── KANBAN ─── */
+.kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:16px;align-items:flex-start;}
+.k-col{flex-shrink:0;width:235px;background:var(--card2);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;max-height:calc(100vh - 190px);}
+.k-col-hd{padding:11px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;border-radius:12px 12px 0 0;position:sticky;top:0;background:var(--card2);}
+.k-col[data-s="novo"]    .k-col-hd{border-top:2px solid var(--ac);}
+.k-col[data-s="contato"] .k-col-hd{border-top:2px solid var(--tl);}
+.k-col[data-s="reuniao"] .k-col-hd{border-top:2px solid #06b6d4;}
+.k-col[data-s="visita"]  .k-col-hd{border-top:2px solid var(--m);}
+.k-col[data-s="orcamento"].k-col-hd{border-top:2px solid var(--or);}
+.k-col[data-s="negociacao"].k-col-hd{border-top:2px solid #ec4899;}
+.k-col[data-s="fechado"] .k-col-hd{border-top:2px solid var(--g);}
+.k-col[data-s="perdido"] .k-col-hd{border-top:2px solid var(--mu);}
+.k-col-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+.k-col-cnt{background:rgba(99,102,241,.15);color:var(--ac);font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;}
+.k-cards{flex:1;overflow-y:auto;padding:9px;display:flex;flex-direction:column;gap:7px;min-height:60px;border-radius:0 0 12px 12px;transition:background .15s;}
+.k-cards.dov{background:rgba(99,102,241,.07);}
+.k-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:11px;cursor:grab;transition:all .15s;user-select:none;}
+.k-card:hover{border-color:rgba(99,102,241,.4);box-shadow:0 3px 12px rgba(0,0,0,.3);}
+.k-card.dragging{opacity:.35;transform:scale(.97);}
+.k-card-name{font-size:12px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+.k-card-meta{font-size:10px;color:var(--mu2);margin-bottom:7px;}
+.k-card-val{font-size:15px;font-weight:800;color:var(--g);}
+.k-card-ft{display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
+.k-card-prob{font-size:10px;color:var(--mu2);}
+.k-card-prob b{color:var(--m);}
+.k-type{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.k-type.sind{background:rgba(34,197,94,.12);color:var(--g);}
+.k-type.adm{background:rgba(20,184,166,.12);color:var(--tl);}
+.k-type.licit{background:rgba(99,102,241,.14);color:var(--ac);}
+.k-type.parc{background:rgba(249,115,22,.12);color:var(--or);}
+.k-card-prob-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px;}
+.k-card-prob-fill{height:100%;background:var(--m);border-radius:2px;}
+
+/* ─── PARCEIROS ─── */
+.pc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;margin-bottom:10px;transition:border-color .15s;}
+.pc-card:hover{border-color:rgba(99,102,241,.3);}
+.pc-info h3{font-size:14px;font-weight:700;margin-bottom:3px;}
+.pc-info p{font-size:11px;color:var(--mu2);}
+.pc-bars{min-width:220px;}
+.pb-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.pb-label{font-size:9px;color:var(--mu);width:72px;flex-shrink:0;}
+.pb-bg{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:2px;}
+.pb-val{font-size:9px;font-weight:700;color:var(--mu2);width:20px;text-align:right;}
+.pc-contact{font-size:11px;color:var(--ac);margin-top:6px;}
+
+/* ─── EXECUÇÃO / OS ─── */
+.os-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
+.os-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.os-title{font-size:14px;font-weight:700;}
+.os-meta{font-size:11px;color:var(--mu2);margin-top:2px;}
+.os-prog-wrap{margin-bottom:14px;}
+.os-prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px;}
+.os-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac),var(--g));transition:width .4s;}
+.os-prog-lbl{font-size:10px;color:var(--mu2);}
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ci{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card2);border-radius:8px;cursor:pointer;transition:background .12s;}
+.ci:hover{background:rgba(99,102,241,.08);}
+.ci.done{opacity:.65;}
+.ci-box{width:18px;height:18px;border-radius:4px;flex-shrink:0;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;}
+.ci.done .ci-box{background:var(--g);border-color:var(--g);}
+.ci-label{font-size:12px;color:var(--mu2);}
+.ci.done .ci-label{text-decoration:line-through;color:var(--mu);}
+
+/* ─── MAPA ─── */
+#map-container{height:calc(100vh - 270px);min-height:420px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.map-ctrls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.mt{display:flex;align-items:center;gap:6px;padding:5px 13px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid var(--border);cursor:pointer;transition:all .15s;background:transparent;color:var(--mu2);}
+.mt.on{border-color:transparent;color:#fff;}
+.mt-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.leaflet-container{background:#0d1117!important;}
+.leaflet-tile-pane .leaflet-tile{filter:brightness(.85) saturate(.7);}
+.leaflet-popup-content-wrapper{background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--tx);box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.leaflet-popup-tip{background:var(--card);}
+.map-popup h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.map-popup p{font-size:11px;color:var(--mu2);margin-bottom:2px;}
+.map-popup a{color:var(--g);font-size:11px;text-decoration:none;}
+
+/* ─── LICIT ─── */
+.ll{color:var(--ac2);font-size:11px;text-decoration:none;}
+.ll:hover{color:var(--tx);}
+.oc{font-size:11px;color:var(--mu2);max-width:230px;line-height:1.4;}
+
+/* ─── ROI ─── */
+.roi-item{background:var(--card2);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.roi-lbl{font-size:12px;color:var(--mu2);}
+.roi-val{font-size:16px;font-weight:700;}
+
+/* ─── SECTION HEADER ─── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-hd h2{font-size:15px;font-weight:700;}
+.sec-hd span{font-size:11px;color:var(--mu2);}
+
+/* ─── INSIGHT STRIP ─── */
+.ins-strip{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(139,92,246,.04));border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.ins-item .ins-h{font-size:12px;font-weight:700;color:var(--ac);margin-bottom:4px;}
+.ins-item p{font-size:12px;color:var(--mu2);line-height:1.5;}
+
+@media(max-width:1280px){.g6{grid-template-columns:repeat(3,1fr);}.g5{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);}.main{margin-left:0;}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">🏗️</div>
+    <div><h1>CAPTURAOBRA</h1><span>ALK Reformas · Curitiba</span></div>
+  </div>
+
+  <div class="sb-section">Principal</div>
+  <div class="sb-item active" onclick="nav('inicio',this)" data-title="Início" data-sub="Visão geral e KPIs do sistema">
+    <span class="sb-icon">🏠</span>Início
+  </div>
+
+  <div class="sb-section">Sistema Operacional</div>
+  <div class="sb-item" onclick="nav('captacao',this)" data-title="Captação" data-sub="Entrada e score automático de leads">
+    <span class="sb-icon">📥</span>Captação<span class="sb-badge" id="badge-captacao">53</span>
+  </div>
+  <div class="sb-item" onclick="nav('comercial',this)" data-title="Comercial — Pipeline" data-sub="Kanban de oportunidades">
+    <span class="sb-icon">📊</span>Comercial
+  </div>
+  <div class="sb-item" onclick="nav('parceiros',this)" data-title="Parceiros" data-sub="Cadastro com score de performance">
+    <span class="sb-icon">🤝</span>Parceiros<span class="sb-badge g">15</span>
+  </div>
+  <div class="sb-item" onclick="nav('execucao',this)" data-title="Execução" data-sub="OS e checklists de obras">
+    <span class="sb-icon">⚙️</span>Execução
+  </div>
+
+  <div class="sb-section">Inteligência</div>
+  <div class="sb-item" onclick="nav('mapa',this)" data-title="Mapa do Paraná" data-sub="Visualização geográfica de todas as oportunidades">
+    <span class="sb-icon">🗺️</span>Mapa PR
+  </div>
+  <div class="sb-item" onclick="nav('licitacoes',this)" data-title="Licitações" data-sub="Editais públicos monitorados no Paraná">
+    <span class="sb-icon">📑</span>Licitações
+  </div>
+  <div class="sb-item" onclick="nav('roi',this)" data-title="ROI &amp; Relatório" data-sub="Performance financeira e projeções">
+    <span class="sb-icon">💰</span>ROI
+  </div>
+
+  <div class="sb-footer">
+    <p>CAPTURAOBRA v2.0<br>03/05/2026 · alkreformascuritiba@gmail.com</p>
+    <p style="margin-top:8px;font-size:10px;color:var(--ac)">💾 Dados salvos no navegador<br><span style="color:var(--mu)">Use ⬇ Exportar para backup</span></p>
+    <p style="margin-top:6px;font-size:10px;color:var(--mu)">🌐 Para deixar online grátis:<br><span style="color:var(--mu2)">netlify.com/drop — arraste o arquivo</span></p>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2 id="topbar-title">Início</h2>
+      <p id="topbar-sub">Visão geral e KPIs do sistema</p>
+    </div>
+    <div class="topbar-right">
+      <span class="tbadge green">● SISTEMA ATIVO</span>
+      <span class="tbadge purple">53 oportunidades</span>
+      <button onclick="exportData()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">⬇ Exportar</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      <button onclick="document.getElementById('importFile').click()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08);color:var(--g);cursor:pointer">⬆ Importar</button>
+      <span style="font-size:11px;color:var(--mu2)">03/05/2026</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ══════ PAGE: INÍCIO ══════ -->
+  <div class="page active" id="page-inicio">
+    <div class="kpi-grid g6">
+      <div class="kpi kp"><div class="kpi-l">Total Oportunidades</div><div class="kpi-v">53</div><div class="kpi-s">Leads + Licitações + Parcerias</div></div>
+      <div class="kpi kq"><div class="kpi-l">🔴 Leads Quentes</div><div class="kpi-v">19</div><div class="kpi-s">Ação imediata</div></div>
+      <div class="kpi km"><div class="kpi-l">Licitações</div><div class="kpi-v">11</div><div class="kpi-s">R$ 9mi+ viável</div></div>
+      <div class="kpi kg"><div class="kpi-l">Parceiros Mapeados</div><div class="kpi-v">15</div><div class="kpi-s">Alto potencial: 6</div></div>
+      <div class="kpi kt"><div class="kpi-l">Receita Prevista</div><div class="kpi-v" style="font-size:22px">R$117k</div><div class="kpi-s">Cenário conservador</div></div>
+      <div class="kpi ko"><div class="kpi-l">Custo de Captação</div><div class="kpi-v">R$ 0</div><div class="kpi-s">ROI = ∞%</div></div>
+    </div>
+
+    <div class="ins-strip">
+      <div class="ins-item"><div class="ins-h">⚡ Ação imediata</div><p>19 leads quentes com contato confirmado. 9 com WhatsApp direto. Iniciar contatos hoje: Providência (41) 9 9982-9789, Pr1me (41) 99595-3560, Paulo Cesar (41) 99929-8991.</p></div>
+      <div class="ins-item"><div class="ins-h">🏆 Maior oportunidade pública</div><p>Censes/SEJU — R$ 6,7 milhões em 28 unidades socioeducativas, 7 lotes regionais. Contratos em 30 dias. Monitorar subcontratações no portal SEJU.</p></div>
+      <div class="ins-item"><div class="ins-h">🤝 Parceria mais estratégica</div><p>Fecci Engenharia (41) 9649-0220 — faz laudo de inspeção predial. Após o laudo, o cliente precisa contratar a obra. Funil automático para ALK.</p></div>
+    </div>
+
+    <div class="row3">
+      <div class="card"><div class="card-t">Pipeline por canal</div><div class="chart-h"><canvas id="cInicioPipeline"></canvas></div></div>
+      <div class="card"><div class="card-t">Leads condomínios</div><div class="chart-h"><canvas id="cInicioLeads"></canvas></div></div>
+      <div class="card"><div class="card-t">Projeção de receita (R$)</div><div class="chart-h"><canvas id="cInicioROI"></canvas></div></div>
+    </div>
+
+    <div class="row4">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--mu2);margin-bottom:10px">📞 Top contatos hoje</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <a href="https://wa.me/554199829789" target="_blank" style="display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none;color:var(--tx)"><span>💬</span><div><div style="font-size:12px;font-weight:600">Providência Síndicos</div><div style="font-size:10px;color:var(--mu2)">(41) 9 9982-9789 · Batel</div></div></a>
+          <a href="https://wa.me/5541995953560" target="_blank" style="display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none;color:var(--tx)"><span>💬</span><div><div style="font-size:12px;font-weight:600">Pr1me Síndicos</div><div style="font-size:10px;color:var(--mu2)">(41) 99595-3560</div></div></a>
+          <a href="https://wa.me/5541999298991" target="_blank" style="display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none;color:var(--tx)"><span>💬</span><div><div style="font-size:12px;font-weight:600">Paulo Cesar Síndico</div><div style="font-size:10px;color:var(--mu2)">(41) 99929-8991</div></div></a>
+          <a href="https://wa.me/554199003111" target="_blank" style="display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none;color:var(--tx)"><span>💬</span><div><div style="font-size:12px;font-weight:600">Inconal Adm.</div><div style="font-size:10px;color:var(--mu2)">(41) 9 9900-3111</div></div></a>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--mu2);margin-bottom:10px">📑 Licitações prioritárias</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <a href="https://alertalicitacao.com.br/!municipios/PR" target="_blank" style="display:block;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none"><div style="font-size:12px;font-weight:600;color:var(--tx)">Câmara Corbélia</div><div style="font-size:10px;color:var(--g)">Risco Baixo · Alta Oportunidade</div></a>
+          <a href="https://www.transparencia.pr.gov.br/pte/compras/licitacoes/pesquisar-param?sigla=COHAPAR" target="_blank" style="display:block;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none"><div style="font-size:12px;font-weight:600;color:var(--tx)">COHAPAR — Reforma</div><div style="font-size:10px;color:var(--m)">Prorrogado 120 dias · Contatar</div></a>
+          <a href="https://www.curitiba.pr.leg.br" target="_blank" style="display:block;background:var(--card2);border-radius:8px;padding:7px 10px;text-decoration:none"><div style="font-size:12px;font-weight:600;color:var(--tx)">CMC Manutenção Predial</div><div style="font-size:10px;color:var(--tl)">Anual · Monitorar 2026</div></a>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--mu2);margin-bottom:10px">🤝 Parceiros — ligar amanhã</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px"><div style="font-size:12px;font-weight:600">Fecci Engenharia</div><div style="font-size:10px;color:var(--ac)">(41) 9649-0220 · Funil laudo→obra</div></div>
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px"><div style="font-size:12px;font-weight:600">Versátil Engenharia</div><div style="font-size:10px;color:var(--ac)">(41) 3077-9144 · 50 anos · parceria</div></div>
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px"><div style="font-size:12px;font-weight:600">W.A.R Obras</div><div style="font-size:10px;color:var(--ac)">(41) 3329-8523 · subcontratação</div></div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--mu2);margin-bottom:10px">📊 KPIs de projeção</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--mu2)">Ticket médio</span><span style="font-size:13px;font-weight:700;color:var(--ac)">R$ 18.000</span></div>
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--mu2)">Taxa fechamento</span><span style="font-size:13px;font-weight:700;color:var(--g)">10%</span></div>
+          <div style="background:var(--card2);border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--mu2)">Receita condomínios</span><span style="font-size:13px;font-weight:700;color:var(--g)">R$ 36k</span></div>
+          <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between"><span style="font-size:12px;font-weight:600;color:var(--tx)">Total previsto</span><span style="font-size:15px;font-weight:800;color:var(--g)">R$ 117k</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE: CAPTAÇÃO ══════ -->
+  <div class="page" id="page-captacao">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">Total Captado</div><div class="kpi-v">53</div><div class="kpi-s">Leads + Licit. + Parcerias</div></div>
+      <div class="kpi kq"><div class="kpi-l">Score Alto (≥70)</div><div class="kpi-v" id="kCaptQte">—</div><div class="kpi-s">Quentes</div></div>
+      <div class="kpi km"><div class="kpi-l">Score Médio (40–69)</div><div class="kpi-v" id="kCaptMrn">—</div><div class="kpi-s">Mornos</div></div>
+      <div class="kpi kg"><div class="kpi-l">Com WhatsApp</div><div class="kpi-v">9</div><div class="kpi-s">Contato imediato</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-hd"><h2>📥 Todos os Leads — Score Automático</h2></div>
+      <div class="frow">
+        <button class="ftab fa" onclick="fc('ALL',this)">Todos</button>
+        <button class="ftab fq" onclick="fc('Q',this)">🔴 Quentes (≥70)</button>
+        <button class="ftab fm" onclick="fc('M',this)">🟡 Mornos (40–69)</button>
+        <button class="ftab" onclick="fc('F',this)">🔵 Frios (&lt;40)</button>
+        <button class="ftab ft" onclick="fc('condo',this)">Condomínio</button>
+        <button class="ftab ft" onclick="fc('licit',this)">Licitação</button>
+        <button class="ftab" onclick="fc('parc',this)">Parceiro</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>#</th><th>Lead</th><th>Tipo</th><th>Origem</th><th>Telefone</th><th>WhatsApp</th><th>E-mail</th><th>Site</th><th>Cidade</th><th>Score</th><th>Status</th></tr></thead>
+        <tbody id="tbCapt"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE: COMERCIAL ══════ -->
+  <div class="page" id="page-comercial">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">Em Pipeline</div><div class="kpi-v" id="kComTotal">—</div><div class="kpi-s">Total de cards</div></div>
+      <div class="kpi kg"><div class="kpi-l">Fechados</div><div class="kpi-v" id="kComFech">0</div><div class="kpi-s">Contratos assinados</div></div>
+      <div class="kpi km"><div class="kpi-l">Valor Pipeline</div><div class="kpi-v" id="kComValor" style="font-size:20px">—</div><div class="kpi-s">Soma dos valores</div></div>
+      <div class="kpi kt"><div class="kpi-l">Win Rate</div><div class="kpi-v">0%</div><div class="kpi-s">Iniciar contatos</div></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <p style="font-size:12px;color:var(--mu2)">Arraste os cards entre colunas para atualizar o estágio da negociação.</p>
+      <button onclick="novoCard()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer">+ Novo Card</button>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </div>
+
+  <!-- ══════ PAGE: PARCEIROS ══════ -->
+  <div class="page" id="page-parceiros">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">Total Parceiros</div><div class="kpi-v">15</div><div class="kpi-s">Cadastrados</div></div>
+      <div class="kpi kg"><div class="kpi-l">Score ≥ 80</div><div class="kpi-v">6</div><div class="kpi-s">Parceiros premium</div></div>
+      <div class="kpi km"><div class="kpi-l">Score 60–79</div><div class="kpi-v">7</div><div class="kpi-s">Bons parceiros</div></div>
+      <div class="kpi kq"><div class="kpi-l">Score &lt; 60</div><div class="kpi-v">2</div><div class="kpi-s">Monitorar</div></div>
+    </div>
+    <div class="frow">
+      <button class="ftab fa" onclick="fp('ALL',this)">Todos</button>
+      <button class="ftab fg" onclick="fp('Pintura',this)">Pintura</button>
+      <button class="ftab ft" onclick="fp('Reforma',this)">Reforma</button>
+      <button class="ftab" onclick="fp('Impermeab.',this)">Impermeab.</button>
+      <button class="ftab" onclick="fp('Facility',this)">Facility</button>
+      <button class="ftab" onclick="fp('Engenharia',this)">Engenharia</button>
+    </div>
+    <div id="parcList"></div>
+  </div>
+
+  <!-- ══════ PAGE: EXECUÇÃO ══════ -->
+  <div class="page" id="page-execucao">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">OS Abertas</div><div class="kpi-v">2</div><div class="kpi-s">Em andamento</div></div>
+      <div class="kpi kg"><div class="kpi-l">OS Concluídas</div><div class="kpi-v">0</div><div class="kpi-s">Este mês</div></div>
+      <div class="kpi km"><div class="kpi-l">Valor em Execução</div><div class="kpi-v" style="font-size:20px">R$ 43k</div><div class="kpi-s">Obras ativas</div></div>
+      <div class="kpi kt"><div class="kpi-l">Recebimentos</div><div class="kpi-v">R$ 0</div><div class="kpi-s">Aguardando</div></div>
+    </div>
+    <div id="osList"></div>
+  </div>
+
+  <!-- ══════ PAGE: MAPA ══════ -->
+  <div class="page" id="page-mapa">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">Pontos no Mapa</div><div class="kpi-v" id="kMapTotal">—</div><div class="kpi-s">Oportunidades georreferenciadas</div></div>
+      <div class="kpi kg"><div class="kpi-l">Cidades Cobertas</div><div class="kpi-v">12</div><div class="kpi-s">Paraná</div></div>
+      <div class="kpi km"><div class="kpi-l">Concentração</div><div class="kpi-v">CWB</div><div class="kpi-s">Curitiba · base principal</div></div>
+      <div class="kpi kt"><div class="kpi-l">Raio de Atuação</div><div class="kpi-v" style="font-size:18px">~200km</div><div class="kpi-s">CWB + interior PR</div></div>
+    </div>
+    <div class="map-ctrls" id="mapCtrls">
+      <button class="mt on" onclick="toggleLayer('parceiros',this)" style="background:rgba(59,130,246,.2);border-color:var(--f)"><div class="mt-dot" style="background:var(--f)"></div>Parceiros</button>
+      <button class="mt on" onclick="toggleLayer('condos',this)" style="background:rgba(34,197,94,.2);border-color:var(--g)"><div class="mt-dot" style="background:var(--g)"></div>Condomínios/Adm.</button>
+      <button class="mt on" onclick="toggleLayer('sindicos',this)" style="background:rgba(245,158,11,.2);border-color:var(--m)"><div class="mt-dot" style="background:var(--m)"></div>Síndicos</button>
+      <button class="mt on" onclick="toggleLayer('licit',this)" style="background:rgba(239,68,68,.2);border-color:var(--q)"><div class="mt-dot" style="background:var(--q)"></div>Licitações</button>
+      <button class="mt on" onclick="toggleLayer('maoobra',this)" style="background:rgba(249,115,22,.2);border-color:var(--or)"><div class="mt-dot" style="background:var(--or)"></div>Mão de obra</button>
+      <button class="mt on" onclick="toggleLayer('obras',this)" style="background:rgba(139,92,246,.2);border-color:var(--ac2)"><div class="mt-dot" style="background:var(--ac2)"></div>Obras indicadas</button>
+    </div>
+    <div id="map-container"></div>
+  </div>
+
+  <!-- ══════ PAGE: LICITAÇÕES ══════ -->
+  <div class="page" id="page-licitacoes">
+    <div class="kpi-grid g4 mb20">
+      <div class="kpi kp"><div class="kpi-l">Total Licitações</div><div class="kpi-v">11</div><div class="kpi-s">Paraná · 2026</div></div>
+      <div class="kpi kg"><div class="kpi-l">Alta Oportunidade</div><div class="kpi-v">6</div><div class="kpi-s">Prioridade máxima</div></div>
+      <div class="kpi kt"><div class="kpi-l">Risco Baixo/Médio</div><div class="kpi-v">9</div><div class="kpi-s">Viáveis para ALK</div></div>
+      <div class="kpi km"><div class="kpi-l">Valor Mapeado</div><div class="kpi-v" style="font-size:22px">R$229mi+</div><div class="kpi-s">Inclui R$ 220mi escolas PR</div></div>
+    </div>
+    <div class="card">
+      <div class="frow">
+        <button class="ftab fa" onclick="fl('ALL',this)">Todas</button>
+        <button class="ftab fg" onclick="fl('ALTA',this)">Alta Oport.</button>
+        <button class="ftab fg" onclick="fl('BAIXO',this)">Risco Baixo</button>
+        <button class="ftab fm" onclick="fl('MÉDIO',this)">Risco Médio</button>
+        <button class="ftab fq" onclick="fl('ALTO',this)">Risco Alto</button>
+      </div>
+      <div class="tbl-wrap">
+        <table style="min-width:900px">
+          <thead><tr><th>#</th><th>Órgão</th><th>Cidade</th><th>Valor</th><th>Edital</th><th>Abertura</th><th>Risco</th><th>Oportunidade</th><th>Link</th><th>Observação</th></tr></thead>
+          <tbody id="tbLicit"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE: ROI ══════ -->
+  <div class="page" id="page-roi">
+    <div class="kpi-grid g5 mb20">
+      <div class="kpi kp"><div class="kpi-l">Oportunidades</div><div class="kpi-v">53</div><div class="kpi-s">Total mapeado</div></div>
+      <div class="kpi kg"><div class="kpi-l">Custo Captação</div><div class="kpi-v">R$ 0</div><div class="kpi-s">IA = custo zero</div></div>
+      <div class="kpi kq"><div class="kpi-l">Receita Prevista</div><div class="kpi-v" style="font-size:22px">R$117k</div><div class="kpi-s">Cenário conservador</div></div>
+      <div class="kpi km"><div class="kpi-l">ROI</div><div class="kpi-v">∞%</div><div class="kpi-s">Custo=R$0</div></div>
+      <div class="kpi kt"><div class="kpi-l">Custo por Lead</div><div class="kpi-v">R$ 0</div><div class="kpi-s">53 leads · zero custo</div></div>
+    </div>
+    <div class="row2">
+      <div class="card"><div class="card-t">Receita prevista por canal (R$)</div><div class="chart-h"><canvas id="cROIcanal"></canvas></div></div>
+      <div class="card"><div class="card-t">Distribuição de oportunidades</div><div class="chart-h"><canvas id="cROIdist"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Projeção detalhada</div>
+      <div class="roi-item"><span class="roi-lbl">Condomínios · 2 contratos × R$ 18k</span><span class="roi-val" style="color:var(--g)">R$ 36.000</span></div>
+      <div class="roi-item"><span class="roi-lbl">Licitações · 1 vitória estimada (média)</span><span class="roi-val" style="color:var(--ac)">R$ 45.000</span></div>
+      <div class="roi-item"><span class="roi-lbl">Parcerias · 2 indicações via Fecci/Versátil</span><span class="roi-val" style="color:var(--tl)">R$ 36.000</span></div>
+      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+        <span style="font-size:13px;font-weight:700">TOTAL PREVISTO (conservador · 60-90 dias)</span>
+        <span style="font-size:22px;font-weight:800;color:var(--g)">R$ 117.000</span>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════
+//  DADOS
+// ═══════════════════════════════════════
+
+// ── CAPTAÇÃO ──
+const captData = [
+  // ADMINISTRADORAS
+  {id:'c01',nome:'Administradora Paraná',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3883-1700',wa:'',email:'',site:'administradoraparana.com.br',cidade:'Curitiba'},
+  {id:'c02',nome:'Inconal Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3223-8551',wa:'(41) 9 9900-3111',email:'contato@inconal.com.br',site:'inconal.com.br',cidade:'Curitiba'},
+  {id:'c03',nome:'CMPremium',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3023-9033',wa:'',email:'',site:'cmpremium.com.br',cidade:'Curitiba'},
+  {id:'c04',nome:'Syndikos',tipo:'Adm./Síndico',origem:'CONDOObra',tel:'(41) 3501-0084',wa:'',email:'falecom@syndikos.com.br',site:'syndikos.com.br',cidade:'Curitiba'},
+  {id:'c05',nome:'Excelência Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3352-0235',wa:'',email:'',site:'excelenciaadm.com.br',cidade:'Curitiba'},
+  {id:'c06',nome:'Conato Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 98777-3630',wa:'(41) 98777-3630',email:'',site:'conatoadministradora.com.br',cidade:'Curitiba'},
+  {id:'c07',nome:'Gestão Exata',tipo:'Administradora',origem:'CONDOObra',tel:'',wa:'',email:'',site:'admgestaoexata.com.br',cidade:'Curitiba'},
+  {id:'c08',nome:'Adm. Curitibana',tipo:'Administradora',origem:'CONDOObra',tel:'',wa:'',email:'',site:'administradoracuritibana.com.br',cidade:'Curitiba'},
+  {id:'c09',nome:'Grupo Ruggi',tipo:'Adm./Síndico',origem:'CONDOObra',tel:'(41) 3524-1779',wa:'',email:'',site:'gruporuggi.com.br',cidade:'Curitiba'},
+  // SÍNDICOS
+  {id:'c10',nome:'Providência Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 3117-9801',wa:'(41) 9 9982-9789',email:'contato@providenciasindicos.com.br',site:'providenciasindicos.com.br',cidade:'Curitiba'},
+  {id:'c11',nome:'Pr1me Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 99595-3560',wa:'(41) 99595-3560',email:'contato@pr1mesindicos.com.br',site:'pr1mesindicos.com.br',cidade:'Curitiba'},
+  {id:'c12',nome:'Positiva Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 2391-0843',wa:'',email:'contato@positivasindicos.com.br',site:'positivasindicos.com.br',cidade:'Curitiba'},
+  {id:'c13',nome:'BA Síndicos Pro',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 98777-1119',wa:'(41) 98777-1119',email:'',site:'basindicospro.com.br',cidade:'Curitiba'},
+  {id:'c14',nome:'Inconal Síndico',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 3223-8551',wa:'(41) 9 9900-3111',email:'contato@inconal.com.br',site:'inconal.com.br',cidade:'Curitiba'},
+  {id:'c15',nome:'Síndico Paulo Cesar',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 99929-8991',wa:'(41) 99929-8991',email:'sindicopaulocesar@gmail.com',site:'sindlink.com',cidade:'Curitiba'},
+  {id:'c16',nome:'Síndico Curitiba (Alder)',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'sindicocuritiba.com',cidade:'Curitiba'},
+  {id:'c17',nome:'Óriom Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 3093-xxxx',wa:'',email:'',site:'oriom.com.br',cidade:'Curitiba'},
+  {id:'c18',nome:'Futura Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'futurasindicos.com.br',cidade:'Curitiba'},
+  {id:'c19',nome:'Óptima Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'optimasindicos.com.br',cidade:'Curitiba'},
+  {id:'c20',nome:'Paulo Pinheiro Síndico',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'sindicopaulopinheiro.com.br',cidade:'Curitiba'},
+  {id:'c21',nome:'Assessoria Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'assessoriasindicos.com.br',cidade:'Curitiba'},
+  {id:'c22',nome:'Becker Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'beckersa.com.br',cidade:'Curitiba'},
+  // FACILITIES
+  {id:'c23',nome:'TG Services',tipo:'Facility',origem:'CONDOObra',tel:'(41) 3203-9462',wa:'',email:'tgservices@tgservices.com.br',site:'tgservices.com.br',cidade:'Curitiba'},
+  {id:'c24',nome:'Melucky Engenharia',tipo:'Facility',origem:'CONDOObra',tel:'',wa:'',email:'',site:'melucky.com.br',cidade:'Curitiba'},
+  {id:'c25',nome:'B&K Clean',tipo:'Facility',origem:'CONDOObra',tel:'',wa:'',email:'',site:'bkclean.com.br',cidade:'Curitiba'},
+  {id:'c26',nome:'Magna Brasil CWB',tipo:'Facility',origem:'CONDOObra',tel:'',wa:'',email:'',site:'magnabrasilcwb.com.br',cidade:'Curitiba'},
+  // LICITAÇÕES
+  {id:'l01',nome:'Câmara Corbélia — Fachada',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'alertalicitacao.com.br',cidade:'Corbélia'},
+  {id:'l02',nome:'COHAPAR — Reforma Predial',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'transparencia.pr.gov.br',cidade:'Curitiba'},
+  {id:'l03',nome:'Censes/SEJU — 28 unidades',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'justica.pr.gov.br',cidade:'Curitiba'},
+  {id:'l04',nome:'CMC Manutenção Predial',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'curitiba.pr.leg.br',cidade:'Curitiba'},
+  {id:'l05',nome:'Defensoria Pública PR',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'defensoriapublica.pr.def.br',cidade:'Curitiba'},
+  {id:'l06',nome:'SANEPAR — Obras Engenharia',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'licitacoes.sanepar.com.br',cidade:'Paraná'},
+  {id:'l07',nome:'IAT — Instituto Água e Terra',tipo:'Licitação',origem:'LICITAObra',tel:'',wa:'',email:'',site:'iat.pr.gov.br',cidade:'Curitiba'},
+  // PARCERIAS
+  {id:'p01',nome:'JK Reforma e Construção',tipo:'Parceiro',origem:'MAPSParcerias',tel:'',wa:'',email:'',site:'jkreformaeconstrucao.com.br',cidade:'Curitiba'},
+  {id:'p02',nome:'JC Construções e Reformas',tipo:'Parceiro',origem:'MAPSParcerias',tel:'',wa:'',email:'',site:'jcconstrucoes.com.br',cidade:'Curitiba'},
+  {id:'p03',nome:'Mazzettos Pinturas',tipo:'Parceiro',origem:'MAPSParcerias',tel:'',wa:'',email:'',site:'mazzettospinturasereformascwb.com',cidade:'Curitiba'},
+  {id:'p04',nome:'Versátil Engenharia',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 3077-9144',wa:'',email:'contato@versatilpinturas.com.br',site:'versatilpinturas.com.br',cidade:'Curitiba'},
+  {id:'p05',nome:'Fecci Engenharia',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 9649-0220',wa:'',email:'gustavofecci@gmail.com',site:'fecciengenharia.com',cidade:'Curitiba'},
+  {id:'p06',nome:'W.A.R Obras Especiais',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 3329-8523',wa:'',email:'',site:'warobrasespeciais.com.br',cidade:'Curitiba'},
+  {id:'p07',nome:'Revemix Pinturas',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 99894-9795',wa:'',email:'contato@revemixpinturas.com.br',site:'revemixpinturas.com.br',cidade:'Curitiba'},
+  {id:'p08',nome:'ALS Pinturas',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 99882-9290',wa:'',email:'',site:'alspinturascuritiba.com.br',cidade:'Curitiba'},
+  {id:'p09',nome:'Fibersals Impermeabilização',tipo:'Parceiro',origem:'MAPSParcerias',tel:'0800 600 1488',wa:'',email:'',site:'fibersals.com.br',cidade:'Curitiba'},
+  {id:'p10',nome:'Ambiental Engenharia',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 3349-xxxx',wa:'',email:'',site:'ambientalimper.com.br',cidade:'Curitiba'},
+];
+
+function calcScore(d){
+  let s=0;
+  if(d.tel && d.tel!=='—' && !d.tel.includes('xx') && d.tel.trim()) s+=20;
+  if(d.wa && !d.wa.includes('xx') && d.wa.trim()) s+=20;
+  if(d.email) s+=10;
+  if(d.site) s+=10;
+  if(!d.cidade||d.cidade.toLowerCase().includes('curitiba')) s+=20;
+  if(d.tipo==='Parceiro') s+=10;
+  return Math.min(s,100);
+}
+function scoreClass(s){return s>=70?'Q':s>=40?'M':'F';}
+function scorePill(s){const c=scoreClass(s);const l=c==='Q'?'🔴 Quente':c==='M'?'🟡 Morno':'🔵 Frio';return`<span class="pill p${c}"><span class="dot"></span>${l}</span>`;}
+function scoreBar(s){const c=s>=70?'var(--q)':s>=40?'var(--m)':'var(--f)';return`<div style="display:flex;align-items:center;gap:7px"><div style="width:64px;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:${s}%;height:100%;background:${c};border-radius:3px"></div></div><span style="font-size:11px;font-weight:700;color:${c}">${s}</span></div>`;}
+
+// Render captação
+let captFilter='ALL';
+function fc(f,btn){captFilter=f;document.querySelectorAll('#page-captacao .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderCapt();}
+function renderCapt(){
+  let data=captData;
+  if(captFilter==='Q') data=captData.filter(d=>calcScore(d)>=70);
+  else if(captFilter==='M') data=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;});
+  else if(captFilter==='F') data=captData.filter(d=>calcScore(d)<40);
+  else if(captFilter==='condo') data=captData.filter(d=>d.tipo.includes('Admin')||d.tipo.includes('Síndico')||d.tipo.includes('Facility')||d.tipo.includes('Adm'));
+  else if(captFilter==='licit') data=captData.filter(d=>d.tipo==='Licitação');
+  else if(captFilter==='parc') data=captData.filter(d=>d.tipo==='Parceiro');
+  const q=captData.filter(d=>calcScore(d)>=70).length;
+  const m=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;}).length;
+  document.getElementById('kCaptQte').textContent=q;
+  document.getElementById('kCaptMrn').textContent=m;
+  document.getElementById('tbCapt').innerHTML=data.map((d,i)=>`<tr>
+    <td style="color:var(--mu);font-size:11px">${i+1}</td>
+    <td style="font-size:13px;font-weight:600">${d.nome}</td>
+    <td><span class="pill pT" style="font-size:9px">${d.tipo}</span></td>
+    <td style="font-size:11px;color:var(--mu2)">${d.origem}</td>
+    <td style="color:var(--ac);font-size:12px">${d.tel||'<span style="color:var(--mu)">—</span>'}</td>
+    <td>${d.wa&&!d.wa.includes('xx')?`<a href="https://wa.me/55${d.wa.replace(/\D/g,'')}" target="_blank" style="color:var(--g);font-size:12px">💬 ${d.wa}</a>`:'<span style="color:var(--mu)">—</span>'}</td>
+    <td style="font-size:11px;color:var(--tl)">${d.email||'<span style="color:var(--mu)">—</span>'}</td>
+    <td style="font-size:11px">${d.site?`<a href="https://${d.site}" target="_blank" style="color:var(--mu2)">${d.site}</a>`:'—'}</td>
+    <td style="font-size:11px;color:var(--mu2)">${d.cidade||'—'}</td>
+    <td>${scoreBar(calcScore(d))}</td>
+    <td>${scorePill(calcScore(d))}</td>
+  </tr>`).join('');
+}
+renderCapt();
+
+// ── KANBAN ──
+const stages=['novo','contato','reuniao','visita','orcamento','negociacao','fechado','perdido'];
+const stageLabels={novo:'Novo',contato:'Contato',reuniao:'Reunião',visita:'Visita',orcamento:'Orçamento',negociacao:'Negociação',fechado:'Fechado',perdido:'Perdido'};
+
+let kanbanData=[
+  {id:'k01',nome:'Providência Síndicos',meta:'Síndico · Batel',valor:'R$ 18.000',prob:75,tipo:'sind',stage:'novo'},
+  {id:'k02',nome:'Pr1me Síndicos',meta:'Síndico · Jd. Sto. Antônio',valor:'R$ 25.000',prob:70,tipo:'sind',stage:'novo'},
+  {id:'k03',nome:'BA Síndicos Pro',meta:'Síndico · Curitiba',valor:'R$ 15.000',prob:68,tipo:'sind',stage:'novo'},
+  {id:'k04',nome:'Paulo Cesar Síndico',meta:'Síndico · CWB',valor:'R$ 12.000',prob:65,tipo:'sind',stage:'novo'},
+  {id:'k05',nome:'Inconal Adm.',meta:'Administradora · Centro',valor:'R$ 45.000',prob:60,tipo:'adm',stage:'novo'},
+  {id:'k06',nome:'Adm. Paraná',meta:'Administradora · Centro',valor:'R$ 60.000',prob:55,tipo:'adm',stage:'novo'},
+  {id:'k07',nome:'CMPremium',meta:'Administradora · PR',valor:'R$ 80.000',prob:50,tipo:'adm',stage:'novo'},
+  {id:'k08',nome:'TG Services',meta:'Facility · Portão',valor:'R$ 20.000',prob:60,tipo:'parc',stage:'novo'},
+  {id:'k09',nome:'Câmara Corbélia',meta:'Licitação · Risco Baixo',valor:'A confirmar',prob:40,tipo:'licit',stage:'novo'},
+  {id:'k10',nome:'COHAPAR Reforma',meta:'Licitação · Prorrogado',valor:'A confirmar',prob:35,tipo:'licit',stage:'novo'},
+  {id:'k11',nome:'CMC Manutenção',meta:'Licitação · Anual',valor:'A confirmar',prob:30,tipo:'licit',stage:'novo'},
+  {id:'k12',nome:'Fecci Engenharia',meta:'Parceria · Laudo→Obra',valor:'R$ 18.000',prob:55,tipo:'parc',stage:'contato'},
+];
+
+function buildKanban(){
+  const kb=document.getElementById('kanban');
+  kb.innerHTML='';
+  stages.forEach(s=>{
+    const cards=kanbanData.filter(c=>c.stage===s);
+    const col=document.createElement('div');
+    col.className='k-col';col.dataset.s=s;
+    col.innerHTML=`<div class="k-col-hd"><span class="k-col-title">${stageLabels[s]}</span><span class="k-col-cnt" id="cnt-${s}">${cards.length}</span></div><div class="k-cards" id="kcol-${s}"></div>`;
+    kb.appendChild(col);
+    const zone=col.querySelector('.k-cards');
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dov');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('dov'));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();zone.classList.remove('dov');
+      const id=e.dataTransfer.getData('text');
+      const card=document.getElementById(id);
+      if(card){zone.appendChild(card);const d=kanbanData.find(c=>c.id===id);if(d)d.stage=s;updateKanbanKPIs();saveKanban();}
+    });
+    cards.forEach(c=>zone.appendChild(makeCard(c)));
+  });
+  updateKanbanKPIs();
+}
+function makeCard(d){
+  const el=document.createElement('div');
+  el.className='k-card';el.id=d.id;el.draggable=true;
+  el.innerHTML=`<div class="k-card-name">${d.nome}</div><div class="k-card-meta">${d.meta}</div><div class="k-card-val">${d.valor}</div><div class="k-card-prob-bar"><div class="k-card-prob-fill" style="width:${d.prob}%"></div></div><div class="k-card-ft"><span class="k-card-prob">Prob: <b>${d.prob}%</b></span><span class="k-type ${d.tipo}">${d.tipo==='sind'?'Síndico':d.tipo==='adm'?'Adm.':d.tipo==='licit'?'Licitação':'Parceria'}</span></div>`;
+  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',d.id);el.classList.add('dragging');});
+  el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+  return el;
+}
+function updateKanbanKPIs(){
+  const total=kanbanData.filter(c=>c.stage!=='perdido').length;
+  const fech=kanbanData.filter(c=>c.stage==='fechado').length;
+  document.getElementById('kComTotal').textContent=total;
+  document.getElementById('kComFech').textContent=fech;
+  let v=0;kanbanData.forEach(c=>{const n=parseInt((c.valor||'').replace(/\D/g,''));if(n)v+=n;});
+  document.getElementById('kComValor').textContent=v?`R$ ${(v/1000).toFixed(0)}k`:'—';
+  stages.forEach(s=>{const el=document.getElementById('cnt-'+s);if(el)el.textContent=kanbanData.filter(c=>c.stage===s).length;});
+}
+// ── PERSISTÊNCIA — KANBAN ──
+function saveKanban(){try{localStorage.setItem('co_kanban',JSON.stringify(kanbanData.map(c=>({id:c.id,stage:c.stage}))));}catch(e){}}
+function loadKanban(){try{const s=localStorage.getItem('co_kanban');if(s){JSON.parse(s).forEach(x=>{const d=kanbanData.find(c=>c.id===x.id);if(d)d.stage=x.stage;});}}catch(e){}}
+loadKanban();
+buildKanban();
+
+// ── PARCEIROS ──
+const parcData=[
+  {nome:'JK Reforma e Construção',seg:'Reforma',tel:'Via site',site:'jkreformaeconstrucao.com.br',nota:'5.0 ⭐ · 121 av.',sc:{entrega:19,qualidade:20,prazo:18,comunicacao:18,margem:15}},
+  {nome:'JC Construções',seg:'Reforma',tel:'Via site',site:'jcconstrucoes.com.br',nota:'4.9 ⭐ · 140+ av.',sc:{entrega:18,qualidade:19,prazo:17,comunicacao:17,margem:14}},
+  {nome:'Mazzettos Pinturas',seg:'Pintura',tel:'Ver site',site:'mazzettospinturasereformascwb.com',nota:'4.8 ⭐ · 92 av.',sc:{entrega:18,qualidade:18,prazo:16,comunicacao:16,margem:16}},
+  {nome:'Versátil Engenharia',seg:'Pintura',tel:'(41) 3077-9144',site:'versatilpinturas.com.br',nota:'4.7 ⭐ · 50 anos',sc:{entrega:18,qualidade:18,prazo:17,comunicacao:15,margem:14}},
+  {nome:'Fecci Engenharia',seg:'Engenharia',tel:'(41) 9649-0220',site:'fecciengenharia.com',nota:'4.5 ⭐ · Habitissimo',sc:{entrega:17,qualidade:18,prazo:16,comunicacao:17,margem:14}},
+  {nome:'Start Pinturas',seg:'Pintura',tel:'Ver site',site:'startpinturas.com.br',nota:'Excelente · 25 av.',sc:{entrega:17,qualidade:17,prazo:16,comunicacao:15,margem:15}},
+  {nome:'W.A.R Obras Especiais',seg:'Pintura',tel:'(41) 3329-8523',site:'warobrasespeciais.com.br',nota:'4.5 ⭐',sc:{entrega:16,qualidade:16,prazo:15,comunicacao:14,margem:14}},
+  {nome:'TG Services',seg:'Facility',tel:'(41) 3203-9462',site:'tgservices.com.br',nota:'Referência CWB',sc:{entrega:16,qualidade:15,prazo:15,comunicacao:15,margem:13}},
+  {nome:'Revemix Pinturas',seg:'Pintura',tel:'(41) 99894-9795',site:'revemixpinturas.com.br',nota:'4.4 ⭐ · 2002',sc:{entrega:15,qualidade:15,prazo:14,comunicacao:13,margem:14}},
+  {nome:'ALS Pinturas',seg:'Pintura',tel:'(41) 99882-9290',site:'alspinturascuritiba.com.br',nota:'4.3 ⭐ · 2001',sc:{entrega:14,qualidade:14,prazo:13,comunicacao:13,margem:13}},
+  {nome:'Melucky Engenharia',seg:'Impermeab.',tel:'Ver site',site:'melucky.com.br',nota:'20+ anos',sc:{entrega:15,qualidade:15,prazo:13,comunicacao:12,margem:12}},
+  {nome:'Fibersals',seg:'Impermeab.',tel:'0800 600 1488',site:'fibersals.com.br',nota:'4.2 ⭐ · 1985',sc:{entrega:14,qualidade:15,prazo:12,comunicacao:11,margem:11}},
+  {nome:'Ambiental Engenharia',seg:'Impermeab.',tel:'(41) 3349-xxxx',site:'ambientalimper.com.br',nota:'Consultoria técnica',sc:{entrega:13,qualidade:15,prazo:12,comunicacao:11,margem:11}},
+  {nome:'B&K Clean',seg:'Facility',tel:'Ver site',site:'bkclean.com.br',nota:'Manutenção predial',sc:{entrega:12,qualidade:12,prazo:12,comunicacao:11,margem:12}},
+  {nome:'Magna Brasil CWB',seg:'Facility',tel:'Ver site',site:'magnabrasilcwb.com.br',nota:'Gestão condominial',sc:{entrega:11,qualidade:12,prazo:11,comunicacao:11,margem:11}},
+];
+
+function scoreColor(t){return t>=80?'var(--g)':t>=70?'var(--tl)':t>=60?'var(--m)':'var(--or)';}
+let parcFilter='ALL';
+function fp(f,btn){parcFilter=f;document.querySelectorAll('#page-parceiros .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderParc();}
+function renderParc(){
+  const list=document.getElementById('parcList');
+  let data=parcFilter==='ALL'?parcData:parcData.filter(p=>p.seg===parcFilter);
+  list.innerHTML=data.map((p,i)=>{
+    const t=Object.values(p.sc).reduce((a,b)=>a+b,0);const c=scoreColor(t);
+    return`<div class="pc-card">
+      <div class="score-circle" style="color:${c};border-color:${c}">${t}</div>
+      <div class="pc-info">
+        <h3>${i+1}. ${p.nome}</h3>
+        <p>${p.seg} · ${p.nota}</p>
+        <p class="pc-contact">${p.tel} · <a href="https://${p.site}" target="_blank" style="color:var(--ac)">${p.site}</a></p>
+      </div>
+      <div class="pc-bars">
+        ${['entrega','qualidade','prazo','comunicacao','margem'].map(k=>`<div class="pb-row"><span class="pb-label">${k.charAt(0).toUpperCase()+k.slice(1)}</span><div class="pb-bg"><div class="pb-fill" style="width:${p.sc[k]/20*100}%;background:${scoreColor(p.sc[k]*5)}"></div></div><span class="pb-val">${p.sc[k]}/20</span></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+renderParc();
+
+// ── EXECUÇÃO / OS ──
+const osData=[
+  {id:'os01',nome:'Syndikos — Pintura Hall de Entrada',cliente:'Syndikos Gestão Condominial',valor:'R$ 18.000',resp:'Sergio Pessoa',prazo:'15/06/2026',
+   checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:true},{l:'Visita técnica',d:true},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
+  {id:'os02',nome:'Inconal — Reforma Fachada Bloco A',cliente:'Inconal Administradora',valor:'R$ 25.000',resp:'Sergio Pessoa',prazo:'30/07/2026',
+   checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
+];
+function toggleCheck(osId,idx){
+  const os=osData.find(o=>o.id===osId);if(os){os.checks[idx].d=!os.checks[idx].d;saveOS();}renderOS();
+}
+function renderOS(){
+  document.getElementById('osList').innerHTML=osData.map(os=>{
+    const done=os.checks.filter(c=>c.d).length;const total=os.checks.length;const pct=Math.round(done/total*100);
+    return`<div class="os-card">
+      <div class="os-hd"><div><div class="os-title">${os.nome}</div><div class="os-meta">${os.cliente} · ${os.valor} · Resp: ${os.resp} · Prazo: ${os.prazo}</div></div><span class="pill ${pct===100?'pG':'pM'}">${pct}%</span></div>
+      <div class="os-prog-wrap"><div class="os-prog-lbl">${done}/${total} etapas concluídas</div><div class="os-prog-bar"><div class="os-prog-fill" style="width:${pct}%"></div></div></div>
+      <div class="checklist">${os.checks.map((c,i)=>`<div class="ci${c.d?' done':''}" onclick="toggleCheck('${os.id}',${i})"><div class="ci-box">${c.d?'✓':''}</div><span class="ci-label">${c.l}</span></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+// ── PERSISTÊNCIA — OS ──
+function saveOS(){try{localStorage.setItem('co_os',JSON.stringify(osData.map(o=>({id:o.id,checks:o.checks}))));}catch(e){}}
+function loadOS(){try{const s=localStorage.getItem('co_os');if(s){JSON.parse(s).forEach(x=>{const d=osData.find(o=>o.id===x.id);if(d)d.checks=x.checks;});}}catch(e){}}
+loadOS();
+renderOS();
+
+// ── LICITAÇÕES ──
+const licitData=[
+  {orgao:'Câmara Municipal de Corbélia — Fachada',cidade:'Corbélia — PR',valor:'A confirmar',edital:'Edital 2026',abertura:'A confirmar',risco:'BAIXO',op:'ALTA',link:'https://alertalicitacao.com.br/!municipios/PR',obs:'Obra pequena/municipal. Baixa concorrência. Top pick para ALK.'},
+  {orgao:'COHAPAR — Reforma Predial GRCA',cidade:'Curitiba — PR',valor:'A confirmar',edital:'Prorrogação 120d',abertura:'11/03/2026 (prorrog.)',risco:'BAIXO',op:'ALTA',link:'https://www.transparencia.pr.gov.br/pte/compras/licitacoes/pesquisar-param?sigla=COHAPAR',obs:'Prorrogado 120 dias. Contatar COHAPAR diretamente.'},
+  {orgao:'Alerta Licitação — Municípios PR',cidade:'Todo o Paraná',valor:'Variável',edital:'Contínuo 2026',abertura:'Contínuo',risco:'BAIXO',op:'ALTA',link:'https://alertalicitacao.com.br/!municipios/PR',obs:'Agrega todas as licitações municipais do PR. Configurar alerta.'},
+  {orgao:'IAT — Instituto Água e Terra',cidade:'Curitiba — PR',valor:'A confirmar',edital:'Aviso 2026',abertura:'A confirmar',risco:'BAIXO',op:'MÉDIA',link:'https://www.iat.pr.gov.br/Pagina/Aviso-de-Licitacao',obs:'Órgão ambiental estadual. Obras pontuais.'},
+  {orgao:'Censes/SEJU — 28 Unidades',cidade:'CWB/Londrina/+10 — PR',valor:'R$ 6.769.555',edital:'Pregão 973/2025',abertura:'Homologado 15/04/26',risco:'MÉDIO',op:'ALTA',link:'https://www.justica.pr.gov.br',obs:'28 socioeducativas, 7 lotes. Contratos em 30 dias. Subcontratação possível.'},
+  {orgao:'Câmara Municipal de Curitiba',cidade:'Curitiba — PR',valor:'A confirmar',edital:'ref. PE 013/2024',abertura:'Monitorar 2026',risco:'MÉDIO',op:'ALTA',link:'https://www.curitiba.pr.leg.br',obs:'Renovação anual. Contrato 12 meses. Preventivo + corretivo + preditivo.'},
+  {orgao:'Portal Transparência PR',cidade:'Todo o Paraná',valor:'Variável',edital:'Múltiplos 2026',abertura:'Contínuo',risco:'MÉDIO',op:'ALTA',link:'https://www.transparencia.pr.gov.br',obs:'Centraliza todos os editais estaduais. Filtrar SEED/SESP/SESA/SEJU semanalmente.'},
+  {orgao:'Defensoria Pública do PR',cidade:'Curitiba — PR',valor:'R$ 2.293.683',edital:'A confirmar 2026',abertura:'A confirmar',risco:'MÉDIO',op:'MÉDIA',link:'https://www.defensoriapublica.pr.def.br',obs:'Climatização nova sede. Pode incluir reformas complementares.'},
+  {orgao:'SANEPAR — Obras e Engenharia',cidade:'Todo o Paraná',valor:'Variável',edital:'Múltiplos 2026',abertura:'Ver portal',risco:'MÉDIO',op:'MÉDIA',link:'https://licitacoes.sanepar.com.br',obs:'Portal próprio. Cadastro de fornecedor necessário.'},
+  {orgao:'Governo PR — Reformas Escolas',cidade:'Todo o Paraná',valor:'R$ 220.000.000',edital:'Editais fracionados',abertura:'Em andamento 2026',risco:'ALTO',op:'MÉDIA',link:'https://www.parana.pr.gov.br',obs:'R$ 220mi. Editais fracionados por regional/escola. Monitorar SEED.'},
+  {orgao:'PPP Mais Escolas Paraná',cidade:'31 municípios — PR',valor:'R$ 35.000.000',edital:'Conc. Internacional 06/2025',abertura:'Aberto 24/03/2026',risco:'ALTO',op:'BAIXA',link:'https://www.educacao.pr.gov.br',obs:'PPP 20 anos. Exige consórcio. Subcontratação possível pós-adjudicação.'},
+];
+function rPill(r){return`<span class="pill p${r==='BAIXO'?'RB':r==='MÉDIO'?'RM':'RA'}"><span class="dot"></span>${r}</span>`;}
+function oPill(o){return`<span class="pill p${o==='ALTA'?'OA':o==='MÉDIA'?'OM':'OB'}"><span class="dot"></span>${o}</span>`;}
+let litFilter='ALL';
+function fl(f,btn){litFilter=f;document.querySelectorAll('#page-licitacoes .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderLicit();}
+function renderLicit(){
+  let data=licitData;
+  if(litFilter==='ALTA') data=licitData.filter(l=>l.op==='ALTA');
+  else if(litFilter==='BAIXO') data=licitData.filter(l=>l.risco==='BAIXO');
+  else if(litFilter==='MÉDIO') data=licitData.filter(l=>l.risco==='MÉDIO');
+  else if(litFilter==='ALTO') data=licitData.filter(l=>l.risco==='ALTO');
+  document.getElementById('tbLicit').innerHTML=data.map((l,i)=>`<tr>
+    <td style="color:var(--mu);font-size:11px">${i+1}</td>
+    <td style="font-size:12px;font-weight:600;max-width:180px">${l.orgao}</td>
+    <td style="font-size:11px;color:var(--mu2)">${l.cidade}</td>
+    <td style="font-size:12px;font-weight:600;color:var(--g);white-space:nowrap">${l.valor}</td>
+    <td style="font-size:11px;color:var(--mu2)">${l.edital}</td>
+    <td style="font-size:11px;color:var(--mu2);white-space:nowrap">${l.abertura}</td>
+    <td>${rPill(l.risco)}</td>
+    <td>${oPill(l.op)}</td>
+    <td><a href="${l.link}" target="_blank" class="ll">🔗 Ver</a></td>
+    <td class="oc">${l.obs}</td>
+  </tr>`).join('');
+}
+renderLicit();
+
+// ── MAPA ──
+const mapCoords={
+  'Curitiba':[-25.4284,-49.2733],'Londrina':[-23.3045,-51.1696],'Maringá':[-23.4205,-51.9333],
+  'Cascavel':[-24.9578,-53.4596],'Foz do Iguaçu':[-25.5478,-54.5882],'Ponta Grossa':[-25.0945,-50.1633],
+  'Corbélia':[-24.7939,-53.3092],'Paraná':[-24.8900,-51.5500],'31 municípios — PR':[-24.5,-51.2],
+  'CWB/Londrina/+10 — PR':[-25.4284,-49.2733],'Todo o Paraná':[-24.8900,-51.5500],
+};
+const bairros={
+  'Batel':[-25.4425,-49.2900],'Água Verde':[-25.4600,-49.2850],'Centro':[-25.4284,-49.2711],
+  'AHU':[-25.4000,-49.2600],'Bigorrilho':[-25.4300,-49.3100],'Rebouças':[-25.4500,-49.2600],
+  'Portão':[-25.4700,-49.3050],'Campo Comprido':[-25.4200,-49.3500],'Jd. Santo Antônio':[-25.5000,-49.3200],
+  'Fanny':[-25.5100,-49.2900],'São Francisco':[-25.4100,-49.2500],'Curitiba':[-25.4284,-49.2733],
+};
+const layerGroups={};
+let mapInstance=null;
+
+function initMap(){
+  if(mapInstance)return;
+  mapInstance=L.map('map-container',{zoomControl:true,attributionControl:true}).setView([-25.4284,-49.2733],8);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · CartoDB',maxZoom:18}).addTo(mapInstance);
+
+  function cm(color){return L.divIcon({className:'',html:`<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>`,iconSize:[12,12],iconAnchor:[6,6]});}
+
+  const cfg={
+    parceiros:{color:'#3b82f6',items:parcData.filter(d=>d.tipo==='Parceiro').map(d=>({nome:d.nome,meta:d.tipo,coord:bairros['Curitiba'],wa:'',tel:d.tel}))},
+    condos:{color:'#22c55e',items:[
+      {nome:'Administradora Paraná',meta:'Administradora',coord:bairros['Centro'],tel:'(41) 3883-1700',wa:''},
+      {nome:'Inconal',meta:'Administradora · Centro',coord:bairros['Centro'],tel:'(41) 3223-8551',wa:'(41) 9 9900-3111'},
+      {nome:'CMPremium',meta:'Administradora',coord:bairros['Curitiba'],tel:'(41) 3023-9033',wa:''},
+      {nome:'Syndikos',meta:'Adm./Síndico · Rebouças',coord:bairros['Rebouças'],tel:'(41) 3501-0084',wa:''},
+      {nome:'Excelência Adm.',meta:'Administradora · AHU',coord:bairros['AHU'],tel:'(41) 3352-0235',wa:''},
+      {nome:'TG Services',meta:'Facility · Portão',coord:bairros['Portão'],tel:'(41) 3203-9462',wa:''},
+    ]},
+    sindicos:{color:'#f59e0b',items:[
+      {nome:'Providência Síndicos',meta:'Síndico Prof. · Batel',coord:bairros['Batel'],tel:'(41) 3117-9801',wa:'(41) 9 9982-9789'},
+      {nome:'Pr1me Síndicos',meta:'Síndico Prof.',coord:bairros['Jd. Santo Antônio'],tel:'(41) 99595-3560',wa:'(41) 99595-3560'},
+      {nome:'BA Síndicos Pro',meta:'Síndico Prof.',coord:bairros['Curitiba'],tel:'(41) 98777-1119',wa:'(41) 98777-1119'},
+      {nome:'Paulo Cesar Síndico',meta:'Síndico Prof.',coord:bairros['Curitiba'],tel:'(41) 99929-8991',wa:'(41) 99929-8991'},
+      {nome:'Síndico Curitiba (Alder)',meta:'Síndico Prof. · Bigorrilho',coord:bairros['Bigorrilho'],tel:'',wa:''},
+      {nome:'Futura Síndicos',meta:'Síndico Prof. · Batel',coord:[-25.4450,-49.2920],tel:'',wa:''},
+      {nome:'Óptima Síndicos',meta:'Síndico Prof. · Água Verde',coord:bairros['Água Verde'],tel:'',wa:''},
+    ]},
+    licit:{color:'#ef4444',items:licitData.slice(0,7).map(l=>{const c=mapCoords[l.cidade]||mapCoords['Curitiba'];return{nome:l.orgao,meta:l.cidade+' · '+l.risco,coord:c,tel:'',wa:'',link:l.link};})},
+    maoobra:{color:'#f97316',items:[
+      {nome:'Mazzettos Pinturas',meta:'Pintura predial · Fanny',coord:bairros['Fanny'],tel:'',wa:''},
+      {nome:'W.A.R Obras',meta:'Pintura + manutenção · Rebouças',coord:bairros['Rebouças'],tel:'(41) 3329-8523',wa:''},
+      {nome:'Revemix Pinturas',meta:'Pintura industrial',coord:bairros['Curitiba'],tel:'(41) 99894-9795',wa:''},
+      {nome:'ALS Pinturas',meta:'Pintura residencial/comercial',coord:[-25.4600,-49.2950],tel:'(41) 99882-9290',wa:''},
+      {nome:'Versátil Engenharia',meta:'Pintura predial · 50 anos',coord:[-25.4350,-49.2800],tel:'(41) 3077-9144',wa:''},
+    ]},
+    obras:{color:'#8b5cf6',items:[
+      {nome:'Syndikos — Pintura Hall',meta:'🔥 Em execução · R$ 18k',coord:bairros['Rebouças'],tel:'(41) 3501-0084',wa:''},
+      {nome:'Inconal — Reforma Fachada',meta:'📋 Orçamento · R$ 25k',coord:bairros['Centro'],tel:'(41) 9 9900-3111',wa:'(41) 9 9900-3111'},
+    ]},
+  };
+
+  let total=0;
+  Object.entries(cfg).forEach(([key,{color,items}])=>{
+    const grp=L.layerGroup();
+    items.forEach(item=>{
+      total++;
+      const mk=L.marker(item.coord||bairros['Curitiba'],{icon:cm(color)});
+      const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" class="map-popup" style="color:var(--g)">💬 WhatsApp</a>`:'';
+      mk.bindPopup(`<div class="map-popup"><h4>${item.nome}</h4><p>${item.meta}</p>${item.tel?`<p>📞 ${item.tel}</p>`:''}${wa}</div>`);
+      grp.addLayer(mk);
+    });
+    grp.addTo(mapInstance);
+    layerGroups[key]=grp;
+  });
+  document.getElementById('kMapTotal').textContent=total;
+
+  // Legend
+  const legend=L.control({position:'bottomright'});
+  legend.onAdd=()=>{
+    const d=L.DomUtil.create('div');
+    d.style.cssText='background:#151822;border:1px solid #252840;border-radius:8px;padding:10px 14px;font-size:11px;color:#94a3b8;';
+    d.innerHTML=[['#3b82f6','Parceiros'],['#22c55e','Condomínios/Adm.'],['#f59e0b','Síndicos'],['#ef4444','Licitações'],['#f97316','Mão de obra'],['#8b5cf6','Obras indicadas']]
+      .map(([c,l])=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="width:9px;height:9px;border-radius:50%;background:${c}"></div>${l}</div>`).join('');
+    return d;
+  };
+  legend.addTo(mapInstance);
+}
+
+function toggleLayer(key,btn){
+  const grp=layerGroups[key];if(!grp||!mapInstance)return;
+  if(mapInstance.hasLayer(grp)){mapInstance.removeLayer(grp);btn.classList.remove('on');btn.style.background='transparent';btn.style.borderColor='var(--border)';}
+  else{grp.addTo(mapInstance);btn.classList.add('on');}
+}
+
+// ── NAVEGAÇÃO ──
+function nav(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('topbar-title').textContent=el.dataset.title||id;
+  document.getElementById('topbar-sub').textContent=el.dataset.sub||'';
+  if(id==='mapa'){setTimeout(()=>{initMap();if(mapInstance)mapInstance.invalidateSize();},100);}
+}
+
+// ── EXPORT / IMPORT ──
+function exportData(){
+  const data={v:2,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`capturaobra_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function importData(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{
+    const d=JSON.parse(ev.target.result);
+    if(d.kanban)d.kanban.forEach(s=>{const c=kanbanData.find(c=>c.id===s.id);if(c)c.stage=s.stage;});
+    if(d.os)d.os.forEach(s=>{const o=osData.find(o=>o.id===s.id);if(o)o.checks=s.checks;});
+    saveKanban();saveOS();buildKanban();renderOS();
+    alert('✅ Dados importados com sucesso!');
+  }catch(err){alert('❌ Erro ao importar. Verifique o arquivo JSON.');}};
+  r.readAsText(f);e.target.value='';
+}
+
+// ── NOVO CARD KANBAN ──
+function novoCard(){
+  const nome=prompt('Nome do lead/oportunidade:');if(!nome)return;
+  const valor=prompt('Valor estimado (ex: R$ 15.000):','R$ 0');
+  const tipos=['sind','adm','licit','parc'];const tNomes=['Síndico','Adm.','Licitação','Parceria'];
+  let tipoIdx=0;
+  const tipoStr=prompt('Tipo: 1=Síndico, 2=Adm., 3=Licitação, 4=Parceria','1');
+  tipoIdx=parseInt(tipoStr)-1;if(tipoIdx<0||tipoIdx>3)tipoIdx=0;
+  const prob=parseInt(prompt('Probabilidade % (0-100):','50'))||50;
+  const id='k'+(Date.now());
+  kanbanData.push({id,nome,meta:'Novo lead',valor:valor||'A confirmar',prob,tipo:tipos[tipoIdx],stage:'novo'});
+  saveKanban();buildKanban();
+}
+
+// ── CHARTS ──
+const co={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11},padding:10}}}};
+new Chart(document.getElementById('cInicioPipeline'),{type:'doughnut',data:{labels:['Leads (30)','Licitações (11)','Parcerias (12)'],datasets:[{data:[30,11,12],backgroundColor:['rgba(34,197,94,.8)','rgba(99,102,241,.8)','rgba(20,184,166,.8)'],borderWidth:2,hoverOffset:4}]},options:{...co,cutout:'65%'}});
+new Chart(document.getElementById('cInicioLeads'),{type:'doughnut',data:{labels:['🔴 Quentes (19)','🟡 Mornos (11)'],datasets:[{data:[19,11],backgroundColor:['rgba(239,68,68,.8)','rgba(245,158,11,.8)'],borderColor:['#ef4444','#f59e0b'],borderWidth:2,hoverOffset:4}]},options:{...co,cutout:'65%'}});
+new Chart(document.getElementById('cInicioROI'),{type:'bar',data:{labels:['Condos','Licitações','Parcerias'],datasets:[{data:[36000,45000,36000],backgroundColor:['rgba(34,197,94,.7)','rgba(99,102,241,.7)','rgba(20,184,166,.7)'],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`R$ ${Number(c.raw).toLocaleString('pt-BR')}`}}},scales:{y:{grid:{color:'rgba(37,40,64,.8)'},ticks:{color:'#64748b',callback:v=>`R$ ${(v/1000).toFixed(0)}k`}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+new Chart(document.getElementById('cROIcanal'),{type:'bar',data:{labels:['Condomínios','Licitações','Parcerias'],datasets:[{label:'Receita (R$)',data:[36000,45000,36000],backgroundColor:['rgba(34,197,94,.7)','rgba(99,102,241,.7)','rgba(20,184,166,.7)'],borderWidth:2,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`R$ ${Number(c.raw).toLocaleString('pt-BR')}`}}},scales:{y:{grid:{color:'rgba(37,40,64,.8)'},ticks:{color:'#64748b',callback:v=>`R$ ${(v/1000).toFixed(0)}k`}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+new Chart(document.getElementById('cROIdist'),{type:'doughnut',data:{labels:['Leads (30)','Licitações (11)','Parcerias (12)'],datasets:[{data:[30,11,12],backgroundColor:['rgba(34,197,94,.8)','rgba(99,102,241,.8)','rgba(20,184,166,.8)'],borderWidth:2,hoverOffset:4}]},options:{...co,cutout:'65%'}});
+</script>
+</body>
+</html>
