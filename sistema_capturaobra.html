@@ -219,9 +219,43 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 
 @media(max-width:1280px){.g6{grid-template-columns:repeat(3,1fr);}.g5{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){.sidebar{transform:translateX(-100%);}.main{margin-left:0;}}
+
+/* ─── LOGIN ─── */
+#login-screen{position:fixed;inset:0;background:#070910;z-index:9999;display:flex;align-items:center;justify-content:center;}
+.lx{width:380px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px 32px;box-shadow:0 24px 64px rgba(0,0,0,.7);}
+.lx-logo{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.lx-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 16px rgba(99,102,241,.4);}
+.lx h2{font-size:18px;font-weight:800;}.lx h2 span{display:block;font-size:11px;font-weight:500;color:var(--mu2);margin-top:1px;}
+.lx-title{font-size:13px;color:var(--mu2);margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.lx-field{margin-bottom:14px;}
+.lx-field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mu2);margin-bottom:5px;}
+.lx-field input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;color:var(--tx);outline:none;transition:border-color .15s;}
+.lx-field input:focus{border-color:rgba(99,102,241,.5);}
+.lx-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px;transition:opacity .15s;}
+.lx-btn:hover{opacity:.88;}
+.lx-err{font-size:12px;color:var(--q);margin-top:10px;text-align:center;display:none;}
+.lx-foot{font-size:10px;color:var(--mu);text-align:center;margin-top:18px;}
 </style>
 </head>
 <body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="lx">
+    <div class="lx-logo">
+      <div class="lx-icon">🏗️</div>
+      <h2>CAPTURAOBRA<span>ALK Reformas · Curitiba</span></h2>
+    </div>
+    <p class="lx-title">Sistema Operacional Interno — acesso restrito</p>
+    <form onsubmit="doLogin(event)">
+      <div class="lx-field"><label>Usuário</label><input id="l-user" placeholder="usuário" autocomplete="username"></div>
+      <div class="lx-field"><label>Senha</label><input id="l-pass" type="password" placeholder="senha" autocomplete="current-password"></div>
+      <p class="lx-err" id="l-err">⚠️ Usuário ou senha incorretos</p>
+      <button class="lx-btn" type="submit">Entrar no Sistema</button>
+    </form>
+    <p class="lx-foot">Uso exclusivo ALK Reformas de Alto Padrão</p>
+  </div>
+</div>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <nav class="sidebar">
@@ -263,7 +297,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   <div class="sb-footer">
     <p>CAPTURAOBRA v2.0<br>03/05/2026 · alkreformascuritiba@gmail.com</p>
     <p style="margin-top:8px;font-size:10px;color:var(--ac)">💾 Dados salvos no navegador<br><span style="color:var(--mu)">Use ⬇ Exportar para backup</span></p>
-    <p style="margin-top:6px;font-size:10px;color:var(--mu)">🌐 Para deixar online grátis:<br><span style="color:var(--mu2)">netlify.com/drop — arraste o arquivo</span></p>
+    <button onclick="doLogout()" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:var(--q);cursor:pointer">🔒 Sair / Bloquear</button>
   </div>
 </nav>
 
@@ -491,6 +525,41 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 </div><!-- /main -->
 
 <script>
+// ═══════════════════════════════════════
+//  AUTENTICAÇÃO
+// ═══════════════════════════════════════
+// Para alterar: edite _U e _P abaixo
+const _U = 'alk';
+const _P = btoa('capturaobra2026'); // senha: capturaobra2026
+
+function doLogin(e){
+  e.preventDefault();
+  const u=document.getElementById('l-user').value.trim();
+  const p=document.getElementById('l-pass').value;
+  if(u===_U && btoa(p)===_P){
+    sessionStorage.setItem('co_auth','1');
+    document.getElementById('login-screen').style.display='none';
+  } else {
+    const err=document.getElementById('l-err');
+    err.style.display='block';
+    document.getElementById('l-pass').value='';
+    document.getElementById('l-pass').focus();
+    setTimeout(()=>err.style.display='none',3000);
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('co_auth');
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.getElementById('login-screen').style.display='flex';
+}
+// Verifica sessão ao carregar
+if(sessionStorage.getItem('co_auth')!=='1'){
+  document.getElementById('login-screen').style.display='flex';
+} else {
+  document.getElementById('login-screen').style.display='none';
+}
+
 // ═══════════════════════════════════════
 //  DADOS
 // ═══════════════════════════════════════
