@@ -433,6 +433,14 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
         <button class="ftab ft" onclick="fc('licit',this)">Licitação</button>
         <button class="ftab" onclick="fc('parc',this)">Parceiro</button>
       </div>
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <input id="capt-search" placeholder="🔍 Buscar por nome, cidade ou tipo…" oninput="captSearchFn(this.value)" style="flex:1;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;outline:none">
+        <select id="capt-cidade" onchange="captSearchFn(document.getElementById('capt-search').value)" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px">
+          <option value="">Todas as cidades</option>
+          <option>Curitiba</option><option>Londrina</option><option>Maringá</option><option>Cascavel</option><option>Ponta Grossa</option>
+        </select>
+        <button onclick="limparFiltrosCapt()" style="padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer">✕ Limpar</button>
+      </div>
       <div class="tbl-wrap">
         <table><thead><tr><th>#</th><th>Lead</th><th>Tipo</th><th>Origem</th><th>Telefone</th><th>WhatsApp</th><th>E-mail</th><th>Site</th><th>Cidade</th><th>Score</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tbCapt"></tbody></table>
@@ -448,9 +456,16 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <div class="kpi km"><div class="kpi-l">Valor Pipeline</div><div class="kpi-v" id="kComValor" style="font-size:20px">—</div><div class="kpi-s">Soma dos valores</div></div>
       <div class="kpi kt"><div class="kpi-l">Win Rate</div><div class="kpi-v">0%</div><div class="kpi-s">Iniciar contatos</div></div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <p style="font-size:12px;color:var(--mu2)">Arraste os cards entre colunas para atualizar o estágio da negociação.</p>
-      <button onclick="novoCard()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer">+ Novo Card</button>
+    <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+      <input id="kb-search" placeholder="🔍 Buscar lead…" oninput="kbSearchFn(this.value)" style="flex:1;min-width:160px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;outline:none">
+      <input id="kb-resp" placeholder="👤 Responsável…" oninput="kbRespFn(this.value)" style="width:140px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;outline:none">
+      <select id="kb-tipo" onchange="kbTipoFn(this.value)" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px">
+        <option value="">Todos os tipos</option>
+        <option value="sind">Síndico</option><option value="adm">Administradora</option>
+        <option value="licit">Licitação</option><option value="parc">Parceria</option>
+      </select>
+      <button onclick="limparFiltrosKanban()" style="padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer">✕ Limpar</button>
+      <button onclick="novoCard()" style="padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer;margin-left:auto">+ Novo Card</button>
     </div>
     <div class="kanban" id="kanban"></div>
   </div>
@@ -772,8 +787,30 @@ function scorePill(s){const c=scoreClass(s);const l=c==='Q'?'🔴 Quente':c==='M
 function scoreBar(s){const c=s>=70?'var(--q)':s>=40?'var(--m)':'var(--f)';return`<div style="display:flex;align-items:center;gap:7px"><div style="width:64px;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:${s}%;height:100%;background:${c};border-radius:3px"></div></div><span style="font-size:11px;font-weight:700;color:${c}">${s}</span></div>`;}
 
 // Render captação
-let captFilter='ALL';
+// ── FILTROS CAPTAÇÃO ──
+let captFilter='ALL', captSearch='', captCidade='';
 function fc(f,btn){captFilter=f;document.querySelectorAll('#page-captacao .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderCapt();}
+function captSearchFn(v){captSearch=v.toLowerCase();captCidade=(document.getElementById('capt-cidade')?.value||'').toLowerCase();renderCapt();}
+function limparFiltrosCapt(){
+  captFilter='ALL';captSearch='';captCidade='';
+  const s=document.getElementById('capt-search');if(s)s.value='';
+  const c=document.getElementById('capt-cidade');if(c)c.value='';
+  document.querySelectorAll('#page-captacao .ftab').forEach((b,i)=>{b.className='ftab'+(i===0?' fa':'');});
+  renderCapt();toast('Filtros limpos');
+}
+// ── FILTROS KANBAN ──
+let kanbanSearch='', kanbanResp='', kanbanTipo='';
+function kbSearchFn(v){kanbanSearch=v.toLowerCase();buildKanban();}
+function kbRespFn(v){kanbanResp=v.toLowerCase();buildKanban();}
+function kbTipoFn(v){kanbanTipo=v;buildKanban();}
+function limparFiltrosKanban(){
+  kanbanSearch='';kanbanResp='';kanbanTipo='';
+  const s=document.getElementById('kb-search');if(s)s.value='';
+  const r=document.getElementById('kb-resp');if(r)r.value='';
+  const t=document.getElementById('kb-tipo');if(t)t.value='';
+  buildKanban();toast('Filtros limpos');
+}
+
 function renderCapt(){
   let data=captData;
   if(captFilter==='Q') data=captData.filter(d=>calcScore(d)>=70);
@@ -782,6 +819,8 @@ function renderCapt(){
   else if(captFilter==='condo') data=captData.filter(d=>d.tipo.includes('Admin')||d.tipo.includes('Síndico')||d.tipo.includes('Facility')||d.tipo.includes('Adm')||d.tipo==='Condomínio');
   else if(captFilter==='licit') data=captData.filter(d=>d.tipo==='Licitação');
   else if(captFilter==='parc') data=captData.filter(d=>d.tipo==='Parceiro');
+  if(captSearch)data=data.filter(d=>(d.nome||'').toLowerCase().includes(captSearch)||(d.cidade||'').toLowerCase().includes(captSearch)||(d.tipo||'').toLowerCase().includes(captSearch));
+  if(captCidade)data=data.filter(d=>(d.cidade||'').toLowerCase().includes(captCidade));
   const q=captData.filter(d=>calcScore(d)>=70).length;
   const m=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;}).length;
   const el1=document.getElementById('kCaptQte');if(el1)el1.textContent=q;
@@ -834,8 +873,12 @@ try{const _s=localStorage.getItem('co_kanban_full');kanbanData=_s?JSON.parse(_s)
 function buildKanban(){
   const kb=document.getElementById('kanban');
   kb.innerHTML='';
+  let kbFiltered=kanbanData;
+  if(kanbanSearch)kbFiltered=kbFiltered.filter(c=>(c.nome||'').toLowerCase().includes(kanbanSearch)||(c.meta||'').toLowerCase().includes(kanbanSearch));
+  if(kanbanResp)kbFiltered=kbFiltered.filter(c=>(c.resp||'').toLowerCase().includes(kanbanResp));
+  if(kanbanTipo)kbFiltered=kbFiltered.filter(c=>c.tipo===kanbanTipo);
   stages.forEach(s=>{
-    const cards=kanbanData.filter(c=>c.stage===s);
+    const cards=kbFiltered.filter(c=>c.stage===s);
     const col=document.createElement('div');
     col.className='k-col';col.dataset.s=s;
     col.innerHTML=`<div class="k-col-hd"><span class="k-col-title">${stageLabels[s]}</span><span class="k-col-cnt" id="cnt-${s}">${cards.length}</span></div><div class="k-cards" id="kcol-${s}"></div>`;
