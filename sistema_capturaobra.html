@@ -6,6 +6,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <style>
 :root{
   --bg:#0d0f18;--sb:#090b13;--card:#151822;--card2:#1c1f2e;--border:#252840;
@@ -323,7 +325,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   </div>
 
   <div class="sb-footer">
-    <p>CAPTURAOBRA v2.9<br>04/05/2026 · alkreformascuritiba@gmail.com</p>
+    <p>CAPTURAOBRA v3.0<br>04/05/2026 · alkreformascuritiba@gmail.com</p>
     <p style="margin-top:8px;font-size:10px;color:var(--ac)">💾 Dados salvos no navegador<br><span style="color:var(--mu)">Use ⬇ Exportar para backup</span></p>
     <button onclick="doLogout()" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:var(--q);cursor:pointer">🔒 Sair / Bloquear</button>
   </div>
@@ -1132,7 +1134,10 @@ function initMap(force){
   mapInstance=L.map('map-container',{zoomControl:true,attributionControl:true}).setView([-25.4284,-49.2733],8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · CartoDB',maxZoom:18}).addTo(mapInstance);
 
-  function cm(color){return L.divIcon({className:'',html:`<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>`,iconSize:[12,12],iconAnchor:[6,6]});}
+  // pin individual
+  function cm(color){return L.divIcon({className:'',html:`<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,.45);box-shadow:0 2px 8px rgba(0,0,0,.6)"></div>`,iconSize:[14,14],iconAnchor:[7,7]});}
+  // cluster colorido por camada
+  function makeCluster(color){return L.markerClusterGroup({maxClusterRadius:48,showCoverageOnHover:false,zoomToBoundsOnClick:true,spiderfyOnMaxZoom:true,animateAddingMarkers:false,iconCreateFunction:(cl)=>{const n=cl.getChildCount();const s=n>=10?36:n>=5?31:26;return L.divIcon({html:`<div style="width:${s}px;height:${s}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:${n>=10?12:11}px;font-weight:800;color:#fff;border:2.5px solid rgba(255,255,255,.5);box-shadow:0 3px 12px rgba(0,0,0,.55)">${n}</div>`,iconSize:[s,s],iconAnchor:[s/2,s/2],className:''});}}); }
 
   // jitter determinístico por nome — pins não se movem a cada reload
   function jit(s){let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))>>>0;return[(h%100-50)/2600,((h>>8)%100-50)/2600];}
@@ -1143,37 +1148,38 @@ function initMap(force){
   const cfg={
     parceiros:{color:'#3b82f6',items:parcData
       .filter(p=>!execSegs.includes(p.seg))
-      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:''}))},
+      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:'',site:p.site||''}))},
     condos:{color:'#22c55e',items:captData
       .filter(d=>d.tipo&&!d.tipo.includes('Licit')&&!d.tipo.includes('Parceiro')&&
         (d.tipo.includes('Adm')||d.tipo==='Condomínio'||d.tipo==='Facility'))
-      .map(d=>({nome:d.nome,meta:d.tipo+' · '+d.cidade,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||''}))},
+      .map(d=>({nome:d.nome,meta:d.tipo+' · '+d.cidade,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||'',site:d.site||''}))},
     sindicos:{color:'#f59e0b',items:captData
       .filter(d=>d.tipo&&d.tipo.includes('Síndico'))
-      .map(d=>({nome:d.nome,meta:d.tipo,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||''}))},
+      .map(d=>({nome:d.nome,meta:d.tipo,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||'',site:d.site||''}))},
     licit:{color:'#ef4444',items:licitData
       .map(l=>({nome:l.orgao,meta:l.cidade+' · Risco '+l.risco,coord:mapCoords[l.cidade]||mapCoords['Curitiba'],tel:'',wa:'',link:l.link}))},
     maoobra:{color:'#f97316',items:parcData
       .filter(p=>execSegs.includes(p.seg))
-      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:''}))},
+      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:'',site:p.site||''}))},
     obras:{color:'#8b5cf6',items:[
       ...kanbanData
         .filter(k=>['orcamento','fechado'].includes(k.stage))
-        .map(k=>({nome:k.nome,meta:'Pipeline · '+k.valor+(k.prob?' · '+k.prob+'%':''),coord:coord('Curitiba',k.nome),tel:k.tel||'',wa:''})),
+        .map(k=>({nome:k.nome,meta:'Pipeline · '+k.valor+(k.prob?' · '+k.prob+'%':''),coord:coord('Curitiba',k.nome),tel:k.tel||'',wa:'',site:''})),
       ...osData
-        .map(o=>({nome:o.nome,meta:'OS Ativa · '+o.valor,coord:coord('Curitiba',o.nome),tel:'',wa:''}))
+        .map(o=>({nome:o.nome,meta:'OS Ativa · '+o.valor,coord:coord('Curitiba',o.nome),tel:'',wa:'',site:''}))
     ]},
   };
 
   let total=0;
   Object.entries(cfg).forEach(([key,{color,items}])=>{
-    const grp=L.layerGroup();
+    const grp=makeCluster(color);
     items.forEach(item=>{
       total++;
       const mk=L.marker(item.coord,{icon:cm(color)});
-      const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" style="color:#22c55e;font-size:11px;display:block;margin-top:4px">💬 WhatsApp</a>`:'';
-      const lk=item.link?`<a href="${item.link}" target="_blank" style="color:#6366f1;font-size:11px;display:block;margin-top:2px">🔗 Ver edital</a>`:'';
-      mk.bindPopup(`<div class="map-popup"><h4>${item.nome}</h4><p>${item.meta}</p>${item.tel?`<p>📞 ${item.tel}</p>`:''}${wa}${lk}</div>`);
+      const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" style="color:#22c55e;font-size:11px;font-weight:600;display:block;margin-top:5px">💬 WhatsApp</a>`:'';
+      const lk=item.link?`<a href="${item.link}" target="_blank" style="color:#6366f1;font-size:11px;font-weight:600;display:block;margin-top:3px">🔗 Ver edital</a>`:'';
+      const st=item.site?`<a href="https://${item.site}" target="_blank" style="color:#94a3b8;font-size:10px;display:block;margin-top:2px">🌐 ${item.site}</a>`:'';
+      mk.bindPopup(`<div class="map-popup"><h4 style="color:#e2e8f0">${item.nome}</h4><p style="color:#94a3b8;margin-bottom:4px">${item.meta}</p>${item.tel?`<p style="font-size:11px">📞 ${item.tel}</p>`:''}${wa}${lk}${st}</div>`,{minWidth:190});
       grp.addLayer(mk);
     });
     grp.addTo(mapInstance);
