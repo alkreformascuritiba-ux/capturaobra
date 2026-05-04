@@ -337,6 +337,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <span class="tbadge green">● SISTEMA ATIVO</span>
       <span class="tbadge purple">53 oportunidades</span>
       <button onclick="exportData()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">⬇ Exportar</button>
+      <button onclick="gerarHTML()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer" title="Baixa o HTML com todos os dados atuais embutidos">💾 Gerar HTML</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
       <button onclick="document.getElementById('importFile').click()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08);color:var(--g);cursor:pointer">⬆ Importar</button>
       <span style="font-size:11px;color:var(--mu2)">03/05/2026</span>
@@ -1163,6 +1164,24 @@ function nav(id,el){
   document.getElementById('topbar-title').textContent=el.dataset.title||id;
   document.getElementById('topbar-sub').textContent=el.dataset.sub||'';
   if(id==='mapa'){setTimeout(()=>{initMap();if(mapInstance)mapInstance.invalidateSize();},100);}
+}
+
+// ── GERAR HTML COM DADOS EMBUTIDOS ──
+function gerarHTML(){
+  let html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  // Remove embed anterior se existir
+  html=html.replace(/\/\/ 💾 DATA EMBED[\s\S]*?\/\/ FIM DATA EMBED\n/g,'');
+  // Monta o bloco de seed (roda antes do carregamento do localStorage)
+  const seed=`// 💾 DATA EMBED — ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\ntry{localStorage.setItem('co_capt_full',${JSON.stringify(JSON.stringify(captData))});localStorage.setItem('co_kanban_full',${JSON.stringify(JSON.stringify(kanbanData))});localStorage.setItem('co_os_full',${JSON.stringify(JSON.stringify(osData))});}catch(e){}\n// FIM DATA EMBED\n`;
+  // Injeta antes do carregamento das variáveis
+  const alvo='// Carrega do localStorage (ou usa padrões acima)\nlet captData;';
+  if(!html.includes(alvo)){toast('Erro ao gerar HTML.','err');return;}
+  html=html.replace(alvo,seed+alvo);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  a.download='sistema_capturaobra.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('HTML baixado! Substitua o arquivo original e rode o script de publicação.');
 }
 
 // ── EXPORT / IMPORT ──
