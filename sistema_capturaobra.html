@@ -917,7 +917,7 @@ function _openCardModal(d){
 buildKanban();
 
 // ── PARCEIROS ──
-const parcData=[
+const _parcDef=[
   {nome:'JK Reforma e Construção',seg:'Reforma',tel:'Via site',site:'jkreformaeconstrucao.com.br',nota:'5.0 ⭐ · 121 av.',sc:{entrega:19,qualidade:20,prazo:18,comunicacao:18,margem:15}},
   {nome:'JC Construções',seg:'Reforma',tel:'Via site',site:'jcconstrucoes.com.br',nota:'4.9 ⭐ · 140+ av.',sc:{entrega:18,qualidade:19,prazo:17,comunicacao:17,margem:14}},
   {nome:'Mazzettos Pinturas',seg:'Pintura',tel:'Ver site',site:'mazzettospinturasereformascwb.com',nota:'4.8 ⭐ · 92 av.',sc:{entrega:18,qualidade:18,prazo:16,comunicacao:16,margem:16}},
@@ -934,6 +934,9 @@ const parcData=[
   {nome:'B&K Clean',seg:'Facility',tel:'Ver site',site:'bkclean.com.br',nota:'Manutenção predial',sc:{entrega:12,qualidade:12,prazo:12,comunicacao:11,margem:12}},
   {nome:'Magna Brasil CWB',seg:'Facility',tel:'Ver site',site:'magnabrasilcwb.com.br',nota:'Gestão condominial',sc:{entrega:11,qualidade:12,prazo:11,comunicacao:11,margem:11}},
 ];
+let parcData;
+try{const _sp=localStorage.getItem('co_parc_full');parcData=_sp?JSON.parse(_sp):[..._parcDef];}catch(e){parcData=[..._parcDef];}
+function saveParc(){try{localStorage.setItem('co_parc_full',JSON.stringify(parcData));}catch(e){}}
 
 function scoreColor(t){return t>=80?'var(--g)':t>=70?'var(--tl)':t>=60?'var(--m)':'var(--or)';}
 let parcFilter='ALL';
@@ -1030,7 +1033,7 @@ function renderOS(){
 renderOS();
 
 // ── LICITAÇÕES ──
-const licitData=[
+const _licitDef=[
   {orgao:'Câmara Municipal de Corbélia — Fachada',cidade:'Corbélia — PR',valor:'A confirmar',edital:'Edital 2026',abertura:'A confirmar',risco:'BAIXO',op:'ALTA',link:'https://alertalicitacao.com.br/!municipios/PR',obs:'Obra pequena/municipal. Baixa concorrência. Top pick para ALK.'},
   {orgao:'COHAPAR — Reforma Predial GRCA',cidade:'Curitiba — PR',valor:'A confirmar',edital:'Prorrogação 120d',abertura:'11/03/2026 (prorrog.)',risco:'BAIXO',op:'ALTA',link:'https://www.transparencia.pr.gov.br/pte/compras/licitacoes/pesquisar-param?sigla=COHAPAR',obs:'Prorrogado 120 dias. Contatar COHAPAR diretamente.'},
   {orgao:'Alerta Licitação — Municípios PR',cidade:'Todo o Paraná',valor:'Variável',edital:'Contínuo 2026',abertura:'Contínuo',risco:'BAIXO',op:'ALTA',link:'https://alertalicitacao.com.br/!municipios/PR',obs:'Agrega todas as licitações municipais do PR. Configurar alerta.'},
@@ -1043,6 +1046,10 @@ const licitData=[
   {orgao:'Governo PR — Reformas Escolas',cidade:'Todo o Paraná',valor:'R$ 220.000.000',edital:'Editais fracionados',abertura:'Em andamento 2026',risco:'ALTO',op:'MÉDIA',link:'https://www.parana.pr.gov.br',obs:'R$ 220mi. Editais fracionados por regional/escola. Monitorar SEED.'},
   {orgao:'PPP Mais Escolas Paraná',cidade:'31 municípios — PR',valor:'R$ 35.000.000',edital:'Conc. Internacional 06/2025',abertura:'Aberto 24/03/2026',risco:'ALTO',op:'BAIXA',link:'https://www.educacao.pr.gov.br',obs:'PPP 20 anos. Exige consórcio. Subcontratação possível pós-adjudicação.'},
 ];
+let licitData;
+try{const _sl=localStorage.getItem('co_licit_full');licitData=_sl?JSON.parse(_sl):[..._licitDef];}catch(e){licitData=[..._licitDef];}
+function saveLicit(){try{localStorage.setItem('co_licit_full',JSON.stringify(licitData));}catch(e){}}
+
 function rPill(r){return`<span class="pill p${r==='BAIXO'?'RB':r==='MÉDIO'?'RM':'RA'}"><span class="dot"></span>${r}</span>`;}
 function oPill(o){return`<span class="pill p${o==='ALTA'?'OA':o==='MÉDIA'?'OM':'OB'}"><span class="dot"></span>${o}</span>`;}
 let litFilter='ALL';
@@ -1172,14 +1179,14 @@ function nav(id,el){
 const SHEETS_URL='https://script.google.com/macros/s/AKfycby7y9rqNyBhg4XuKECWHFbL95ePjjcIvlVk9urwCrKRhZEMvnjsQLXMPLrSybi_TMGZ/exec';
 
 async function syncToSheets(){
-  toast('Enviando para Google Sheets...');
+  toast('Enviando todos os dados para Google Sheets...');
   try{
     await fetch(SHEETS_URL,{
       method:'POST',
       mode:'no-cors',
-      body:JSON.stringify({captacao:captData,kanban:kanbanData,os:osData})
+      body:JSON.stringify({captacao:captData,kanban:kanbanData,os:osData,parceiros:parcData,licitacoes:licitData})
     });
-    toast('✅ Dados enviados ao Google Sheets!');
+    toast('✅ 5 bases enviadas ao Google Sheets!');
   }catch(err){toast('Erro: '+err.message,'err');}
 }
 
@@ -1192,6 +1199,8 @@ async function loadFromSheets(){
       if(result.data.captacao&&result.data.captacao.length){captData=result.data.captacao;saveCaptData();renderCapt();}
       if(result.data.kanban&&result.data.kanban.length){kanbanData=result.data.kanban;saveKanban();buildKanban();}
       if(result.data.os&&result.data.os.length){osData=result.data.os;saveOSData();renderOS();}
+      if(result.data.parceiros&&result.data.parceiros.length){parcData=result.data.parceiros;saveParc();renderParc();}
+      if(result.data.licitacoes&&result.data.licitacoes.length){licitData=result.data.licitacoes;saveLicit();renderLicit();}
       toast('✅ Dados carregados do Google Sheets!');
     }else{toast('Erro: '+(result.erro||'desconhecido'),'err');}
   }catch(err){toast('Erro de conexão: '+err.message,'err');}
@@ -1203,7 +1212,7 @@ function gerarHTML(){
   // Remove embed anterior se existir
   html=html.replace(/\/\/ 💾 DATA EMBED[\s\S]*?\/\/ FIM DATA EMBED\n/g,'');
   // Monta o bloco de seed (roda antes do carregamento do localStorage)
-  const seed=`// 💾 DATA EMBED — ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\ntry{localStorage.setItem('co_capt_full',${JSON.stringify(JSON.stringify(captData))});localStorage.setItem('co_kanban_full',${JSON.stringify(JSON.stringify(kanbanData))});localStorage.setItem('co_os_full',${JSON.stringify(JSON.stringify(osData))});}catch(e){}\n// FIM DATA EMBED\n`;
+  const seed=`// 💾 DATA EMBED — ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\ntry{localStorage.setItem('co_capt_full',${JSON.stringify(JSON.stringify(captData))});localStorage.setItem('co_kanban_full',${JSON.stringify(JSON.stringify(kanbanData))});localStorage.setItem('co_os_full',${JSON.stringify(JSON.stringify(osData))});localStorage.setItem('co_parc_full',${JSON.stringify(JSON.stringify(parcData))});localStorage.setItem('co_licit_full',${JSON.stringify(JSON.stringify(licitData))});}catch(e){}\n// FIM DATA EMBED\n`;
   // Injeta antes do carregamento das variáveis
   const alvo='// Carrega do localStorage (ou usa padrões acima)\nlet captData;';
   if(!html.includes(alvo)){toast('Erro ao gerar HTML.','err');return;}
@@ -1217,7 +1226,7 @@ function gerarHTML(){
 
 // ── EXPORT / IMPORT ──
 function exportData(){
-  const data={v:3,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData,capt:captData};
+  const data={v:4,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData,capt:captData,parc:parcData,licit:licitData};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`capturaobra_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
@@ -1232,6 +1241,8 @@ function importData(e){
     if(d.kanban){kanbanData=d.kanban;saveKanban();buildKanban();}
     if(d.os){osData=d.os;saveOSData();renderOS();}
     if(d.capt){captData=d.capt;saveCaptData();renderCapt();}
+    if(d.parc){parcData=d.parc;saveParc();renderParc();}
+    if(d.licit){licitData=d.licit;saveLicit();renderLicit();}
     toast('Dados importados com sucesso!');
   }catch(err){toast('Erro ao importar. Verifique o arquivo JSON.','err');}};
   r.readAsText(f);e.target.value='';
