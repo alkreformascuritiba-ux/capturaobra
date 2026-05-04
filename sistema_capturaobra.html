@@ -850,6 +850,9 @@ function buildKanban(){
         if(d){
           const prev=d.stage; d.stage=s;
           updateKanbanKPIs(); saveKanban();
+          if(s==='email'&&prev!=='email'){
+            setTimeout(()=>openEmailModal(d),200);
+          }
           if(s==='fechado'&&prev!=='fechado'){
             setTimeout(()=>{
               if(confirm(`🎉 "${d.nome}" foi para Fechado!\n\nDeseja criar uma OS de Execução agora?`)){
@@ -945,6 +948,58 @@ function _openCardModal(d){
   });
 }
 buildKanban();
+
+// ── EMAIL KANBAN MODAL ──
+function _applyEmailVars(txt,card){
+  return txt
+    .replace(/{{nome}}/g,card.nome)
+    .replace(/{{nomeCondominio}}/g,card.nome)
+    .replace(/{{empresa}}/g,card.nome)
+    .replace(/{{valor}}/g,card.valor||'a confirmar')
+    .replace(/\{\{[^}]+\}\}/g,'[a definir]');
+}
+function openEmailModal(card){
+  const pub=card.tipo==='parc'?'parceiro':'cliente';
+  const tmpls=mktTemplates.filter(t=>t.canal==='email'&&t.publico===pub);
+  if(!tmpls.length){toast('Nenhum template de email disponível','err');return;}
+  window._emCard=card;
+  const opts=tmpls.map(t=>`<option value="${esc(t.id)}">${esc(t.id)} — ${esc(t.titulo)}</option>`).join('');
+  const ft=tmpls[0];
+  const hasEmail=card.email&&card.email.includes('@');
+  openModal(`📧 Email c/ Apres. — ${card.nome}`,`
+    <div class="mf" style="margin-bottom:12px">
+      <label>Template de Email</label>
+      <select id="em-sel" onchange="updateEmailPreview()">${opts}</select>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+      <div style="font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Assunto</div>
+      <div id="em-subj" style="font-size:13px;color:var(--tl);font-weight:600;margin-bottom:12px">${esc(_applyEmailVars(ft.assunto,card))}</div>
+      <div style="font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Corpo</div>
+      <pre id="em-body" style="font-size:12px;color:var(--text);white-space:pre-wrap;word-break:break-word;margin:0;font-family:inherit;line-height:1.65;max-height:220px;overflow-y:auto">${esc(_applyEmailVars(ft.corpo,card))}</pre>
+    </div>
+    <div style="font-size:12px;display:flex;align-items:center;gap:6px;color:${hasEmail?'var(--tl)':'var(--or)'}">
+      📩 <b>Para:</b> ${hasEmail?esc(card.email):'<span>⚠ Email não cadastrado — edite o card antes de enviar</span>'}
+    </div>
+  `,function(){
+    const tmpl=mktTemplates.find(t=>t.id===document.getElementById('em-sel').value);
+    if(!tmpl)return;
+    mktDisparos.push({id:'d'+Date.now(),leadId:card.id,leadNome:card.nome,tmplId:tmpl.id,tmplTitulo:tmpl.titulo,canal:'email',publico:pub,data:new Date().toLocaleDateString('pt-BR'),status:'enviado',obs:'Kanban → Email c/ Apres.'});
+    saveMktD();renderMktKpis();closeModal();
+    toast(`📧 Disparo registrado — ${tmpl.titulo}`);
+  });
+  document.getElementById('mo-save').textContent='✅ Registrar Envio';
+}
+function updateEmailPreview(){
+  const card=window._emCard;
+  const sel=document.getElementById('em-sel');
+  if(!card||!sel)return;
+  const tmpl=mktTemplates.find(t=>t.id===sel.value);
+  if(!tmpl)return;
+  const subj=document.getElementById('em-subj');
+  const body=document.getElementById('em-body');
+  if(subj)subj.textContent=_applyEmailVars(tmpl.assunto,card);
+  if(body)body.textContent=_applyEmailVars(tmpl.corpo,card);
+}
 
 // ── PARCEIROS ──
 const _parcDef=[
