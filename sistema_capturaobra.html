@@ -836,12 +836,12 @@ function renderCapt(){
   const wa=captData.filter(d=>d.wa&&d.wa.trim()&&!d.wa.includes('xx')&&!d.wa.includes('—')).length;
   const sk=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   sk('kCaptTotal',captData.length);sk('kCaptWA',wa);
-  // KPIs dashboard inicial
-  const totalOp=captData.length+licitData.length+parcData.length;
-  let kValorPipeline=0;kanbanData.forEach(c=>{const n=parseInt((c.valor||'').replace(/\D/g,''));if(n)kValorPipeline+=n;});
+  // KPIs dashboard inicial (usa optional chaining pois pode rodar antes das outras variáveis existirem)
+  const totalOp=captData.length+(licitData?.length||0)+(parcData?.length||0);
+  let kValorPipeline=0;(kanbanData||[]).forEach(c=>{const n=parseInt((c.valor||'').replace(/\D/g,''));if(n)kValorPipeline+=n;});
   const receitaPrev=Math.round(kValorPipeline*0.10/1000);
   sk('kInicioTotal',totalOp);sk('kInicioQte',q);
-  sk('kInicioLicit',licitData.length);sk('kInicioParc',parcData.length);
+  sk('kInicioLicit',licitData?.length??'—');sk('kInicioParc',parcData?.length??'—');
   sk('kInicioReceita',receitaPrev?`R$${receitaPrev}k`:'—');
   document.getElementById('tbCapt').innerHTML=data.map((d,i)=>`<tr>
     <td style="color:var(--mu);font-size:11px">${i+1}</td>
@@ -1388,6 +1388,8 @@ function deleteLicit(idx){
   licitData.splice(idx,1);saveLicit();renderLicit();toast('Licitação excluída.');
 }
 renderLicit();
+// Atualiza KPIs do dashboard inicial com todos os dados já carregados
+renderCapt();
 
 // ── IMPORTADOR CSV LICITAÇÕES ──
 function _parseCSV(text){
