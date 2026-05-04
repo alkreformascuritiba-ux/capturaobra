@@ -724,7 +724,7 @@ function deleteLead(id){
 function promoverParaKanban(id){
   const d=captData.find(x=>x.id===id);if(!d)return;
   const tm={'Administradora':'adm','Adm./Síndico':'adm','Síndico Prof.':'sind','Facility':'parc','Licitação':'licit','Parceiro':'parc','Condomínio':'adm'};
-  kanbanData.push({id:'k'+Date.now(),nome:d.nome,meta:d.tipo+(d.cidade?' · '+d.cidade:''),valor:'A confirmar',prob:50,tipo:tm[d.tipo]||'parc',stage:'contato',acao:'',resp:'',obs:''});
+  kanbanData.push({id:'k'+Date.now(),nome:d.nome,meta:d.tipo+(d.cidade?' · '+d.cidade:''),tel:d.tel||'',email:d.email||'',valor:'A confirmar',prob:50,tipo:tm[d.tipo]||'parc',stage:'contato',acao:'',dataAcao:'',resp:'',obs:''});
   saveKanban();buildKanban();
   const si=document.querySelector('.sb-item[data-title="Comercial — Pipeline"]');
   if(si)nav('comercial',si);
@@ -880,7 +880,7 @@ function deleteCard(id){
 }
 function _openCardModal(d){
   const isNew=!d;
-  const v=d||{nome:'',meta:'',valor:'',prob:50,tipo:'sind',stage:'contato',acao:'',resp:'',obs:''};
+  const v=d||{nome:'',meta:'',valor:'',prob:50,tipo:'sind',stage:'contato',tel:'',email:'',acao:'',dataAcao:'',resp:'',obs:''};
   openModal(isNew?'+ Novo Card Kanban':'Editar Card',`
     <div class="mfr">
       <div class="mf"><label>Nome / Lead *</label><input id="mk-nome" value="${esc(v.nome)}" placeholder="Nome do lead"></div>
@@ -892,6 +892,10 @@ function _openCardModal(d){
       </select></div>
     </div>
     <div class="mfr">
+      <div class="mf"><label>Telefone</label><input id="mk-tel" value="${esc(v.tel||'')}" placeholder="(41) 99999-9999"></div>
+      <div class="mf"><label>E-mail</label><input id="mk-email" value="${esc(v.email||'')}" placeholder="contato@empresa.com.br"></div>
+    </div>
+    <div class="mfr">
       <div class="mf"><label>Descrição</label><input id="mk-meta" value="${esc(v.meta)}" placeholder="Ex: Síndico · Batel"></div>
       <div class="mf"><label>Estágio</label><select id="mk-stage">${stages.map(s=>`<option value="${s}"${v.stage===s?' selected':''}>${stageLabels[s]}</option>`).join('')}</select></div>
     </div>
@@ -900,7 +904,10 @@ function _openCardModal(d){
       <div class="mf"><label>Probabilidade (%)</label><input id="mk-prob" type="number" min="0" max="100" value="${v.prob}"></div>
     </div>
     <div class="mfr">
-      <div class="mf"><label>Próxima Ação</label><input id="mk-acao" value="${esc(v.acao||'')}" placeholder="Ex: Ligar segunda-feira"></div>
+      <div class="mf"><label>Próxima Ação</label><input id="mk-acao" value="${esc(v.acao||'')}" placeholder="Ex: Ligar, enviar proposta"></div>
+      <div class="mf"><label>Data da Ação</label><input id="mk-dataAcao" type="date" value="${esc(v.dataAcao||'')}"></div>
+    </div>
+    <div class="mfr">
       <div class="mf"><label>Responsável</label><input id="mk-resp" value="${esc(v.resp||'')}" placeholder="Nome"></div>
     </div>
     <div class="mf"><label>Observações</label><textarea id="mk-obs">${esc(v.obs||'')}</textarea></div>
@@ -908,7 +915,7 @@ function _openCardModal(d){
   `,function(){
     const nome=document.getElementById('mk-nome').value.trim();
     if(!nome)return toast('Nome é obrigatório','err');
-    const obj={nome,meta:document.getElementById('mk-meta').value,valor:document.getElementById('mk-valor').value||'A confirmar',prob:parseInt(document.getElementById('mk-prob').value)||50,tipo:document.getElementById('mk-tipo').value,stage:document.getElementById('mk-stage').value,acao:document.getElementById('mk-acao').value,resp:document.getElementById('mk-resp').value,obs:document.getElementById('mk-obs').value};
+    const obj={nome,meta:document.getElementById('mk-meta').value,tel:document.getElementById('mk-tel').value,email:document.getElementById('mk-email').value,valor:document.getElementById('mk-valor').value||'A confirmar',prob:parseInt(document.getElementById('mk-prob').value)||50,tipo:document.getElementById('mk-tipo').value,stage:document.getElementById('mk-stage').value,acao:document.getElementById('mk-acao').value,dataAcao:document.getElementById('mk-dataAcao').value,resp:document.getElementById('mk-resp').value,obs:document.getElementById('mk-obs').value};
     if(isNew){kanbanData.push({id:'k'+Date.now(),...obj});}
     else{Object.assign(d,obj);}
     saveKanban();buildKanban();closeModal();toast(isNew?'Card criado!':'Card atualizado!');
@@ -986,7 +993,8 @@ function deleteOS(id){
 }
 function _openOSModal(d,pre){
   const isNew=!d;
-  const v=d||{nome:pre.nome||'',cliente:pre.cliente||'',valor:pre.valor||'',resp:'Sergio Pessoa',prazo:''};
+  const v=d||{nome:pre.nome||'',cliente:pre.cliente||'',valor:pre.valor||'',resp:'Sergio Pessoa',prazo:'',parceiro:'',escopo:''};
+  const parcOpts=parcData.map(p=>`<option value="${esc(p.nome)}"${v.parceiro===p.nome?' selected':''}>${p.nome} (${p.seg})</option>`).join('');
   openModal(isNew?'+ Nova Ordem de Serviço':'Editar OS',`
     <div class="mf"><label>Nome da OS *</label><input id="mos-nome" value="${esc(v.nome)}" placeholder="Ex: Condomínio Silva — Pintura Fachada"></div>
     <div class="mfr">
@@ -997,14 +1005,16 @@ function _openOSModal(d,pre){
       <div class="mf"><label>Responsável</label><input id="mos-resp" value="${esc(v.resp||'Sergio Pessoa')}"></div>
       <div class="mf"><label>Prazo</label><input id="mos-prazo" value="${esc(v.prazo||'')}" placeholder="DD/MM/AAAA"></div>
     </div>
+    <div class="mf"><label>Parceiro Executor</label><select id="mos-parc"><option value="">— Sem parceiro definido —</option>${parcOpts}</select></div>
+    <div class="mf"><label>Escopo / Descrição do Serviço</label><textarea id="mos-escopo" placeholder="Ex: Pintura completa fachada + hall, 3 demãos Suvinil, andaime incluso...">${esc(v.escopo||'')}</textarea></div>
     ${!isNew?`<div class="mo-del"><button class="btn-d" onclick="deleteOS('${d.id}')">🗑 Excluir OS</button></div>`:''}
   `,function(){
     const nome=document.getElementById('mos-nome').value.trim();
     if(!nome)return toast('Nome é obrigatório','err');
     if(isNew){
-      osData.push({id:'os'+Date.now(),nome,cliente:document.getElementById('mos-cli').value,valor:document.getElementById('mos-val').value||'A confirmar',resp:document.getElementById('mos-resp').value||'Sergio Pessoa',prazo:document.getElementById('mos-prazo').value,checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]});
+      osData.push({id:'os'+Date.now(),nome,cliente:document.getElementById('mos-cli').value,valor:document.getElementById('mos-val').value||'A confirmar',resp:document.getElementById('mos-resp').value||'Sergio Pessoa',prazo:document.getElementById('mos-prazo').value,parceiro:document.getElementById('mos-parc').value,escopo:document.getElementById('mos-escopo').value,checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]});
     } else {
-      d.nome=nome;d.cliente=document.getElementById('mos-cli').value;d.valor=document.getElementById('mos-val').value;d.resp=document.getElementById('mos-resp').value;d.prazo=document.getElementById('mos-prazo').value;
+      d.nome=nome;d.cliente=document.getElementById('mos-cli').value;d.valor=document.getElementById('mos-val').value;d.resp=document.getElementById('mos-resp').value;d.prazo=document.getElementById('mos-prazo').value;d.parceiro=document.getElementById('mos-parc').value;d.escopo=document.getElementById('mos-escopo').value;
     }
     saveOSData();renderOS();closeModal();toast(isNew?'OS criada!':'OS atualizada!');
   });
@@ -1019,7 +1029,7 @@ function renderOS(){
     const done=os.checks.filter(c=>c.d).length;const total=os.checks.length;const pct=Math.round(done/total*100);
     return`<div class="os-card">
       <div class="os-hd">
-        <div><div class="os-title">${esc(os.nome)}</div><div class="os-meta">${esc(os.cliente)} · ${esc(os.valor)} · Resp: ${esc(os.resp)} · Prazo: ${esc(os.prazo||'A definir')}</div></div>
+        <div><div class="os-title">${esc(os.nome)}</div><div class="os-meta">${esc(os.cliente)} · ${esc(os.valor)} · Resp: ${esc(os.resp)} · Prazo: ${esc(os.prazo||'A definir')}${os.parceiro?` · 🔧 ${esc(os.parceiro)}`:''}</div>${os.escopo?`<div style="font-size:11px;color:var(--mu2);margin-top:3px;font-style:italic">${esc(os.escopo)}</div>`:''}</div>
         <div style="display:flex;align-items:center;gap:8px">
           <span class="pill ${pct===100?'pG':'pM'}">${pct}%</span>
           <button onclick="editOS('${os.id}')" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--mu2);cursor:pointer;padding:3px 9px;font-size:11px">✎ Editar</button>
