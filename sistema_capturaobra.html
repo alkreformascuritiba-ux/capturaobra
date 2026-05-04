@@ -980,14 +980,25 @@ function openEmailModal(card){
     <div style="font-size:12px;display:flex;align-items:center;gap:6px;color:${hasEmail?'var(--tl)':'var(--or)'}">
       📩 <b>Para:</b> ${hasEmail?esc(card.email):'<span>⚠ Email não cadastrado — edite o card antes de enviar</span>'}
     </div>
+    ${hasEmail?'':`<div style="font-size:11px;color:var(--mu);margin-top:6px">Você ainda pode registrar o disparo manualmente para rastreamento.</div>`}
   `,function(){
-    const tmpl=mktTemplates.find(t=>t.id===document.getElementById('em-sel').value);
+    const sel=document.getElementById('em-sel');
+    const tmpl=mktTemplates.find(t=>t.id===sel.value);
     if(!tmpl)return;
-    mktDisparos.push({id:'d'+Date.now(),leadId:card.id,leadNome:card.nome,tmplId:tmpl.id,tmplTitulo:tmpl.titulo,canal:'email',publico:pub,data:new Date().toLocaleDateString('pt-BR'),status:'enviado',obs:'Kanban → Email c/ Apres.'});
+    const assunto=_applyEmailVars(tmpl.assunto,card);
+    const corpo=_applyEmailVars(tmpl.corpo,card);
+    if(hasEmail){
+      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',
+        body:JSON.stringify({action:'sendEmail',to:card.email,subject:assunto,body:corpo,fromName:'CAPTURAOBRA'})
+      }).catch(()=>{});
+    }
+    mktDisparos.push({id:'d'+Date.now(),leadId:card.id,leadNome:card.nome,tmplId:tmpl.id,tmplTitulo:tmpl.titulo,
+      canal:'email',publico:pub,assunto,data:new Date().toLocaleDateString('pt-BR'),
+      status:hasEmail?'enviado':'sem_email',obs:'Kanban → Email c/ Apres.'});
     saveMktD();renderMktKpis();closeModal();
-    toast(`📧 Disparo registrado — ${tmpl.titulo}`);
+    toast(hasEmail?`📧 Enviando para ${esc(card.email)}…`:'📋 Registrado sem email cadastrado');
   });
-  document.getElementById('mo-save').textContent='✅ Registrar Envio';
+  document.getElementById('mo-save').textContent='📧 Enviar Email';
 }
 function updateEmailPreview(){
   const card=window._emCard;
