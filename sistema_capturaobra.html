@@ -526,18 +526,24 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   <!-- ══════ PAGE: LICITAÇÕES ══════ -->
   <div class="page" id="page-licitacoes">
     <div class="kpi-grid g4 mb20">
-      <div class="kpi kp"><div class="kpi-l">Total Licitações</div><div class="kpi-v">11</div><div class="kpi-s">Paraná · 2026</div></div>
-      <div class="kpi kg"><div class="kpi-l">Alta Oportunidade</div><div class="kpi-v">6</div><div class="kpi-s">Prioridade máxima</div></div>
-      <div class="kpi kt"><div class="kpi-l">Risco Baixo/Médio</div><div class="kpi-v">9</div><div class="kpi-s">Viáveis para ALK</div></div>
-      <div class="kpi km"><div class="kpi-l">Valor Mapeado</div><div class="kpi-v" style="font-size:22px">R$229mi+</div><div class="kpi-s">Inclui R$ 220mi escolas PR</div></div>
+      <div class="kpi kp"><div class="kpi-l">Total Licitações</div><div class="kpi-v" id="kLicitTotal">—</div><div class="kpi-s">Paraná · 2026</div></div>
+      <div class="kpi kg"><div class="kpi-l">Alta Oportunidade</div><div class="kpi-v" id="kLicitAlta">—</div><div class="kpi-s">Prioridade máxima</div></div>
+      <div class="kpi kt"><div class="kpi-l">Risco Baixo/Médio</div><div class="kpi-v" id="kLicitViav">—</div><div class="kpi-s">Viáveis</div></div>
+      <div class="kpi km"><div class="kpi-l">Risco Alto</div><div class="kpi-v" id="kLicitAlto">—</div><div class="kpi-s">Alta concorrência</div></div>
     </div>
     <div class="card">
-      <div class="frow">
-        <button class="ftab fa" onclick="fl('ALL',this)">Todas</button>
-        <button class="ftab fg" onclick="fl('ALTA',this)">Alta Oport.</button>
-        <button class="ftab fg" onclick="fl('BAIXO',this)">Risco Baixo</button>
-        <button class="ftab fm" onclick="fl('MÉDIO',this)">Risco Médio</button>
-        <button class="ftab fq" onclick="fl('ALTO',this)">Risco Alto</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div class="frow" style="margin:0;flex-wrap:wrap">
+          <button class="ftab fa" onclick="fl('ALL',this)">Todas</button>
+          <button class="ftab fg" onclick="fl('ALTA',this)">Alta Oport.</button>
+          <button class="ftab fg" onclick="fl('BAIXO',this)">Risco Baixo</button>
+          <button class="ftab fm" onclick="fl('MÉDIO',this)">Risco Médio</button>
+          <button class="ftab fq" onclick="fl('ALTO',this)">Risco Alto</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="abrirImportCSV()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer">📥 Importar CSV</button>
+          <button onclick="if(confirm('Limpar todas as licitações?')){licitData=[];saveLicit();renderLicit();toast('Licitações limpas');}" style="padding:6px 10px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer">🗑 Limpar</button>
+        </div>
       </div>
       <div class="tbl-wrap">
         <table style="min-width:900px">
@@ -1339,6 +1345,13 @@ function oPill(o){return`<span class="pill p${o==='ALTA'?'OA':o==='MÉDIA'?'OM':
 let litFilter='ALL';
 function fl(f,btn){litFilter=f;document.querySelectorAll('#page-licitacoes .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderLicit();}
 function renderLicit(){
+  // KPIs dinâmicos
+  const alta=licitData.filter(l=>l.op==='ALTA').length;
+  const viav=licitData.filter(l=>l.risco==='BAIXO'||l.risco==='MÉDIO').length;
+  const alto=licitData.filter(l=>l.risco==='ALTO').length;
+  const sk=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  sk('kLicitTotal',licitData.length);sk('kLicitAlta',alta);sk('kLicitViav',viav);sk('kLicitAlto',alto);
+  // Filtro
   let data=licitData;
   if(litFilter==='ALTA') data=licitData.filter(l=>l.op==='ALTA');
   else if(litFilter==='BAIXO') data=licitData.filter(l=>l.risco==='BAIXO');
@@ -1346,18 +1359,145 @@ function renderLicit(){
   else if(litFilter==='ALTO') data=licitData.filter(l=>l.risco==='ALTO');
   document.getElementById('tbLicit').innerHTML=data.map((l,i)=>`<tr>
     <td style="color:var(--mu);font-size:11px">${i+1}</td>
-    <td style="font-size:12px;font-weight:600;max-width:180px">${l.orgao}</td>
-    <td style="font-size:11px;color:var(--mu2)">${l.cidade}</td>
-    <td style="font-size:12px;font-weight:600;color:var(--g);white-space:nowrap">${l.valor}</td>
-    <td style="font-size:11px;color:var(--mu2)">${l.edital}</td>
-    <td style="font-size:11px;color:var(--mu2);white-space:nowrap">${l.abertura}</td>
+    <td style="font-size:12px;font-weight:600;max-width:180px">${esc(l.orgao)}</td>
+    <td style="font-size:11px;color:var(--mu2)">${esc(l.cidade)}</td>
+    <td style="font-size:12px;font-weight:600;color:var(--g);white-space:nowrap">${esc(l.valor)}</td>
+    <td style="font-size:11px;color:var(--mu2)">${esc(l.edital)}</td>
+    <td style="font-size:11px;color:var(--mu2);white-space:nowrap">${esc(l.abertura)}</td>
     <td>${rPill(l.risco)}</td>
     <td>${oPill(l.op)}</td>
-    <td><a href="${l.link}" target="_blank" class="ll">🔗 Ver</a></td>
-    <td class="oc">${l.obs}</td>
+    <td>${l.link&&l.link!=='#'?`<a href="${esc(l.link)}" target="_blank" class="ll">🔗 Ver</a>`:'—'}</td>
+    <td class="oc">${esc(l.obs)}</td>
+    <td><button onclick="deleteLicit(${licitData.indexOf(l)})" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:2px 6px" title="Excluir">🗑</button></td>
   </tr>`).join('');
 }
+function deleteLicit(idx){
+  if(!confirm('Excluir esta licitação?'))return;
+  licitData.splice(idx,1);saveLicit();renderLicit();toast('Licitação excluída.');
+}
 renderLicit();
+
+// ── IMPORTADOR CSV LICITAÇÕES ──
+function _parseCSV(text){
+  text=text.replace(/^﻿/,'').trim();
+  if(!text)return[];
+  const delim=text.split('\n')[0].includes(';')?';':',';
+  const rows=[];let inside=false,cur='',row=[];
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(ch==='"'){inside=!inside;}
+    else if(ch===delim&&!inside){row.push(cur.trim());cur='';}
+    else if((ch==='\n'||ch==='\r')&&!inside){
+      if(cur!==''||row.length){row.push(cur.trim());if(row.some(c=>c))rows.push(row);row=[];cur='';}
+      if(ch==='\r'&&text[i+1]==='\n')i++;
+    }else{cur+=ch;}
+  }
+  if(cur!==''||row.length){row.push(cur.trim());if(row.some(c=>c))rows.push(row);}
+  if(rows.length<2)return[];
+  // Mapeia colunas por nome de cabeçalho
+  const hdr=rows[0].map(h=>h.toLowerCase().replace(/[^a-z]/g,''));
+  const find=(aliases)=>{const i=hdr.findIndex(h=>aliases.some(a=>h.includes(a)));return i>=0?i:-1;};
+  const idx={
+    orgao:find(['orgao','orgão','entidade','objeto','nome']),
+    cidade:find(['cidade','municipio','município','local','uf']),
+    valor:find(['valor','vl','preco','preço']),
+    edital:find(['edital','processo','numero','número','modalidade']),
+    abertura:find(['abertura','databertura','data','prazo']),
+    risco:find(['risco']),
+    op:find(['op','oportunidade','chance','prioridade']),
+    link:find(['link','url','href','edital']),
+    obs:find(['obs','observacao','observação','nota','descricao'])
+  };
+  // Fallback posicional se menos de 3 colunas mapeadas
+  if(Object.values(idx).filter(v=>v>=0).length<3){
+    ['orgao','cidade','valor','edital','abertura','risco','op','link','obs'].forEach((f,i)=>idx[f]=i);
+  }
+  const get=(row,f)=>idx[f]>=0?(row[idx[f]]||'').trim():'';
+  const nRisco=v=>{const u=(v||'').toUpperCase();return u.includes('BAIXO')?'BAIXO':u.includes('DIO')||u.includes('MÉDIO')||u.includes('MEDIO')?'MÉDIO':'ALTO';};
+  const nOp=v=>{const u=(v||'').toUpperCase();return u.includes('ALTA')||u.includes('ALTA')?'ALTA':u.includes('MEDIA')||u.includes('MÉDIA')?'MÉDIA':'BAIXA';};
+  return rows.slice(1).filter(r=>r.some(c=>c)).map(r=>({
+    orgao:get(r,'orgao')||'Sem nome',
+    cidade:get(r,'cidade')||'Paraná — PR',
+    valor:get(r,'valor')||'A confirmar',
+    edital:get(r,'edital')||'—',
+    abertura:get(r,'abertura')||'A confirmar',
+    risco:nRisco(get(r,'risco')),
+    op:nOp(get(r,'op')),
+    link:get(r,'link')||'#',
+    obs:get(r,'obs')||''
+  }));
+}
+function _showCSVPreview(parsed){
+  window._csvParsed=parsed;
+  const el=document.getElementById('csv-preview');if(!el)return;
+  if(!parsed.length){el.innerHTML='<p style="color:var(--q);font-size:12px;margin-top:8px">⚠ Nenhum registro válido detectado. Verifique o formato.</p>';return;}
+  const sample=parsed.slice(0,5);
+  el.innerHTML=`
+    <div style="font-size:12px;color:var(--g);font-weight:600;margin-bottom:6px">✅ ${parsed.length} licitação(ões) detectadas — preview:</div>
+    <div style="overflow-x:auto;border-radius:6px;border:1px solid var(--border)">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr style="background:var(--card2)">${['Órgão','Cidade','Valor','Risco','Oport.'].map(h=>`<th style="padding:6px 8px;text-align:left;color:var(--mu2)">${h}</th>`).join('')}</tr></thead>
+        <tbody>${sample.map(l=>`<tr style="border-top:1px solid var(--border)">
+          <td style="padding:5px 8px;font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(l.orgao)}">${esc(l.orgao)}</td>
+          <td style="padding:5px 8px;color:var(--mu2)">${esc(l.cidade)}</td>
+          <td style="padding:5px 8px;color:var(--g)">${esc(l.valor)}</td>
+          <td style="padding:5px 8px">${rPill(l.risco)}</td>
+          <td style="padding:5px 8px">${oPill(l.op)}</td>
+        </tr>`).join('')}${parsed.length>5?`<tr><td colspan="5" style="padding:6px 8px;color:var(--mu);font-size:10px;text-align:center">… e mais ${parsed.length-5} registros</td></tr>`:''}</tbody>
+      </table>
+    </div>`;
+}
+function previewCSV(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const text=e.target.result;
+    const preview=text.slice(0,300)+(text.length>300?'\n…':'');
+    const pa=document.getElementById('csv-paste');if(pa)pa.value=preview;
+    _showCSVPreview(_parseCSV(text));
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function previewCSVPaste(text){_showCSVPreview(_parseCSV(text));}
+function abrirImportCSV(){
+  window._csvParsed=null;
+  openModal('📥 Importar CSV de Licitações',`
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:13px;font-size:11px;color:var(--mu2);line-height:1.6">
+      <b style="color:var(--mu)">Formato do CSV</b> (cabeçalho obrigatório na 1ª linha):<br>
+      <code style="color:var(--tl);font-size:10px;display:block;margin:4px 0">orgao;cidade;valor;edital;abertura;risco;op;link;obs</code>
+      Delimitador <b>;</b> ou <b>,</b> detectado automaticamente &nbsp;·&nbsp;
+      Risco: <b>BAIXO</b> / <b>MÉDIO</b> / <b>ALTO</b> &nbsp;·&nbsp; Oport.: <b>ALTA</b> / <b>MÉDIA</b> / <b>BAIXA</b>
+    </div>
+    <div class="mf" style="margin-bottom:10px">
+      <label>Selecionar arquivo .csv</label>
+      <input type="file" id="csv-file" accept=".csv,.txt" onchange="previewCSV(this)" style="width:100%;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px">
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--mu);margin-bottom:8px">— ou cole o conteúdo do CSV abaixo —</div>
+    <div class="mf" style="margin-bottom:12px">
+      <textarea id="csv-paste" rows="4" placeholder="orgao;cidade;valor;edital;abertura;risco;op;link;obs&#10;Câmara Municipal X;Curitiba;R$ 50.000;001/2026;15/06/2026;BAIXO;ALTA;https://...;Obra pequena" oninput="previewCSVPaste(this.value)" style="font-family:monospace;font-size:11px;width:100%;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);padding:8px;resize:vertical"></textarea>
+    </div>
+    <div id="csv-preview"></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu2);margin-top:12px;cursor:pointer">
+      <input type="checkbox" id="csv-replace" style="width:14px;height:14px">
+      Substituir todas as licitações existentes (desmarcado = adicionar sem duplicar)
+    </label>
+  `,function(){
+    const parsed=window._csvParsed;
+    if(!parsed||!parsed.length){toast('Nenhum dado para importar — cole ou selecione um CSV válido','err');return;}
+    const replace=document.getElementById('csv-replace')?.checked;
+    if(replace){
+      licitData=parsed;
+      toast(`✅ ${parsed.length} licitações importadas — dados anteriores substituídos`);
+    }else{
+      const existentes=new Set(licitData.map(l=>l.orgao.toLowerCase().trim()));
+      const novos=parsed.filter(r=>!existentes.has(r.orgao.toLowerCase().trim()));
+      licitData=[...licitData,...novos];
+      toast(`✅ ${novos.length} novas licitações adicionadas (${parsed.length-novos.length} duplicadas ignoradas)`);
+    }
+    saveLicit();renderLicit();closeModal();
+  });
+  document.getElementById('mo-save').textContent='✅ Importar';
+}
 
 // ── MAPA ──
 const mapCoords={
