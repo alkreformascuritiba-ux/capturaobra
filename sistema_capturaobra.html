@@ -1157,7 +1157,7 @@ function initMap(force){
       .filter(d=>d.tipo&&d.tipo.includes('Síndico'))
       .map(d=>({nome:d.nome,meta:d.tipo,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||'',site:d.site||''}))},
     licit:{color:'#ef4444',items:licitData
-      .map(l=>({nome:l.orgao,meta:l.cidade+' · Risco '+l.risco,coord:mapCoords[l.cidade]||mapCoords['Curitiba'],tel:'',wa:'',link:l.link}))},
+      .map(l=>({nome:l.orgao,meta:l.cidade+' · Risco '+l.risco,coord:coord(l.cidade,l.orgao),tel:'',wa:'',link:l.link}))},
     maoobra:{color:'#f97316',items:parcData
       .filter(p=>execSegs.includes(p.seg))
       .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:'',site:p.site||''}))},
@@ -1179,7 +1179,8 @@ function initMap(force){
       const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" style="color:#22c55e;font-size:11px;font-weight:600;display:block;margin-top:5px">💬 WhatsApp</a>`:'';
       const lk=item.link?`<a href="${item.link}" target="_blank" style="color:#6366f1;font-size:11px;font-weight:600;display:block;margin-top:3px">🔗 Ver edital</a>`:'';
       const st=item.site?`<a href="https://${item.site}" target="_blank" style="color:#94a3b8;font-size:10px;display:block;margin-top:2px">🌐 ${item.site}</a>`:'';
-      mk.bindPopup(`<div class="map-popup"><h4 style="color:#e2e8f0">${item.nome}</h4><p style="color:#94a3b8;margin-bottom:4px">${item.meta}</p>${item.tel?`<p style="font-size:11px">📞 ${item.tel}</p>`:''}${wa}${lk}${st}</div>`,{minWidth:190});
+      const telOk=item.tel&&/^[(+\d]/.test(item.tel)&&!item.tel.includes('x');
+      mk.bindPopup(`<div class="map-popup"><h4 style="color:#e2e8f0">${item.nome}</h4><p style="color:#94a3b8;margin-bottom:4px">${item.meta}</p>${telOk?`<p style="font-size:11px">📞 ${item.tel}</p>`:''}${wa}${lk}${st}</div>`,{minWidth:190});
       grp.addLayer(mk);
     });
     grp.addTo(mapInstance);
@@ -1198,7 +1199,18 @@ function initMap(force){
   legend.addTo(mapInstance);
 }
 
-function reloadMap(){initMap(true);setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize();},80);toast('🗺️ Mapa recarregado com dados atuais!');}
+function reloadMap(){
+  initMap(true);
+  // reseta estado visual de todos os botões toggle para "ligado"
+  const bgR={parceiros:'rgba(59,130,246,.2)',condos:'rgba(34,197,94,.2)',sindicos:'rgba(245,158,11,.2)',licit:'rgba(239,68,68,.2)',maoobra:'rgba(249,115,22,.2)',obras:'rgba(139,92,246,.2)'};
+  const bdR={parceiros:'var(--f)',condos:'var(--g)',sindicos:'var(--m)',licit:'var(--q)',maoobra:'var(--or)',obras:'var(--ac2)'};
+  document.querySelectorAll('#mapCtrls .mt').forEach(btn=>{
+    const m=btn.getAttribute('onclick').match(/'(\w+)'/);
+    if(m){btn.classList.add('on');btn.style.background=bgR[m[1]]||'';btn.style.borderColor=bdR[m[1]]||'';}
+  });
+  setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize();},80);
+  toast('🗺️ Mapa recarregado com dados atuais!');
+}
 
 function toggleLayer(key,btn){
   const grp=layerGroups[key];if(!grp||!mapInstance)return;
