@@ -307,6 +307,9 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   <div class="sb-item" onclick="nav('execucao',this)" data-title="Execução" data-sub="OS e checklists de obras">
     <span class="sb-icon">⚙️</span>Execução
   </div>
+  <div class="sb-item" onclick="nav('marketing',this)" data-title="Marketing Digital" data-sub="Cadências, templates e histórico de disparos">
+    <span class="sb-icon">📣</span>Marketing<span class="sb-badge" id="badge-mkt" style="display:none">0</span>
+  </div>
 
   <div class="sb-section">Inteligência</div>
   <div class="sb-item" onclick="nav('mapa',this)" data-title="Mapa do Paraná" data-sub="Visualização geográfica de todas as oportunidades">
@@ -547,6 +550,23 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
         <span style="font-size:22px;font-weight:800;color:var(--g)">R$ 117.000</span>
       </div>
     </div>
+  </div>
+
+  <!-- ═══ MARKETING DIGITAL ═══ -->
+  <div class="page" id="page-marketing">
+    <div class="kpi-grid g4 mb20" id="mkt-kpis"></div>
+    <div class="sec-hd">
+      <h2>📣 Marketing Digital</h2>
+      <button onclick="novaEntradaCadencia()" style="padding:6px 16px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer">+ Entrada na Cadência</button>
+    </div>
+    <div style="display:flex;gap:6px;margin:14px 0 18px;flex-wrap:wrap" id="mkt-tabs">
+      <button class="ftab fa" onclick="mktTab('cadencias',this)">🔄 Cadência Ativa</button>
+      <button class="ftab" onclick="mktTab('templates',this)">📝 Templates</button>
+      <button class="ftab" onclick="mktTab('historico',this)">📋 Histórico</button>
+    </div>
+    <div id="mkt-cadencias"></div>
+    <div id="mkt-templates" style="display:none"></div>
+    <div id="mkt-historico" style="display:none"></div>
   </div>
 
   </div><!-- /content -->
@@ -1183,6 +1203,281 @@ function nav(id,el){
   document.getElementById('topbar-title').textContent=el.dataset.title||id;
   document.getElementById('topbar-sub').textContent=el.dataset.sub||'';
   if(id==='mapa'){setTimeout(()=>{initMap();if(mapInstance)mapInstance.invalidateSize();},100);}
+}
+
+// ── MARKETING DIGITAL ──
+const _mktTDef=[
+  // CLIENTES
+  {id:'C1',titulo:'Apresentação Inicial',publico:'cliente',canal:'email',estagio:'D0',assunto:'CAPTURAOBRA — Especialistas em Reformas Prediais em Curitiba',corpo:'Olá {{nome}},\n\nSomos a CAPTURAOBRA, plataforma especializada em gestão de reformas de alto padrão em Curitiba.\n\nAtuamos com condomínios, síndicos e administradoras que buscam parceiros confiáveis para pintura, impermeabilização, reformas de fachada e manutenção predial.\n\nGostaria de agendar uma visita gratuita de diagnóstico?\n\nAtenciosamente,\nEquipe CAPTURAOBRA'},
+  {id:'C2',titulo:'Primeiro Contato WhatsApp',publico:'cliente',canal:'whatsapp',estagio:'D0',assunto:'',corpo:'Olá {{nome}}! 👋\n\nSomos a CAPTURAOBRA, especialistas em reformas de alto padrão em Curitiba.\n\nPodemos te enviar mais detalhes sobre nossos serviços? Trabalhamos com condomínios e síndicos com ótimos resultados. 🏢'},
+  {id:'C3',titulo:'Follow-up D+3',publico:'cliente',canal:'email',estagio:'D3',assunto:'CAPTURAOBRA — Ainda posso te ajudar?',corpo:'Olá {{nome}},\n\nEntrei em contato há alguns dias apresentando a CAPTURAOBRA.\n\nTrabalhamos com reformas prediais de alto padrão — pintura, impermeabilização, fachadas — com equipes certificadas e garantia de serviço.\n\nPodemos agendar 30 minutos para uma visita sem compromisso?\n\nAguardo seu retorno!\nEquipe CAPTURAOBRA'},
+  {id:'C4',titulo:'Nudge WhatsApp D+3',publico:'cliente',canal:'whatsapp',estagio:'D3',assunto:'',corpo:'Olá {{nome}}! Posso te mandar mais detalhes sobre como trabalhamos? Só leva 2 minutinhos 😊'},
+  {id:'C5',titulo:'Confirmação de Visita',publico:'cliente',canal:'whatsapp',estagio:'visita',assunto:'',corpo:'Olá {{nome}}! ✅\n\nConfirmando nossa visita:\n📅 Data: {{data}}\n🕐 Horário: {{hora}}\n📍 Local: {{endereco}}\n\nNosso técnico estará lá no horário combinado. Qualquer dúvida, é só chamar!'},
+  {id:'C6',titulo:'Lembrete Pré-Visita D-1',publico:'cliente',canal:'whatsapp',estagio:'visita',assunto:'',corpo:'Olá {{nome}}! 👋 Lembrando que amanhã temos nossa visita agendada 🏢\n\nQualquer imprevisto, me avisa com antecedência. Até amanhã! 👷'},
+  {id:'C7',titulo:'Pós-Visita + Proposta',publico:'cliente',canal:'email',estagio:'orcamento',assunto:'CAPTURAOBRA — Proposta de Serviços — {{nome}}',corpo:'Olá {{nome}},\n\nFoi um prazer visitar o {{nomeCondominio}} hoje.\n\nConforme combinado, segue em anexo nossa proposta detalhada com escopo, cronograma e valores.\n\nPrazo para análise: {{prazo}}.\n\nQualquer dúvida, estou à disposição!\n\nAtenciosamente,\nEquipe CAPTURAOBRA'},
+  {id:'C8',titulo:'Follow-up de Proposta D+3',publico:'cliente',canal:'whatsapp',estagio:'orcamento',assunto:'',corpo:'Olá {{nome}}! Tudo bem? 😊 Queria saber se ficou alguma dúvida sobre a proposta que enviamos 📋\n\nEstamos disponíveis para ajustar qualquer detalhe antes da sua decisão!'},
+  {id:'C9',titulo:'Follow-up Final D+7',publico:'cliente',canal:'email',estagio:'D14',assunto:'CAPTURAOBRA — Última tentativa de contato',corpo:'Olá {{nome}},\n\nEntramos em contato algumas vezes e não conseguimos falar com você.\n\nCaso ainda tenha interesse em melhorar as condições do seu condomínio, estamos à disposição.\n\nBasta responder este email ou me chamar no WhatsApp.\n\nUm abraço,\nEquipe CAPTURAOBRA'},
+  {id:'C10',titulo:'Reengajamento 60 dias',publico:'cliente',canal:'email',estagio:'D60',assunto:'CAPTURAOBRA — Uma novidade que pode te interessar',corpo:'Olá {{nome}},\n\nFaz algum tempo que conversamos. Queríamos compartilhar um case recente: realizamos a reforma completa de fachada em Curitiba, com entrega dentro do prazo e orçamento.\n\nCaso tenha algum projeto em vista para o seu condomínio, adoraríamos conversar!\n\nEquipe CAPTURAOBRA'},
+  {id:'C11',titulo:'Boas-vindas Pós-Fechamento',publico:'cliente',canal:'whatsapp',estagio:'fechado',assunto:'',corpo:'Olá {{nome}}! 🎉\n\nMuito feliz em tê-lo como cliente da CAPTURAOBRA!\n\nNosso responsável entrará em contato nos próximos dias para alinhar o início dos serviços.\n\nQualquer dúvida, estou aqui! 🤝'},
+  {id:'C12',titulo:'Solicitação de Indicação',publico:'cliente',canal:'whatsapp',estagio:'pos-obra',assunto:'',corpo:'Olá {{nome}}! Espero que os serviços no {{nomeCondominio}} tenham atendido suas expectativas! 😊\n\nVocê conhece algum outro síndico ou administradora que possa precisar de reformas? Uma indicação sua seria muito bem-vinda! 🙏'},
+  // PARCEIROS
+  {id:'P1',titulo:'Apresentação para Parceiros',publico:'parceiro',canal:'email',estagio:'D0',assunto:'CAPTURAOBRA — Parceria estratégica para sua empresa',corpo:'Olá {{nome}},\n\nSomos a CAPTURAOBRA, plataforma que conecta obras a executores de alto padrão em Curitiba.\n\nNosso modelo: captamos os clientes, você executa. Sem prospecção, sem burocracia comercial.\n\nVocê teria interesse em conversar sobre uma parceria?\n\nEquipe CAPTURAOBRA'},
+  {id:'P2',titulo:'Contato Inicial WhatsApp Parceiro',publico:'parceiro',canal:'whatsapp',estagio:'D0',assunto:'',corpo:'Olá {{nome}}! 👋 Somos a CAPTURAOBRA e ficamos impressionados com o trabalho da {{empresa}}.\n\nTemos um modelo de parceria que pode trazer obras direto para vocês, sem necessidade de prospecção. Posso te explicar em 5 minutos?'},
+  {id:'P3',titulo:'Follow-up D+3 Parceiro',publico:'parceiro',canal:'email',estagio:'D3',assunto:'CAPTURAOBRA — Como funciona nossa parceria',corpo:'Olá {{nome}},\n\nSeguindo nosso contato inicial, quero compartilhar como nossa parceria funciona:\n\n✅ Captamos o cliente\n✅ Fazemos o briefing técnico\n✅ Você orça e executa\n✅ Pagamento ágil e parceria de longo prazo\n\nVale uma conversa?\n\nEquipe CAPTURAOBRA'},
+  {id:'P4',titulo:'Convite para Cadastro',publico:'parceiro',canal:'email',estagio:'cadastro',assunto:'CAPTURAOBRA — Faça seu cadastro de parceiro',corpo:'Olá {{nome}},\n\nQue bom que tem interesse na parceria!\n\nPara dar andamento, precisamos de algumas informações da {{empresa}}:\n- CNPJ e razão social\n- Segmento principal de atuação\n- Capacidade de equipe\n- Áreas de atuação\n\nResponda este email ou me chame no WhatsApp!\n\nEquipe CAPTURAOBRA'},
+  {id:'P5',titulo:'Boas-vindas ao Parceiro',publico:'parceiro',canal:'whatsapp',estagio:'cadastro',assunto:'',corpo:'Olá {{nome}}! 🎉 O cadastro da {{empresa}} foi aprovado na CAPTURAOBRA!\n\nA partir de agora você receberá briefings de obras compatíveis com seu perfil. Bem-vindo à rede! 🤝'},
+  {id:'P6',titulo:'Briefing de Obra Disponível',publico:'parceiro',canal:'whatsapp',estagio:'obra',assunto:'',corpo:'Olá {{nome}}! Temos uma obra disponível que combina com o perfil da {{empresa}} 🏗️\n\n📍 Local: {{local}}\n📋 Escopo: {{escopo}}\n💰 Valor estimado: {{valor}}\n📅 Prazo desejado: {{prazo}}\n\nTem interesse? Posso mandar o briefing completo?'},
+  {id:'P7',titulo:'Envio de Escopo para Orçar',publico:'parceiro',canal:'email',estagio:'obra',assunto:'CAPTURAOBRA — Briefing técnico: {{nomeObra}}',corpo:'Olá {{nome}},\n\nSegue o briefing técnico completo para orçamento:\n\n🏢 Obra: {{nomeObra}}\n📍 Endereço: {{endereco}}\n📋 Escopo: {{escopo}}\n\nPrazo para receber o orçamento: {{prazoOrcamento}}\n\nQualquer dúvida, estou à disposição!\n\nEquipe CAPTURAOBRA'},
+  {id:'P8',titulo:'Cobrança de Orçamento',publico:'parceiro',canal:'whatsapp',estagio:'obra',assunto:'',corpo:'Olá {{nome}}! Tudo bem? Precisamos do orçamento da {{nomeObra}} até {{prazo}} para não perder o prazo com o cliente 🙏\n\nJá consegue nos enviar?'},
+  {id:'P9',titulo:'Confirmação de Mobilização',publico:'parceiro',canal:'whatsapp',estagio:'execucao',assunto:'',corpo:'Olá {{nome}}! ✅ Confirmando o início da obra {{nomeObra}}:\n\n📅 Data início: {{dataInicio}}\n👷 Equipe: {{equipe}}\n📍 Endereço: {{endereco}}\n\nQualquer imprevisto, me avisa com antecedência! 💪'},
+  {id:'P10',titulo:'Reativação de Parceiro Inativo',publico:'parceiro',canal:'whatsapp',estagio:'reativacao',assunto:'',corpo:'Olá {{nome}}! Faz um tempo que não falamos 😊\n\nEstamos com demanda crescente e pensamos na {{empresa}}. Vocês estão com disponibilidade para novas obras?'},
+];
+let mktTemplates,mktCadencias,mktDisparos;
+try{const _s=localStorage.getItem('co_mkt_tmpl');mktTemplates=_s?JSON.parse(_s):[..._mktTDef];}catch(e){mktTemplates=[..._mktTDef];}
+try{const _s=localStorage.getItem('co_mkt_cad');mktCadencias=_s?JSON.parse(_s):[];}catch(e){mktCadencias=[];}
+try{const _s=localStorage.getItem('co_mkt_disp');mktDisparos=_s?JSON.parse(_s):[];}catch(e){mktDisparos=[];}
+function saveMktT(){try{localStorage.setItem('co_mkt_tmpl',JSON.stringify(mktTemplates));}catch(e){}}
+function saveMktC(){try{localStorage.setItem('co_mkt_cad',JSON.stringify(mktCadencias));}catch(e){}}
+function saveMktD(){try{localStorage.setItem('co_mkt_disp',JSON.stringify(mktDisparos));}catch(e){}}
+
+let _mktPainel='cadencias',_mktCadFlt='todos',_mktTFlt='todos';
+
+function mktTab(p,btn){
+  _mktPainel=p;
+  document.querySelectorAll('#mkt-tabs .ftab').forEach(b=>b.className='ftab');
+  btn.className='ftab fa';
+  ['cadencias','templates','historico'].forEach(id=>document.getElementById('mkt-'+id).style.display=id===p?'block':'none');
+  if(p==='cadencias')renderMktCad();
+  if(p==='templates')renderMktTmpl();
+  if(p==='historico')renderMktHist();
+}
+function renderMktKpis(){
+  const today=new Date().toISOString().slice(0,10);
+  const ativos=mktCadencias.filter(c=>c.status!=='finalizado').length;
+  const atrasados=mktCadencias.filter(c=>c.status==='aguardando'&&c.proximaAcao&&c.proximaAcao<today).length;
+  const total=mktDisparos.length;
+  const resp=mktDisparos.filter(d=>d.status==='respondeu').length;
+  const kpi=document.getElementById('mkt-kpis');if(!kpi)return;
+  kpi.innerHTML=`
+    <div class="kpi kt"><div class="kpi-l">Em Cadência</div><div class="kpi-v">${ativos}</div><div class="kpi-s">Leads ativos</div></div>
+    <div class="kpi kq"><div class="kpi-l">⚠ Atrasados</div><div class="kpi-v">${atrasados}</div><div class="kpi-s">Ações vencidas</div></div>
+    <div class="kpi kp"><div class="kpi-l">Disparos</div><div class="kpi-v">${total}</div><div class="kpi-s">Registrados</div></div>
+    <div class="kpi kg"><div class="kpi-l">Taxa Resposta</div><div class="kpi-v">${total?Math.round(resp/total*100):0}%</div><div class="kpi-s">${resp} responderam</div></div>`;
+  const b=document.getElementById('badge-mkt');
+  if(b){if(atrasados>0){b.textContent=atrasados;b.style.display='';}else b.style.display='none';}
+}
+function renderMktCad(){
+  renderMktKpis();
+  const today=new Date().toISOString().slice(0,10);
+  let data=mktCadencias;
+  if(_mktCadFlt==='clientes') data=data.filter(c=>c.publico==='cliente');
+  else if(_mktCadFlt==='parceiros') data=data.filter(c=>c.publico==='parceiro');
+  else if(_mktCadFlt==='atrasados') data=data.filter(c=>c.status==='aguardando'&&c.proximaAcao&&c.proximaAcao<today);
+  const statusMap={aguardando:'⏳ Aguardando',enviado:'📤 Enviado',respondeu:'✅ Respondeu',pausado:'⏸ Pausado',finalizado:'🏁 Finalizado'};
+  const statusClr={aguardando:'var(--mu2)',enviado:'var(--tl)',respondeu:'var(--g)',pausado:'var(--m)',finalizado:'var(--mu)'};
+  const tot=mktCadencias.filter(c=>c.status!=='finalizado').length;
+  document.getElementById('mkt-cadencias').innerHTML=`
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="ftab${_mktCadFlt==='todos'?' fa':''}" onclick="_mktCadFlt='todos';renderMktCad()">Todos (${tot})</button>
+      <button class="ftab${_mktCadFlt==='clientes'?' fa':''}" onclick="_mktCadFlt='clientes';renderMktCad()">👥 Clientes</button>
+      <button class="ftab${_mktCadFlt==='parceiros'?' fa':''}" onclick="_mktCadFlt='parceiros';renderMktCad()">🤝 Parceiros</button>
+      <button class="ftab${_mktCadFlt==='atrasados'?' fa':''}" onclick="_mktCadFlt='atrasados';renderMktCad()" style="color:var(--q)">⚠ Atrasados</button>
+    </div>
+    ${data.length===0?`<div class="card" style="text-align:center;padding:48px;color:var(--mu2)"><div style="font-size:32px;margin-bottom:10px">📣</div><p style="font-size:14px;margin-bottom:6px">Nenhum lead em cadência${_mktCadFlt!=='todos'?' neste filtro':' ainda'}.</p>${_mktCadFlt==='todos'?`<p style="font-size:11px">Clique em <strong>+ Entrada na Cadência</strong> para começar.</p>`:''}</div>`
+    :`<div class="card" style="padding:0;overflow:hidden"><table style="width:100%;border-collapse:collapse">
+      <thead><tr style="background:var(--card2)">
+        ${['Lead','Público','Etapa','Canal','Próx. Ação','Status',''].map(h=>`<th style="padding:10px 14px;font-size:11px;font-weight:600;text-align:left;color:var(--mu2)">${h}</th>`).join('')}
+      </tr></thead>
+      <tbody>${data.map((c,i)=>{
+        const atrasado=c.status==='aguardando'&&c.proximaAcao&&c.proximaAcao<today;
+        return`<tr style="border-top:1px solid var(--border);${i%2?'':'background:rgba(255,255,255,.01)'}">
+          <td style="padding:10px 14px;font-size:12px;font-weight:600">${esc(c.lead)}</td>
+          <td style="padding:10px 14px"><span style="padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;background:${c.publico==='cliente'?'rgba(245,158,11,.1)':'rgba(59,130,246,.1)'};color:${c.publico==='cliente'?'var(--m)':'var(--f)'}">${c.publico==='cliente'?'👥 Cliente':'🤝 Parceiro'}</span></td>
+          <td style="padding:10px 14px;font-size:11px;color:var(--mu2)">${esc(c.etapa||'D0')}</td>
+          <td style="padding:10px 14px;font-size:12px">${c.canal==='email'?'📧':'💬'}</td>
+          <td style="padding:10px 14px;font-size:11px;color:${atrasado?'var(--q)':'var(--mu2)'};font-weight:${atrasado?700:400}">${c.proximaAcao?c.proximaAcao.split('-').reverse().join('/'):'—'}${atrasado?' ⚠':''}</td>
+          <td style="padding:10px 14px;font-size:11px;color:${statusClr[c.status]||'var(--mu2)'}">${statusMap[c.status]||c.status}</td>
+          <td style="padding:10px 14px;display:flex;gap:5px">
+            <button onclick="registrarDisparo('${c.id}')" style="padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid rgba(20,184,166,.4);background:rgba(20,184,166,.1);color:var(--tl);cursor:pointer">📤 Disparar</button>
+            <button onclick="editarCadencia('${c.id}')" style="padding:3px 8px;border-radius:6px;font-size:11px;border:1px solid var(--border);background:none;color:var(--mu2);cursor:pointer">✎</button>
+          </td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`}`;
+}
+function renderMktTmpl(){
+  let data=mktTemplates;
+  if(_mktTFlt==='clientes') data=data.filter(t=>t.publico==='cliente');
+  else if(_mktTFlt==='parceiros') data=data.filter(t=>t.publico==='parceiro');
+  else if(_mktTFlt==='email') data=data.filter(t=>t.canal==='email');
+  else if(_mktTFlt==='whatsapp') data=data.filter(t=>t.canal==='whatsapp');
+  document.getElementById('mkt-templates').innerHTML=`
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+      <button class="ftab${_mktTFlt==='todos'?' fa':''}" onclick="_mktTFlt='todos';renderMktTmpl()">Todos (${mktTemplates.length})</button>
+      <button class="ftab${_mktTFlt==='clientes'?' fa':''}" onclick="_mktTFlt='clientes';renderMktTmpl()">👥 Clientes</button>
+      <button class="ftab${_mktTFlt==='parceiros'?' fa':''}" onclick="_mktTFlt='parceiros';renderMktTmpl()">🤝 Parceiros</button>
+      <button class="ftab${_mktTFlt==='email'?' fa':''}" onclick="_mktTFlt='email';renderMktTmpl()">📧 Email</button>
+      <button class="ftab${_mktTFlt==='whatsapp'?' fa':''}" onclick="_mktTFlt='whatsapp';renderMktTmpl()">💬 WhatsApp</button>
+      <button onclick="editarTemplate(null)" style="margin-left:auto;padding:5px 13px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer">+ Novo Template</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:14px">
+      ${data.map(t=>`<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:5px">${esc(t.titulo)}</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+              <span style="padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700;background:${t.canal==='email'?'rgba(20,184,166,.1)':'rgba(34,197,94,.1)'};color:${t.canal==='email'?'var(--tl)':'var(--g)'}">${t.canal==='email'?'📧 Email':'💬 WhatsApp'}</span>
+              <span style="padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700;background:rgba(99,102,241,.1);color:var(--ac)">${t.publico==='cliente'?'👥 Cliente':'🤝 Parceiro'}</span>
+              <span style="padding:2px 7px;border-radius:999px;font-size:9px;background:var(--card2);color:var(--mu2)">${esc(t.estagio)}</span>
+            </div>
+          </div>
+          <span style="font-size:22px;flex-shrink:0">${t.canal==='email'?'📧':'💬'}</span>
+        </div>
+        ${t.assunto?`<div style="font-size:10px;color:var(--mu2)">Assunto: <em>${esc(t.assunto)}</em></div>`:''}
+        <div style="font-size:11px;color:var(--mu2);line-height:1.55;max-height:58px;overflow:hidden;white-space:pre-wrap">${esc(t.corpo.slice(0,130))}${t.corpo.length>130?'…':''}</div>
+        <div style="display:flex;gap:6px;margin-top:auto">
+          <button onclick="editarTemplate('${t.id}')" style="flex:1;padding:5px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid var(--border);background:none;color:var(--mu2);cursor:pointer">✎ Editar</button>
+          <button onclick="usarTemplate('${t.id}')" style="flex:1;padding:5px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">→ Disparar</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+}
+function renderMktHist(){
+  const data=[...mktDisparos].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  const statusMap={enviado:'📤 Enviado',respondeu:'✅ Respondeu',aberto:'👁 Aberto'};
+  const statusClr={enviado:'var(--tl)',respondeu:'var(--g)',aberto:'var(--m)'};
+  document.getElementById('mkt-historico').innerHTML=`
+    <div class="card" style="padding:0;overflow:hidden">
+      ${data.length===0?`<div style="text-align:center;padding:48px;color:var(--mu2)"><div style="font-size:32px;margin-bottom:10px">📋</div><p>Nenhum disparo registrado ainda.</p></div>`
+      :`<table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--card2)">
+          ${['Lead','Template','Canal','Data','Status',''].map(h=>`<th style="padding:10px 14px;font-size:11px;font-weight:600;text-align:left;color:var(--mu2)">${h}</th>`).join('')}
+        </tr></thead>
+        <tbody>${data.map((d,i)=>`<tr style="border-top:1px solid var(--border);${i%2?'':'background:rgba(255,255,255,.01)'}">
+          <td style="padding:10px 14px;font-size:12px;font-weight:600">${esc(d.lead)}</td>
+          <td style="padding:10px 14px;font-size:11px;color:var(--mu2)">${esc(d.templateTitulo||'—')}</td>
+          <td style="padding:10px 14px;font-size:12px">${d.canal==='email'?'📧 Email':'💬 WhatsApp'}</td>
+          <td style="padding:10px 14px;font-size:11px;color:var(--mu2)">${d.data?d.data.split('-').reverse().join('/'):'—'}</td>
+          <td style="padding:10px 14px;font-size:11px;color:${statusClr[d.status]||'var(--mu2)'}">${statusMap[d.status]||d.status}</td>
+          <td style="padding:10px 14px">${d.status==='enviado'?`<button onclick="atualizarDisparo('${d.id}','respondeu')" style="padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer">✅ Respondeu</button>`:''}</td>
+        </tr>`).join('')}</tbody></table>`}
+    </div>`;
+}
+function editarTemplate(id){
+  const isNew=!id;
+  const t=id?mktTemplates.find(x=>x.id===id):null;
+  const v=t||{id:'T'+Date.now(),titulo:'',publico:'cliente',canal:'email',estagio:'D0',assunto:'',corpo:''};
+  openModal(isNew?'+ Novo Template':'Editar Template',`
+    <div class="mfr">
+      <div class="mf"><label>Título *</label><input id="mt-titulo" value="${esc(v.titulo)}" placeholder="Ex: Apresentação Inicial"></div>
+      <div class="mf"><label>Código</label><input id="mt-id" value="${esc(v.id)}" placeholder="C1, P2…" ${!isNew?'readonly':''}></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Público</label><select id="mt-pub"><option value="cliente"${v.publico==='cliente'?' selected':''}>👥 Cliente</option><option value="parceiro"${v.publico==='parceiro'?' selected':''}>🤝 Parceiro</option></select></div>
+      <div class="mf"><label>Canal</label><select id="mt-canal"><option value="email"${v.canal==='email'?' selected':''}>📧 Email</option><option value="whatsapp"${v.canal==='whatsapp'?' selected':''}>💬 WhatsApp</option></select></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Estágio</label><input id="mt-estagio" value="${esc(v.estagio)}" placeholder="D0, D3, visita…"></div>
+      <div class="mf"><label>Assunto (só email)</label><input id="mt-assunto" value="${esc(v.assunto||'')}" placeholder="Linha de assunto"></div>
+    </div>
+    <div class="mf"><label>Corpo *</label><textarea id="mt-corpo" rows="8" style="min-height:150px;white-space:pre-wrap">${esc(v.corpo)}</textarea></div>
+    <div style="font-size:10px;color:var(--mu2);margin-top:-6px">Variáveis: {{nome}} {{empresa}} {{data}} {{valor}} {{responsavel}} {{nomeCondominio}} {{prazo}}</div>
+    ${!isNew?`<div class="mo-del"><button class="btn-d" onclick="deletarTemplate('${v.id}')">🗑 Excluir</button></div>`:''}
+  `,function(){
+    const titulo=document.getElementById('mt-titulo').value.trim();
+    const corpo=document.getElementById('mt-corpo').value.trim();
+    if(!titulo||!corpo)return toast('Título e corpo são obrigatórios','err');
+    const obj={id:document.getElementById('mt-id').value.trim()||'T'+Date.now(),titulo,publico:document.getElementById('mt-pub').value,canal:document.getElementById('mt-canal').value,estagio:document.getElementById('mt-estagio').value,assunto:document.getElementById('mt-assunto').value,corpo};
+    if(isNew)mktTemplates.push(obj);else Object.assign(t,obj);
+    saveMktT();renderMktTmpl();closeModal();toast(isNew?'Template criado!':'Template atualizado!');
+  });
+}
+function deletarTemplate(id){
+  if(!confirm('Excluir este template?'))return;
+  mktTemplates.splice(mktTemplates.findIndex(x=>x.id===id),1);
+  saveMktT();renderMktTmpl();closeModal();toast('Template excluído.');
+}
+function usarTemplate(id){
+  const btn=document.querySelector('#mkt-tabs .ftab');
+  mktTab('cadencias',btn);
+  setTimeout(()=>registrarDisparo(null,id),80);
+}
+function novaEntradaCadencia(){
+  const opts=[...captData,...kanbanData].map(l=>`<option value="${esc(l.id)}|${esc(l.nome)}|${['licit','parc','Licitação','Parceiro'].includes(l.tipo)?'parceiro':'cliente'}">${esc(l.nome)}</option>`).join('');
+  openModal('+ Entrada na Cadência',`
+    <div class="mf"><label>Selecionar lead cadastrado</label><select id="mc-sel" onchange="(function(s){const p=s.value.split('|');if(p[1]){document.getElementById('mc-nome').value=p[1];if(p[2])document.getElementById('mc-pub').value=p[2];}})(this)"><option value="">— Buscar no sistema —</option>${opts}</select></div>
+    <div class="mfr">
+      <div class="mf"><label>Nome *</label><input id="mc-nome" placeholder="Nome do lead ou empresa"></div>
+      <div class="mf"><label>Público</label><select id="mc-pub"><option value="cliente">👥 Cliente</option><option value="parceiro">🤝 Parceiro</option></select></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Canal preferencial</label><select id="mc-canal"><option value="email">📧 Email</option><option value="whatsapp">💬 WhatsApp</option></select></div>
+      <div class="mf"><label>Próxima ação</label><input id="mc-prox" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Etapa</label><input id="mc-etapa" value="D0" placeholder="D0, D3…"></div>
+    </div>
+  `,function(){
+    const lead=document.getElementById('mc-nome').value.trim();
+    if(!lead)return toast('Nome é obrigatório','err');
+    mktCadencias.push({id:'cad'+Date.now(),lead,publico:document.getElementById('mc-pub').value,canal:document.getElementById('mc-canal').value,dataInicio:new Date().toISOString().slice(0,10),proximaAcao:document.getElementById('mc-prox').value,etapa:document.getElementById('mc-etapa').value||'D0',status:'aguardando'});
+    saveMktC();renderMktCad();closeModal();toast('Lead adicionado à cadência!');
+  });
+}
+function editarCadencia(id){
+  const c=mktCadencias.find(x=>x.id===id);if(!c)return;
+  openModal('Editar Cadência',`
+    <div class="mf"><label>Lead</label><input id="ec-lead" value="${esc(c.lead)}"></div>
+    <div class="mfr">
+      <div class="mf"><label>Público</label><select id="ec-pub"><option value="cliente"${c.publico==='cliente'?' selected':''}>👥 Cliente</option><option value="parceiro"${c.publico==='parceiro'?' selected':''}>🤝 Parceiro</option></select></div>
+      <div class="mf"><label>Canal</label><select id="ec-canal"><option value="email"${c.canal==='email'?' selected':''}>📧 Email</option><option value="whatsapp"${c.canal==='whatsapp'?' selected':''}>💬 WhatsApp</option></select></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Etapa</label><input id="ec-etapa" value="${esc(c.etapa||'D0')}"></div>
+      <div class="mf"><label>Próxima Ação</label><input id="ec-prox" type="date" value="${c.proximaAcao||''}"></div>
+    </div>
+    <div class="mf"><label>Status</label><select id="ec-status">
+      <option value="aguardando"${c.status==='aguardando'?' selected':''}>⏳ Aguardando</option>
+      <option value="enviado"${c.status==='enviado'?' selected':''}>📤 Enviado</option>
+      <option value="respondeu"${c.status==='respondeu'?' selected':''}>✅ Respondeu</option>
+      <option value="pausado"${c.status==='pausado'?' selected':''}>⏸ Pausado</option>
+      <option value="finalizado"${c.status==='finalizado'?' selected':''}>🏁 Finalizado</option>
+    </select></div>
+    <div class="mo-del"><button class="btn-d" onclick="(function(){if(!confirm('Remover da cadência?'))return;mktCadencias.splice(mktCadencias.findIndex(x=>x.id==='${id}'),1);saveMktC();renderMktCad();closeModal();toast('Removido.')})()">🗑 Remover da Cadência</button></div>
+  `,function(){
+    c.lead=document.getElementById('ec-lead').value;c.publico=document.getElementById('ec-pub').value;c.canal=document.getElementById('ec-canal').value;c.etapa=document.getElementById('ec-etapa').value;c.proximaAcao=document.getElementById('ec-prox').value;c.status=document.getElementById('ec-status').value;
+    saveMktC();renderMktCad();closeModal();toast('Cadência atualizada!');
+  });
+}
+function registrarDisparo(cadId,tmplPresel){
+  const cad=cadId?mktCadencias.find(x=>x.id===cadId):null;
+  const opts=mktTemplates.map(t=>`<option value="${t.id}"${t.id===tmplPresel?' selected':''}>${t.titulo} · ${t.canal==='email'?'📧':'💬'} · ${t.publico==='cliente'?'Cliente':'Parceiro'}</option>`).join('');
+  openModal('📤 Registrar Disparo',`
+    <div class="mf"><label>Lead *</label><input id="rd-lead" value="${esc(cad?cad.lead:'')}" placeholder="Nome do lead ou empresa"></div>
+    <div class="mfr">
+      <div class="mf"><label>Template</label><select id="rd-tmpl" onchange="mktPrev(this)">${opts}</select></div>
+      <div class="mf"><label>Data</label><input id="rd-data" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    </div>
+    <div class="mf"><label>Canal</label><select id="rd-canal"><option value="email">📧 Email</option><option value="whatsapp">💬 WhatsApp</option></select></div>
+    <div class="mf" style="margin-top:8px"><label style="font-size:10px;color:var(--mu2)">Prévia do template:</label><div id="rd-prev" style="background:var(--card2);border-radius:8px;padding:12px;font-size:11px;color:var(--mu2);white-space:pre-wrap;max-height:110px;overflow-y:auto;margin-top:4px;line-height:1.5"></div></div>
+  `,function(){
+    const lead=document.getElementById('rd-lead').value.trim();
+    if(!lead)return toast('Nome é obrigatório','err');
+    const tid=document.getElementById('rd-tmpl').value;
+    const tmpl=mktTemplates.find(x=>x.id===tid);
+    mktDisparos.push({id:'d'+Date.now(),lead,templateId:tid,templateTitulo:tmpl?tmpl.titulo:'',canal:document.getElementById('rd-canal').value,data:document.getElementById('rd-data').value,status:'enviado'});
+    if(cad){cad.status='enviado';saveMktC();}
+    saveMktD();renderMktCad();renderMktKpis();closeModal();toast('Disparo registrado!');
+  });
+  setTimeout(()=>{const s=document.getElementById('rd-tmpl');if(s)mktPrev(s);},100);
+}
+function mktPrev(sel){
+  const t=mktTemplates.find(x=>x.id===sel.value);
+  const p=document.getElementById('rd-prev');const c=document.getElementById('rd-canal');
+  if(t&&p){p.textContent=t.corpo;if(c)c.value=t.canal;}
+}
+function atualizarDisparo(id,status){
+  const d=mktDisparos.find(x=>x.id===id);
+  if(d){d.status=status;saveMktD();renderMktHist();renderMktKpis();toast('Status atualizado!');}
 }
 
 // ── GOOGLE SHEETS ──
