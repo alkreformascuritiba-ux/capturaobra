@@ -105,6 +105,9 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 .pOA{background:rgba(99,102,241,.14);color:var(--ac);}
 .pOM{background:rgba(20,184,166,.12);color:var(--tl);}
 .pOB{background:rgba(100,116,139,.12);color:var(--mu2);}
+.pREC-P{background:rgba(34,197,94,.18);color:#16a34a;font-weight:800;}
+.pREC-A{background:rgba(245,158,11,.18);color:#d97706;font-weight:800;}
+.pREC-D{background:rgba(239,68,68,.18);color:#dc2626;font-weight:800;}
 
 /* ─── FILTERS ─── */
 .frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
@@ -222,6 +225,56 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 @media(max-width:1280px){.g6{grid-template-columns:repeat(3,1fr);}.g5{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){.sidebar{transform:translateX(-100%);}.main{margin-left:0;}}
 
+/* ─── ORÇAMENTISTA IA ─── */
+#page-orcamentista.active{display:flex;flex-direction:row;height:calc(100vh - 98px);overflow:hidden;}
+.orc-chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;}
+.orc-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;}
+.orc-msg{display:flex;gap:10px;align-items:flex-start;animation:orcIn .2s ease;}
+@keyframes orcIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.orc-msg.user{flex-direction:row-reverse;}
+.orc-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.orc-av.bot{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;}
+.orc-av.user{background:var(--card2);color:var(--mu2);}
+.orc-bubble{max-width:78%;padding:12px 15px;border-radius:12px;font-size:13px;line-height:1.6;}
+.orc-bubble.bot{background:var(--card2);border:1px solid var(--border);border-radius:3px 12px 12px 12px;color:var(--tx);}
+.orc-bubble.user{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-radius:12px 3px 12px 12px;}
+.orc-bubble table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;}
+.orc-bubble th{background:rgba(99,102,241,.15);color:var(--ac);padding:6px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap;}
+.orc-bubble td{padding:6px 10px;border-bottom:1px solid rgba(37,40,64,.5);vertical-align:top;color:var(--tx);}
+.orc-bubble tr:last-child td{border-bottom:none;}
+.orc-bubble tr.tot td{font-weight:700;background:rgba(99,102,241,.12);color:var(--ac);}
+.orc-bubble tr.sub td{font-weight:600;background:rgba(99,102,241,.06);color:var(--mu2);}
+.orc-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.orc-tag{background:rgba(99,102,241,.1);color:var(--ac);border:1px solid rgba(99,102,241,.25);font-size:11px;padding:4px 10px;border-radius:999px;cursor:pointer;transition:all .15s;}
+.orc-tag:hover{background:rgba(99,102,241,.22);}
+.orc-dots{display:flex;gap:4px;padding:4px 0;}
+.orc-dots span{width:6px;height:6px;background:var(--ac);border-radius:50%;animation:orcDot 1s infinite;opacity:.6;}
+.orc-dots span:nth-child(2){animation-delay:.15s;}
+.orc-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes orcDot{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.orc-input-area{padding:14px 20px;background:var(--card);border-top:1px solid var(--border);flex-shrink:0;}
+.orc-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.orc-chip{background:transparent;border:1px solid var(--border);color:var(--mu2);font-size:11px;padding:4px 10px;border-radius:999px;cursor:pointer;transition:all .15s;}
+.orc-chip:hover{border-color:var(--ac);color:var(--ac);}
+.orc-row{display:flex;gap:10px;align-items:flex-end;}
+.orc-textarea{flex:1;border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;font-family:inherit;resize:none;min-height:42px;max-height:100px;outline:none;background:var(--card2);color:var(--tx);line-height:1.4;transition:border-color .15s;}
+.orc-textarea:focus{border-color:rgba(99,102,241,.5);}
+.orc-send{width:42px;height:42px;background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s,transform .1s;}
+.orc-send:hover{opacity:.85;}
+.orc-send:active{transform:scale(.95);}
+.orc-send:disabled{opacity:.4;cursor:not-allowed;}
+.orc-side{width:230px;flex-shrink:0;border-left:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;overflow-y:auto;padding:16px;gap:14px;}
+.orc-side h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mu2);margin-bottom:8px;}
+.orc-ref{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(37,40,64,.5);font-size:11px;color:var(--mu2);}
+.orc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.orc-dot.g{background:var(--g);}
+.orc-dot.b{background:var(--f);}
+.orc-dot.m{background:var(--m);}
+.orc-scope{display:inline-block;background:rgba(99,102,241,.07);border:1px solid var(--border);color:var(--mu2);font-size:10px;padding:3px 8px;border-radius:999px;margin:2px;}
+.orc-tip{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--mu2);line-height:1.5;}
+.orc-tip strong{color:var(--ac);}
+.orc-warn{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--q);line-height:1.5;}
+
 /* ─── LOGIN ─── */
 #login-screen{position:fixed;inset:0;background:#070910;z-index:9999;display:flex;align-items:center;justify-content:center;}
 .lx{width:380px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px 32px;box-shadow:0 24px 64px rgba(0,0,0,.7);}
@@ -322,6 +375,11 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   </div>
   <div class="sb-item" onclick="nav('roi',this)" data-title="ROI &amp; Relatório" data-sub="Performance financeira e projeções">
     <span class="sb-icon">💰</span>ROI
+  </div>
+
+  <div class="sb-section">Ferramentas IA</div>
+  <div class="sb-item" onclick="nav('orcamentista',this)" data-title="Orçamentista IA" data-sub="SINAPI · TCPO · SEOP-PR · Mercado Paraná">
+    <span class="sb-icon">🧮</span>Orçamentista IA
   </div>
 
   <div class="sb-footer">
@@ -540,14 +598,15 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
           <button class="ftab fm" onclick="fl('MÉDIO',this)">Risco Médio</button>
           <button class="ftab fq" onclick="fl('ALTO',this)">Risco Alto</button>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="abrirImportJSONLicit()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">📋 Importar JSON</button>
           <button onclick="abrirImportCSV()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer">📥 Importar CSV</button>
           <button onclick="if(confirm('Limpar todas as licitações?')){licitData=[];saveLicit();renderLicit();toast('Licitações limpas');}" style="padding:6px 10px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer">🗑 Limpar</button>
         </div>
       </div>
       <div class="tbl-wrap">
         <table style="min-width:900px">
-          <thead><tr><th>#</th><th>Órgão</th><th>Cidade</th><th>Valor</th><th>Edital</th><th>Abertura</th><th>Risco</th><th>Oportunidade</th><th>Link</th><th>Observação</th></tr></thead>
+          <thead><tr><th>#</th><th>Órgão / Objeto</th><th>Cidade</th><th>Valor</th><th>Edital</th><th>Abertura</th><th>Prazo</th><th>Risco</th><th>Oportunidade</th><th>Recomendação</th><th>Link</th><th></th></tr></thead>
           <tbody id="tbLicit"></tbody>
         </table>
       </div>
@@ -594,6 +653,104 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
     <div id="mkt-cadencias"></div>
     <div id="mkt-templates" style="display:none"></div>
     <div id="mkt-historico" style="display:none"></div>
+  </div>
+
+
+  <!-- ══════ PAGE: ORÇAMENTISTA IA ══════ -->
+  <div class="page" id="page-orcamentista">
+    <div class="orc-chat-panel">
+      <div class="orc-messages" id="orcMessages">
+        <div class="orc-msg">
+          <div class="orc-av bot">IA</div>
+          <div class="orc-bubble bot">
+            <strong>Olá! Sou o Orçamentista IA da CAPTURAOBRA.</strong><br><br>
+            Especializado em construção civil, reformas, impermeabilização, pintura predial e manutenção — calibrado para o mercado do <strong>Paraná</strong> com referências SINAPI, SEOP-PR e TCPO atualizadas para 2025.<br><br>
+            Descreva o serviço com metragem e cidade, ou use os atalhos abaixo:
+            <div class="orc-tag-row">
+              <span class="orc-tag" onclick="orcFill('Impermeabilização de laje plana 80m² em Curitiba')">Impermeabilização laje</span>
+              <span class="orc-tag" onclick="orcFill('Pintura fachada predial 500m² em Londrina')">Pintura predial</span>
+              <span class="orc-tag" onclick="orcFill('Reforma completa de banheiro 6m²')">Reforma banheiro</span>
+              <span class="orc-tag" onclick="orcFill('Revestimento cerâmico 60m² piso e parede')">Revestimento cerâmico</span>
+              <span class="orc-tag" onclick="orcFill('Troca de telhado fibrocimento 120m² em Maringá')">Troca de telhado</span>
+              <span class="orc-tag" onclick="orcFill('Drywall divisória 30m²')">Drywall</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="orc-input-area">
+        <div class="orc-chips">
+          <span class="orc-chip" onclick="orcFill('Impermeabilização de laje 100m²')">Impermeabilização</span>
+          <span class="orc-chip" onclick="orcFill('Pintura predial fachada 300m²')">Pintura predial</span>
+          <span class="orc-chip" onclick="orcFill('Reforma apartamento 65m²')">Reforma apto</span>
+          <span class="orc-chip" onclick="orcFill('Instalação elétrica residencial 80m²')">Elétrica</span>
+          <span class="orc-chip" onclick="orcFill('Hidráulica banheiro e cozinha')">Hidráulica</span>
+        </div>
+        <div class="orc-row">
+          <textarea class="orc-textarea" id="orcInput"
+            placeholder="Descreva o serviço — ex: impermeabilização de laje 80m² em Curitiba..."
+            rows="1"
+            onkeydown="orcKey(event)"
+            oninput="orcResize(this)"
+          ></textarea>
+          <button class="orc-send" id="orcSendBtn" onclick="orcSend()" title="Enviar">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8H14M14 8L9 3M14 8L9 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="orc-side">
+      <div id="orcServerWarn" class="orc-warn" style="display:none">
+        ⚠️ <strong>Servidor offline.</strong><br>Abra o Terminal, entre em <code style="background:var(--card2);padding:1px 4px;border-radius:4px">~/Desktop/files</code> e rode <code style="background:var(--card2);padding:1px 4px;border-radius:4px">node server.js</code>
+      </div>
+      <div>
+        <h4>Tabelas de Referência</h4>
+        <div class="orc-ref"><div class="orc-dot g"></div>SINAPI/CEF — Paraná</div>
+        <div class="orc-ref"><div class="orc-dot b"></div>SEOP-PR 2025</div>
+        <div class="orc-ref"><div class="orc-dot m"></div>TCPO — Pini</div>
+        <div class="orc-ref"><div class="orc-dot g"></div>Mercado Curitiba / RMC</div>
+        <div class="orc-ref"><div class="orc-dot b"></div>Interior Paraná</div>
+      </div>
+      <div>
+        <h4>Especialidades</h4>
+        <span class="orc-scope">Impermeabilização</span>
+        <span class="orc-scope">Pintura predial</span>
+        <span class="orc-scope">Reforma</span>
+        <span class="orc-scope">Revestimento</span>
+        <span class="orc-scope">Telhado</span>
+        <span class="orc-scope">Drywall</span>
+        <span class="orc-scope">Elétrica</span>
+        <span class="orc-scope">Hidráulica</span>
+        <span class="orc-scope">Estrutura</span>
+        <span class="orc-scope">Fundação</span>
+        <span class="orc-scope">Facilities</span>
+      </div>
+      <div class="orc-tip">💡 <strong>Dica:</strong> Informe a cidade do PR para ajuste regional. Curitiba e RMC têm acréscimo de 8–12% sobre SINAPI nacional.</div>
+      <div>
+        <h4>Índices PR</h4>
+        <div class="orc-ref" style="font-size:11px"><div class="orc-dot m"></div>BDI privada: 22–28%</div>
+        <div class="orc-ref" style="font-size:11px"><div class="orc-dot b"></div>BDI pública: 25–30%</div>
+        <div class="orc-ref" style="font-size:11px"><div class="orc-dot g"></div>Curitiba/RMC: +8–12%</div>
+      </div>
+      <div>
+        <h4>Servidor da IA</h4>
+        <div style="font-size:11px;color:var(--mu2);margin-bottom:6px">URL do servidor (Railway ou local):</div>
+        <input id="orcUrlInput"
+          style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--tx);outline:none;font-family:inherit"
+          placeholder="https://seu-app.railway.app"
+          value=""
+          onfocus="this.style.borderColor='rgba(99,102,241,.5)'"
+          onblur="this.style.borderColor='var(--border)'"
+        >
+        <button onclick="orcSaveUrl()" style="margin-top:7px;width:100%;padding:6px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:7px;color:var(--ac);font-size:11px;font-weight:600;cursor:pointer">Salvar URL</button>
+        <div style="margin-top:8px;font-size:10px;color:var(--mu);line-height:1.7">
+          Sem servidor online? Use local:<br>
+          <code style="background:var(--card2);padding:1px 5px;border-radius:4px">cd ~/Desktop/files</code><br>
+          <code style="background:var(--card2);padding:1px 5px;border-radius:4px">node server.js</code>
+        </div>
+      </div>
+    </div>
   </div>
 
   </div><!-- /content -->
@@ -656,6 +813,7 @@ function openModal(title,body,saveFn){
   _moSave=saveFn||null;
   const btn=document.getElementById('mo-save');
   if(btn)btn.style.display=saveFn?'':'none';
+  const btnC=document.querySelector('#mo .mo-foot .btn-s');if(btnC)btnC.textContent='Cancelar';
   document.getElementById('mo').classList.add('open');
   setTimeout(()=>{const f=document.querySelector('#mo-body input,#mo-body select,#mo-body textarea');if(f)f.focus();},60);
 }
@@ -1342,38 +1500,120 @@ function saveLicit(){try{localStorage.setItem('co_licit_full',JSON.stringify(lic
 
 function rPill(r){return`<span class="pill p${r==='BAIXO'?'RB':r==='MÉDIO'?'RM':'RA'}"><span class="dot"></span>${r}</span>`;}
 function oPill(o){return`<span class="pill p${o==='ALTA'?'OA':o==='MÉDIA'?'OM':'OB'}"><span class="dot"></span>${o}</span>`;}
+function recPill(r){const m={PARTICIPAR:'pREC-P',AVALIAR:'pREC-A',DESCONSIDERAR:'pREC-D'};return`<span class="pill ${m[r]||'pREC-A'}"><span class="dot"></span>${r||'AVALIAR'}</span>`;}
 let litFilter='ALL';
 function fl(f,btn){litFilter=f;document.querySelectorAll('#page-licitacoes .ftab').forEach(b=>b.className='ftab');btn.className='ftab fa';renderLicit();}
 function renderLicit(){
-  // KPIs dinâmicos
   const alta=licitData.filter(l=>l.op==='ALTA').length;
   const viav=licitData.filter(l=>l.risco==='BAIXO'||l.risco==='MÉDIO').length;
   const alto=licitData.filter(l=>l.risco==='ALTO').length;
   const sk=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   sk('kLicitTotal',licitData.length);sk('kLicitAlta',alta);sk('kLicitViav',viav);sk('kLicitAlto',alto);
-  // Filtro
   let data=licitData;
   if(litFilter==='ALTA') data=licitData.filter(l=>l.op==='ALTA');
   else if(litFilter==='BAIXO') data=licitData.filter(l=>l.risco==='BAIXO');
   else if(litFilter==='MÉDIO') data=licitData.filter(l=>l.risco==='MÉDIO');
   else if(litFilter==='ALTO') data=licitData.filter(l=>l.risco==='ALTO');
-  document.getElementById('tbLicit').innerHTML=data.map((l,i)=>`<tr>
+  document.getElementById('tbLicit').innerHTML=data.map((l,i)=>{
+    const idx=licitData.indexOf(l);
+    const obj=l.objeto?`<div style="font-size:10px;color:var(--mu2);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(l.objeto)}">${esc(l.objeto)}</div>`:'';
+    const mod=l.modalidade?`<span style="font-size:9px;color:var(--tl);font-weight:600">${esc(l.modalidade)}</span>`:'';
+    return`<tr style="cursor:pointer" onclick="verDetalheEdital(${idx})">
     <td style="color:var(--mu);font-size:11px">${i+1}</td>
-    <td style="font-size:12px;font-weight:600;max-width:180px">${esc(l.orgao)}</td>
+    <td style="font-size:12px;font-weight:600;max-width:220px"><div>${esc(l.orgao)}</div>${mod}${obj}</td>
     <td style="font-size:11px;color:var(--mu2)">${esc(l.cidade)}</td>
     <td style="font-size:12px;font-weight:600;color:var(--g);white-space:nowrap">${esc(l.valor)}</td>
     <td style="font-size:11px;color:var(--mu2)">${esc(l.edital)}</td>
     <td style="font-size:11px;color:var(--mu2);white-space:nowrap">${esc(l.abertura)}</td>
+    <td style="font-size:11px;color:var(--mu2);white-space:nowrap">${esc(l.prazo_exec||'—')}</td>
     <td>${rPill(l.risco)}</td>
     <td>${oPill(l.op)}</td>
-    <td>${l.link&&l.link!=='#'?`<a href="${esc(l.link)}" target="_blank" class="ll">🔗 Ver</a>`:'—'}</td>
-    <td class="oc">${esc(l.obs)}</td>
-    <td><button onclick="deleteLicit(${licitData.indexOf(l)})" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:2px 6px" title="Excluir">🗑</button></td>
-  </tr>`).join('');
+    <td>${recPill(l.recomendacao)}</td>
+    <td onclick="event.stopPropagation()">${l.link&&l.link!=='#'?`<a href="${esc(l.link)}" target="_blank" class="ll">🔗 Ver</a>`:'—'}</td>
+    <td onclick="event.stopPropagation()"><button onclick="deleteLicit(${idx})" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:2px 6px" title="Excluir">🗑</button></td>
+  </tr>`;}).join('');
 }
 function deleteLicit(idx){
   if(!confirm('Excluir esta licitação?'))return;
   licitData.splice(idx,1);saveLicit();renderLicit();toast('Licitação excluída.');
+}
+function verDetalheEdital(idx){
+  const l=licitData[idx];if(!l)return;
+  const row=(label,val,color)=>val?`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:11px;color:var(--mu2);min-width:130px;flex-shrink:0">${label}</span><span style="font-size:12px;font-weight:600;color:${color||'var(--tx)'}">${val}</span></div>`:'';
+  const recColor={PARTICIPAR:'#16a34a',AVALIAR:'#d97706',DESCONSIDERAR:'#dc2626'};
+  openModal(`📋 ${esc(l.orgao)}`,`
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">${rPill(l.risco)}${oPill(l.op)}${recPill(l.recomendacao)}</div>
+    ${row('Modalidade',l.modalidade,'var(--tl)')}
+    ${row('Edital nº',l.edital)}
+    ${row('Objeto',l.objeto)}
+    ${row('Cidade / Local',l.cidade)}
+    ${row('Valor estimado',l.valor,'var(--g)')}
+    ${row('Abertura das propostas',l.abertura,'var(--m)')}
+    ${row('Prazo de execução',l.prazo_exec)}
+    ${l.exigencias?`<div style="padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:11px;color:var(--mu2);margin-bottom:4px">Exigências de habilitação</div><div style="font-size:12px;color:var(--tx);line-height:1.5">${esc(l.exigencias)}</div></div>`:''}
+    ${l.obs?`<div style="padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:11px;color:var(--mu2);margin-bottom:4px">Observações estratégicas</div><div style="font-size:12px;color:var(--tx);line-height:1.5">${esc(l.obs)}</div></div>`:''}
+    ${l.link&&l.link!=='#'?`<div style="margin-top:12px"><a href="${esc(l.link)}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(99,102,241,.12);color:var(--ac);font-size:12px;font-weight:700;text-decoration:none">🔗 Abrir edital no portal</a></div>`:''}
+  `,null);
+  const btnC=document.querySelector('#mo .mo-foot .btn-s');if(btnC)btnC.textContent='Fechar';
+}
+function abrirImportJSONLicit(){
+  openModal('📋 Importar JSON de Licitações',`
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:13px;font-size:11px;color:var(--mu2);line-height:1.7">
+      <b style="color:var(--mu)">Cole o JSON gerado pelo /interpreta_edital</b><br>
+      Campos obrigatórios: <code style="color:var(--tl)">orgao, cidade, valor, risco, op</code><br>
+      Campos extras reconhecidos: <code style="color:var(--tl)">modalidade, objeto, abertura, prazo_exec, recomendacao, exigencias, link, obs, edital</code>
+    </div>
+    <div class="mf" style="margin-bottom:12px">
+      <label>JSON (array de objetos)</label>
+      <textarea id="json-licit-paste" rows="8" placeholder='[&#10;  {&#10;    "orgao": "Prefeitura de Pinhais — Reforma Escolas",&#10;    "cidade": "Pinhais — PR",&#10;    "valor": "R$ 380.000,00",&#10;    "edital": "Pregão Eletrônico nº 042/2026",&#10;    "modalidade": "Pregão Eletrônico",&#10;    "objeto": "Reforma e pintura das escolas municipais",&#10;    "abertura": "15/05/2026",&#10;    "prazo_exec": "90 dias",&#10;    "risco": "BAIXO",&#10;    "op": "ALTA",&#10;    "recomendacao": "PARTICIPAR",&#10;    "exigencias": "Atestado de capacidade técnica",&#10;    "link": "https://...",&#10;    "obs": "Obra municipal de baixa concorrência."&#10;  }&#10;]' style="font-family:monospace;font-size:11px;width:100%;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--tx);padding:8px;resize:vertical"></textarea>
+    </div>
+    <div id="json-licit-preview" style="font-size:12px;color:var(--mu2);min-height:20px"></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu2);margin-top:12px;cursor:pointer">
+      <input type="checkbox" id="json-licit-replace" style="width:14px;height:14px">
+      Substituir todas as licitações existentes (desmarcado = adicionar sem duplicar)
+    </label>
+  `,function(){
+    const raw=(document.getElementById('json-licit-paste')||{}).value||'';
+    let parsed;
+    try{parsed=JSON.parse(raw.trim());}catch(e){toast('JSON inválido — verifique o formato','err');return;}
+    if(!Array.isArray(parsed)||!parsed.length){toast('Esperado um array JSON com ao menos 1 item','err');return;}
+    const nRisco=v=>{const u=(v||'').toUpperCase();return u.includes('BAIXO')?'BAIXO':u.includes('DIO')||u.includes('MÉDIO')||u.includes('MEDIO')?'MÉDIO':'ALTO';};
+    const nOp=v=>{const u=(v||'').toUpperCase();return u.includes('ALTA')?'ALTA':u.includes('MEDIA')||u.includes('MÉDIA')?'MÉDIA':'BAIXA';};
+    const nRec=v=>{const u=(v||'').toUpperCase();return u.includes('PARTICIPAR')?'PARTICIPAR':u.includes('DESCON')?'DESCONSIDERAR':'AVALIAR';};
+    const norm=r=>({
+      orgao:r.orgao||r.órgão||'Sem nome',
+      cidade:r.cidade||'Paraná — PR',
+      valor:r.valor||'A confirmar',
+      edital:r.edital||'—',
+      modalidade:r.modalidade||'',
+      objeto:r.objeto||'',
+      abertura:r.abertura||'A confirmar',
+      prazo_exec:r.prazo_exec||r.prazo||'',
+      risco:nRisco(r.risco),
+      op:nOp(r.op||r.oportunidade),
+      recomendacao:nRec(r.recomendacao||r.recomendação),
+      exigencias:r.exigencias||r.exigências||'',
+      link:r.link||r.url||'#',
+      obs:r.obs||r.observacao||r.observação||''
+    });
+    const replace=document.getElementById('json-licit-replace')?.checked;
+    if(replace){
+      licitData=parsed.map(norm);
+      toast(`✅ ${licitData.length} licitações importadas — dados anteriores substituídos`);
+    }else{
+      const existentes=new Set(licitData.map(l=>l.orgao.toLowerCase().trim()));
+      const novos=parsed.map(norm).filter(r=>!existentes.has(r.orgao.toLowerCase().trim()));
+      licitData=[...licitData,...novos];
+      toast(`✅ ${novos.length} novas licitações adicionadas (${parsed.length-novos.length} duplicadas ignoradas)`);
+    }
+    saveLicit();renderLicit();closeModal();
+  });
+  document.getElementById('mo-save').textContent='✅ Importar';
+  document.getElementById('json-licit-paste').addEventListener('input',function(){
+    const el=document.getElementById('json-licit-preview');if(!el)return;
+    try{const p=JSON.parse(this.value.trim());el.innerHTML=`<span style="color:var(--g)">✅ ${Array.isArray(p)?p.length+' registro(s) detectados':'JSON válido mas não é um array'}</span>`;}
+    catch(e){el.innerHTML=`<span style="color:var(--q)">⚠ JSON inválido</span>`;}
+  });
 }
 renderLicit();
 
@@ -1990,6 +2230,170 @@ new Chart(document.getElementById('cInicioPipeline'),{type:'doughnut',data:{labe
 new Chart(document.getElementById('cInicioLeads'),{type:'doughnut',data:{labels:['🔴 Quentes (19)','🟡 Mornos (11)'],datasets:[{data:[19,11],backgroundColor:['rgba(239,68,68,.8)','rgba(245,158,11,.8)'],borderColor:['#ef4444','#f59e0b'],borderWidth:2,hoverOffset:4}]},options:{...co,cutout:'65%'}});
 new Chart(document.getElementById('cInicioROI'),{type:'bar',data:{labels:['Condos','Licitações','Parcerias'],datasets:[{data:[36000,45000,36000],backgroundColor:['rgba(34,197,94,.7)','rgba(99,102,241,.7)','rgba(20,184,166,.7)'],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`R$ ${Number(c.raw).toLocaleString('pt-BR')}`}}},scales:{y:{grid:{color:'rgba(37,40,64,.8)'},ticks:{color:'#64748b',callback:v=>`R$ ${(v/1000).toFixed(0)}k`}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
 new Chart(document.getElementById('cROIcanal'),{type:'bar',data:{labels:['Condomínios','Licitações','Parcerias'],datasets:[{label:'Receita (R$)',data:[36000,45000,36000],backgroundColor:['rgba(34,197,94,.7)','rgba(99,102,241,.7)','rgba(20,184,166,.7)'],borderWidth:2,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`R$ ${Number(c.raw).toLocaleString('pt-BR')}`}}},scales:{y:{grid:{color:'rgba(37,40,64,.8)'},ticks:{color:'#64748b',callback:v=>`R$ ${(v/1000).toFixed(0)}k`}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+// ── ORÇAMENTISTA IA ──
+const ORC_SYSTEM=`Você é um orçamentista especializado em construção civil para o mercado do Paraná, Brasil. Você atua na plataforma CAPTURAOBRA — hub de inteligência e operação para a construção civil.
+
+SEU CONHECIMENTO INCLUI:
+- Impermeabilização: lajes, terraços, subsolos, calhas, fundações, reservatórios (manta asfáltica, argamassa polimérica, cristalização, elastômero acrílico, poliuretano)
+- Pintura predial: tinta acrílica, textura, verniz, massa corrida, selador, preparação de superfície, fachadas, internas, industriais
+- Reformas: hidráulica, elétrica, revestimentos, drywall, forro, esquadrias, pisos, banheiros, cozinhas, demolição
+- Estrutura: alvenaria, concreto armado, telhados, coberturas, fundações, estrutura metálica
+- Instalações: elétrica, hidráulica, ar-condicionado, SPDA, CFTV, PPCI
+- Manutenção predial e facilities
+
+TABELAS DE REFERÊNCIA:
+- SINAPI/CEF — Sistema Nacional de Pesquisa de Custos e Índices da Construção Civil
+- SEOP-PR — Secretaria de Estado de Obras Públicas do Paraná
+- TCPO — Tabela de Composições de Preços para Orçamentos (Pini)
+- Pesquisa de mercado regional: Curitiba, Londrina, Maringá, Cascavel, Ponta Grossa, interior PR
+
+PREMISSAS REGIONAIS — PARANÁ 2025:
+- BDI obras privadas: 22% a 28%
+- BDI obras públicas: 25% a 30%
+- Encargos sociais CLT: ~70% sobre salário
+- Encargos sociais PJ/autônomo: ~25%
+- Curitiba e RMC (São José dos Pinhais, Colombo, Araucária etc): +8% a +12% sobre referência SINAPI nacional
+- Interior PR: referência SINAPI nacional ± 3%
+
+FORMATO OBRIGATÓRIO PARA ORÇAMENTOS:
+Sempre apresente na seguinte estrutura:
+
+**Escopo interpretado:** [resumo do que foi entendido]
+
+**Premissas adotadas:** [o que foi assumido]
+
+Em seguida, apresente a tabela EXATAMENTE neste formato markdown:
+
+| Item | Descrição | Unid | Quant | Preço Unit (R$) | Total (R$) |
+|------|-----------|------|-------|-----------------|------------|
+| 1 | [item] | [un] | [qt] | [valor] | [total] |
+| ... | ... | ... | ... | ... | ... |
+| SUB | Subtotal Material | — | — | — | R$ X.XXX,XX |
+| SUB | Subtotal Mão de Obra | — | — | — | R$ X.XXX,XX |
+| BDI | BDI (XX%) | — | — | — | R$ X.XXX,XX |
+| TOT | **TOTAL GERAL** | — | — | — | **R$ X.XXX,XX** |
+
+Após a tabela:
+**Referências:** [fontes usadas para cada grupo de preço]
+
+**Observações:** [alertas, variáveis, recomendações técnicas]
+
+E finalize com 3 sugestões de detalhamento no formato:
+[TAG]texto da sugestão[/TAG]
+[TAG]texto da sugestão[/TAG]
+[TAG]texto da sugestão[/TAG]
+
+REGRAS:
+- Diferencie claramente material e mão de obra
+- Declare todas as premissas adotadas
+- Para impermeabilização: sempre declarar tipo de substrato e sistema utilizado
+- Para pintura predial: sempre incluir preparação de superfície e acesso (andaime/balancim)
+- Use vírgula como decimal: R$ 1.250,00
+- Se faltar info, adote premissas razoáveis e declare
+- Seja profissional, técnico e objetivo`;
+
+let ORC_API_URL = (localStorage.getItem('orc_api_url') || 'http://localhost:3333') + '/api/chat';
+function orcSaveUrl(){
+  const v=(document.getElementById('orcUrlInput').value||'').trim().replace(/\/+$/,'');
+  if(!v)return toast('Cole a URL do servidor antes de salvar.','err');
+  localStorage.setItem('orc_api_url',v);
+  ORC_API_URL=v+'/api/chat';
+  toast('URL salva! A IA agora aponta para '+v);
+  document.getElementById('orcServerWarn').style.display='none';
+}
+function orcInitUrl(){
+  const saved=localStorage.getItem('orc_api_url')||'';
+  const inp=document.getElementById('orcUrlInput');
+  if(inp)inp.value=saved;
+}
+document.addEventListener('DOMContentLoaded',orcInitUrl);
+let orcHistory=[];
+let orcBusy=false;
+
+function orcResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function orcKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();orcSend();}}
+function orcFill(t){document.getElementById('orcInput').value=t;orcSend();}
+function orcScroll(){const a=document.getElementById('orcMessages');a.scrollTop=a.scrollHeight;}
+
+function orcAddMsg(role,html){
+  const area=document.getElementById('orcMessages');
+  const wrap=document.createElement('div');
+  wrap.className='orc-msg'+(role==='user'?' user':'');
+  wrap.innerHTML='<div class="orc-av '+(role==='user'?'user':'bot')+'">'+(role==='user'?'EU':'IA')+'</div><div class="orc-bubble '+(role==='user'?'user':'bot')+'">'+html+'</div>';
+  area.appendChild(wrap);
+  orcScroll();
+}
+
+function orcShowTyping(){
+  const area=document.getElementById('orcMessages');
+  const wrap=document.createElement('div');
+  wrap.className='orc-msg';wrap.id='orcTyping';
+  wrap.innerHTML='<div class="orc-av bot">IA</div><div class="orc-bubble bot"><div class="orc-dots"><span></span><span></span><span></span></div></div>';
+  area.appendChild(wrap);orcScroll();
+}
+function orcRemoveTyping(){const t=document.getElementById('orcTyping');if(t)t.remove();}
+
+function orcFormat(text){
+  let html=text;
+  const tRx=/\|(.+)\|\r?\n\|[-| :]+\|\r?\n((?:\|.+\|\r?\n?)+)/g;
+  html=html.replace(tRx,function(m,header,rows){
+    const headers=header.split('|').map(function(h){return h.trim();}).filter(Boolean);
+    const rowLines=rows.trim().split('\n');
+    let t='<table><thead><tr>';
+    headers.forEach(function(h){t+='<th>'+h.replace(/\*\*/g,'')+'</th>';});
+    t+='</tr></thead><tbody>';
+    rowLines.forEach(function(row){
+      const cells=row.split('|').map(function(c){return c.trim();}).filter(Boolean);
+      const f=(cells[0]||'').toUpperCase();
+      const isTot=f==='TOT'||f.includes('TOTAL');
+      const isSub=f==='SUB'||f==='BDI'||f.includes('SUBTOTAL');
+      t+='<tr'+(isTot?' class="tot"':isSub?' class="sub"':'')+'>';
+      cells.forEach(function(c){t+='<td>'+c.replace(/\*\*/g,'')+'</td>';});
+      t+='</tr>';
+    });
+    t+='</tbody></table>';return t;
+  });
+  const tags=[];
+  html=html.replace(/\[TAG\](.*?)\[\/TAG\]/g,function(_,tag){tags.push(tag.trim());return '';});
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/\n/g,'<br>');
+  if(tags.length){html+='<div class="orc-tag-row">'+tags.map(function(t){return '<span class="orc-tag" onclick="orcFill(\''+t.replace(/'/g,"\\'")+'\')">' +t+'</span>';}).join('')+'</div>';}
+  return html;
+}
+
+async function orcSend(){
+  const inp=document.getElementById('orcInput');
+  const text=inp.value.trim();
+  if(!text||orcBusy)return;
+  orcBusy=true;
+  document.getElementById('orcSendBtn').disabled=true;
+  inp.value='';inp.style.height='auto';
+  orcAddMsg('user',text);
+  orcHistory.push({role:'user',content:text});
+  orcShowTyping();
+  try{
+    const res=await fetch(ORC_API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:ORC_SYSTEM,messages:orcHistory})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const reply=data.content||data.error||'Erro ao processar.';
+    orcHistory.push({role:'assistant',content:reply});
+    orcRemoveTyping();
+    orcAddMsg('bot',orcFormat(reply));
+    document.getElementById('orcServerWarn').style.display='none';
+  }catch(err){
+    orcRemoveTyping();
+    document.getElementById('orcServerWarn').style.display='block';
+    orcAddMsg('bot','<strong>⚠️ Servidor offline.</strong><br>Abra o Terminal e rode <code>node server.js</code> na pasta <code>~/Desktop/files</code>. Depois tente novamente.');
+  }
+  orcBusy=false;
+  document.getElementById('orcSendBtn').disabled=false;
+  inp.focus();
+}
+
 new Chart(document.getElementById('cROIdist'),{type:'doughnut',data:{labels:['Leads (30)','Licitações (11)','Parcerias (12)'],datasets:[{data:[30,11,12],backgroundColor:['rgba(34,197,94,.8)','rgba(99,102,241,.8)','rgba(20,184,166,.8)'],borderWidth:2,hoverOffset:4}]},options:{...co,cutout:'65%'}});
 </script>
 </body>
