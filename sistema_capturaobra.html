@@ -477,10 +477,13 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   <!-- ══════ PAGE: EXECUÇÃO ══════ -->
   <div class="page" id="page-execucao">
     <div class="kpi-grid g4 mb20">
-      <div class="kpi kp"><div class="kpi-l">OS Abertas</div><div class="kpi-v">2</div><div class="kpi-s">Em andamento</div></div>
-      <div class="kpi kg"><div class="kpi-l">OS Concluídas</div><div class="kpi-v">0</div><div class="kpi-s">Este mês</div></div>
-      <div class="kpi km"><div class="kpi-l">Valor em Execução</div><div class="kpi-v" style="font-size:20px">R$ 43k</div><div class="kpi-s">Obras ativas</div></div>
-      <div class="kpi kt"><div class="kpi-l">Recebimentos</div><div class="kpi-v">R$ 0</div><div class="kpi-s">Aguardando</div></div>
+      <div class="kpi kp"><div class="kpi-l">OS Abertas</div><div class="kpi-v" id="kOsAbertas">—</div><div class="kpi-s">Em andamento</div></div>
+      <div class="kpi kg"><div class="kpi-l">OS Concluídas</div><div class="kpi-v" id="kOsConcl">—</div><div class="kpi-s">100% checklist</div></div>
+      <div class="kpi km"><div class="kpi-l">Valor Contratado</div><div class="kpi-v" id="kOsValor" style="font-size:20px">—</div><div class="kpi-s">Total OS ativas</div></div>
+      <div class="kpi kt"><div class="kpi-l">Comissão Prevista</div><div class="kpi-v" id="kOsComiss" style="font-size:18px">—</div><div class="kpi-s">Sobre contratos</div></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button onclick="gerarRelatorioSemanal()" style="padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.12);color:var(--ac);cursor:pointer">📊 Gerar Relatório Semanal</button>
     </div>
     <div id="osList"></div>
   </div>
@@ -1136,6 +1139,18 @@ function _openOSModal(d,pre){
   });
 }
 function renderOS(){
+  // KPIs dinâmicos
+  let vC=0,vComiss=0,abertas=0,concl=0;
+  osData.forEach(o=>{
+    const p=o.checks.filter(c=>c.d).length/o.checks.length;
+    if(p>=1)concl++;else abertas++;
+    vC+=(o.vContrato||0);
+    vComiss+=Math.round((o.vContrato||0)*(o.comissaoPct||10)/100);
+  });
+  const setKpi=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setKpi('kOsAbertas',abertas);setKpi('kOsConcl',concl);
+  setKpi('kOsValor',vC?_fmtBRL(vC):'—');setKpi('kOsComiss',vComiss?_fmtBRL(vComiss):'—');
+
   document.getElementById('osList').innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <p style="font-size:12px;color:var(--mu2)">${osData.length} ordem(ns) de serviço</p>
@@ -1173,6 +1188,90 @@ function renderOS(){
   }).join('');
 }
 renderOS();
+
+// ── RELATÓRIO SEMANAL ──
+function gerarRelatorioSemanal(){
+  const hoje=new Date();
+  const dataStr=hoje.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+  // Captação
+  const q=captData.filter(d=>calcScore(d)>=70).length;
+  const m=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;}).length;
+  const f=captData.filter(d=>calcScore(d)<40).length;
+  // Kanban
+  const kAtivos=kanbanData.filter(c=>c.stage!=='perdido');
+  const kFech=kanbanData.filter(c=>c.stage==='fechado').length;
+  let kValor=0;kAtivos.forEach(c=>{const n=parseInt((c.valor||'').replace(/\D/g,''));if(n)kValor+=n;});
+  const kPorStage=stages.map(s=>`  ${stageLabels[s]}: ${kanbanData.filter(c=>c.stage===s).length}`).join('\n');
+  // OS / Financeiro
+  let vContrato=0,vRecebido=0,vComissao=0,osAb=0,osCon=0;
+  osData.forEach(o=>{
+    const pct=o.checks.filter(c=>c.d).length/o.checks.length;
+    if(pct>=1)osCon++;else osAb++;
+    vContrato+=(o.vContrato||0);vRecebido+=(o.vRecebido||0);
+    vComissao+=Math.round((o.vContrato||0)*(o.comissaoPct||10)/100);
+  });
+  // Marketing (últimos 7 dias)
+  const semanaAtras=new Date(hoje-7*24*60*60*1000);
+  const disps=mktDisparos.filter(d=>{
+    const p=d.data?.split('/');if(!p||p.length<3)return false;
+    return new Date(p[2],p[1]-1,p[0])>=semanaAtras;
+  });
+  const resp=disps.filter(d=>d.status==='respondeu').length;
+  // Licitações
+  const licitAlta=licitData.filter(l=>l.op==='ALTA').length;
+
+  const rel=[
+    `════════════════════════════════════════`,
+    `   CAPTURAOBRA — RELATÓRIO SEMANAL`,
+    `   ${dataStr}`,
+    `════════════════════════════════════════`,
+    ``,
+    `📊 CAPTAÇÃO`,
+    `────────────────────────────────────────`,
+    `  Total de leads: ${captData.length}`,
+    `  🔴 Quentes (≥70pts): ${q}`,
+    `  🟡 Mornos  (40–69): ${m}`,
+    `  🔵 Frios   (<40):   ${f}`,
+    ``,
+    `📋 PIPELINE KANBAN`,
+    `────────────────────────────────────────`,
+    `  Oportunidades ativas: ${kAtivos.length}`,
+    kPorStage,
+    `  Fechados: ${kFech}`,
+    `  Valor total pipeline: ${_fmtBRL(kValor)}`,
+    ``,
+    `⚙️  EXECUÇÃO / OS`,
+    `────────────────────────────────────────`,
+    `  OS em andamento:  ${osAb}`,
+    `  OS concluídas:    ${osCon}`,
+    `  Valor contratado: ${_fmtBRL(vContrato)}`,
+    `  Valor recebido:   ${_fmtBRL(vRecebido)}`,
+    `  Comissão prevista:${_fmtBRL(vComissao)}`,
+    ``,
+    `📣 MARKETING (últimos 7 dias)`,
+    `────────────────────────────────────────`,
+    `  Disparos: ${disps.length}`,
+    `  Respostas: ${resp}`,
+    `  Taxa de resposta: ${disps.length?Math.round(resp/disps.length*100):0}%`,
+    ``,
+    `🏛️  LICITAÇÕES`,
+    `────────────────────────────────────────`,
+    `  Total mapeadas: ${licitData.length}`,
+    `  Alta oportunidade: ${licitAlta}`,
+    ``,
+    `════════════════════════════════════════`,
+    `  Gerado por CAPTURAOBRA · ${hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`,
+    `════════════════════════════════════════`,
+  ].join('\n');
+
+  openModal('📊 Relatório Semanal',`
+    <div style="text-align:right;margin-bottom:8px">
+      <button onclick="navigator.clipboard.writeText(document.getElementById('rel-txt').textContent).then(()=>toast('✅ Copiado!'))" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">📋 Copiar texto</button>
+    </div>
+    <pre id="rel-txt" style="font-size:11.5px;color:var(--text);white-space:pre;font-family:'Courier New',monospace;line-height:1.55;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px;max-height:460px;overflow-y:auto">${esc(rel)}</pre>
+  `);
+  document.getElementById('mo-save').style.display='none';
+}
 
 // ── LICITAÇÕES ──
 const _licitDef=[
