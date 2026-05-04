@@ -336,6 +336,8 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
     <div class="topbar-right">
       <span class="tbadge green">● SISTEMA ATIVO</span>
       <span class="tbadge purple">53 oportunidades</span>
+      <button onclick="syncToSheets()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(20,184,166,.4);background:rgba(20,184,166,.1);color:var(--tl);cursor:pointer" title="Enviar todos os dados para o Google Sheets">☁ Sync →</button>
+      <button onclick="loadFromSheets()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.1);color:var(--m);cursor:pointer" title="Carregar dados do Google Sheets">☁ Carregar</button>
       <button onclick="exportData()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer">⬇ Exportar</button>
       <button onclick="gerarHTML()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer" title="Baixa o HTML com todos os dados atuais embutidos">💾 Gerar HTML</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
@@ -1164,6 +1166,35 @@ function nav(id,el){
   document.getElementById('topbar-title').textContent=el.dataset.title||id;
   document.getElementById('topbar-sub').textContent=el.dataset.sub||'';
   if(id==='mapa'){setTimeout(()=>{initMap();if(mapInstance)mapInstance.invalidateSize();},100);}
+}
+
+// ── GOOGLE SHEETS ──
+const SHEETS_URL='https://script.google.com/macros/s/AKfycby7y9rqNyBhg4XuKECWHFbL95ePjjcIvlVk9urwCrKRhZEMvnjsQLXMPLrSybi_TMGZ/exec';
+
+async function syncToSheets(){
+  toast('Enviando para Google Sheets...');
+  try{
+    await fetch(SHEETS_URL,{
+      method:'POST',
+      mode:'no-cors',
+      body:JSON.stringify({captacao:captData,kanban:kanbanData,os:osData})
+    });
+    toast('✅ Dados enviados ao Google Sheets!');
+  }catch(err){toast('Erro: '+err.message,'err');}
+}
+
+async function loadFromSheets(){
+  toast('Carregando do Google Sheets...');
+  try{
+    const resp=await fetch(SHEETS_URL+'?t='+Date.now());
+    const result=await resp.json();
+    if(result.ok){
+      if(result.data.captacao&&result.data.captacao.length){captData=result.data.captacao;saveCaptData();renderCapt();}
+      if(result.data.kanban&&result.data.kanban.length){kanbanData=result.data.kanban;saveKanban();buildKanban();}
+      if(result.data.os&&result.data.os.length){osData=result.data.os;saveOSData();renderOS();}
+      toast('✅ Dados carregados do Google Sheets!');
+    }else{toast('Erro: '+(result.erro||'desconhecido'),'err');}
+  }catch(err){toast('Erro de conexão: '+err.message,'err');}
 }
 
 // ── GERAR HTML COM DADOS EMBUTIDOS ──
