@@ -323,7 +323,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   </div>
 
   <div class="sb-footer">
-    <p>CAPTURAOBRA v2.0<br>03/05/2026 · alkreformascuritiba@gmail.com</p>
+    <p>CAPTURAOBRA v2.9<br>04/05/2026 · alkreformascuritiba@gmail.com</p>
     <p style="margin-top:8px;font-size:10px;color:var(--ac)">💾 Dados salvos no navegador<br><span style="color:var(--mu)">Use ⬇ Exportar para backup</span></p>
     <button onclick="doLogout()" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:var(--q);cursor:pointer">🔒 Sair / Bloquear</button>
   </div>
@@ -345,7 +345,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <button onclick="gerarHTML()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer" title="Baixa o HTML com todos os dados atuais embutidos">💾 Gerar HTML</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
       <button onclick="document.getElementById('importFile').click()" style="padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08);color:var(--g);cursor:pointer">⬆ Importar</button>
-      <span style="font-size:11px;color:var(--mu2)">03/05/2026</span>
+      <span style="font-size:11px;color:var(--mu2)">04/05/2026</span>
     </div>
   </div>
 
@@ -498,6 +498,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <button class="mt on" onclick="toggleLayer('licit',this)" style="background:rgba(239,68,68,.2);border-color:var(--q)"><div class="mt-dot" style="background:var(--q)"></div>Licitações</button>
       <button class="mt on" onclick="toggleLayer('maoobra',this)" style="background:rgba(249,115,22,.2);border-color:var(--or)"><div class="mt-dot" style="background:var(--or)"></div>Mão de obra</button>
       <button class="mt on" onclick="toggleLayer('obras',this)" style="background:rgba(139,92,246,.2);border-color:var(--ac2)"><div class="mt-dot" style="background:var(--ac2)"></div>Obras indicadas</button>
+      <button onclick="reloadMap()" style="padding:5px 13px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer;transition:all .15s" onmouseover="this.style.color='var(--tx)'" onmouseout="this.style.color='var(--mu2)'">🔄 Recarregar</button>
     </div>
     <div id="map-container"></div>
   </div>
@@ -1121,43 +1122,46 @@ const bairros={
 const layerGroups={};
 let mapInstance=null;
 
-function initMap(){
-  if(mapInstance)return;
+function initMap(force){
+  if(mapInstance&&!force)return;
+  if(mapInstance&&force){
+    Object.keys(layerGroups).forEach(k=>delete layerGroups[k]);
+    mapInstance.remove();
+    mapInstance=null;
+  }
   mapInstance=L.map('map-container',{zoomControl:true,attributionControl:true}).setView([-25.4284,-49.2733],8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · CartoDB',maxZoom:18}).addTo(mapInstance);
 
   function cm(color){return L.divIcon({className:'',html:`<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>`,iconSize:[12,12],iconAnchor:[6,6]});}
 
+  // jitter determinístico por nome — pins não se movem a cada reload
+  function jit(s){let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))>>>0;return[(h%100-50)/2600,((h>>8)%100-50)/2600];}
+  function coord(cidade,nome){const base=mapCoords[cidade]||bairros['Curitiba'];const j=jit(nome||'');return[base[0]+j[0],base[1]+j[1]];}
+
+  const execSegs=['Pintura','Facility','Impermeab.'];
+
   const cfg={
-    parceiros:{color:'#3b82f6',items:parcData.filter(d=>d.tipo==='Parceiro').map(d=>({nome:d.nome,meta:d.tipo,coord:bairros['Curitiba'],wa:'',tel:d.tel}))},
-    condos:{color:'#22c55e',items:[
-      {nome:'Administradora Paraná',meta:'Administradora',coord:bairros['Centro'],tel:'(41) 3883-1700',wa:''},
-      {nome:'Inconal',meta:'Administradora · Centro',coord:bairros['Centro'],tel:'(41) 3223-8551',wa:'(41) 9 9900-3111'},
-      {nome:'CMPremium',meta:'Administradora',coord:bairros['Curitiba'],tel:'(41) 3023-9033',wa:''},
-      {nome:'Syndikos',meta:'Adm./Síndico · Rebouças',coord:bairros['Rebouças'],tel:'(41) 3501-0084',wa:''},
-      {nome:'Excelência Adm.',meta:'Administradora · AHU',coord:bairros['AHU'],tel:'(41) 3352-0235',wa:''},
-      {nome:'TG Services',meta:'Facility · Portão',coord:bairros['Portão'],tel:'(41) 3203-9462',wa:''},
-    ]},
-    sindicos:{color:'#f59e0b',items:[
-      {nome:'Providência Síndicos',meta:'Síndico Prof. · Batel',coord:bairros['Batel'],tel:'(41) 3117-9801',wa:'(41) 9 9982-9789'},
-      {nome:'Pr1me Síndicos',meta:'Síndico Prof.',coord:bairros['Jd. Santo Antônio'],tel:'(41) 99595-3560',wa:'(41) 99595-3560'},
-      {nome:'BA Síndicos Pro',meta:'Síndico Prof.',coord:bairros['Curitiba'],tel:'(41) 98777-1119',wa:'(41) 98777-1119'},
-      {nome:'Paulo Cesar Síndico',meta:'Síndico Prof.',coord:bairros['Curitiba'],tel:'(41) 99929-8991',wa:'(41) 99929-8991'},
-      {nome:'Síndico Curitiba (Alder)',meta:'Síndico Prof. · Bigorrilho',coord:bairros['Bigorrilho'],tel:'',wa:''},
-      {nome:'Futura Síndicos',meta:'Síndico Prof. · Batel',coord:[-25.4450,-49.2920],tel:'',wa:''},
-      {nome:'Óptima Síndicos',meta:'Síndico Prof. · Água Verde',coord:bairros['Água Verde'],tel:'',wa:''},
-    ]},
-    licit:{color:'#ef4444',items:licitData.slice(0,7).map(l=>{const c=mapCoords[l.cidade]||mapCoords['Curitiba'];return{nome:l.orgao,meta:l.cidade+' · '+l.risco,coord:c,tel:'',wa:'',link:l.link};})},
-    maoobra:{color:'#f97316',items:[
-      {nome:'Mazzettos Pinturas',meta:'Pintura predial · Fanny',coord:bairros['Fanny'],tel:'',wa:''},
-      {nome:'W.A.R Obras',meta:'Pintura + manutenção · Rebouças',coord:bairros['Rebouças'],tel:'(41) 3329-8523',wa:''},
-      {nome:'Revemix Pinturas',meta:'Pintura industrial',coord:bairros['Curitiba'],tel:'(41) 99894-9795',wa:''},
-      {nome:'ALS Pinturas',meta:'Pintura residencial/comercial',coord:[-25.4600,-49.2950],tel:'(41) 99882-9290',wa:''},
-      {nome:'Versátil Engenharia',meta:'Pintura predial · 50 anos',coord:[-25.4350,-49.2800],tel:'(41) 3077-9144',wa:''},
-    ]},
+    parceiros:{color:'#3b82f6',items:parcData
+      .filter(p=>!execSegs.includes(p.seg))
+      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:''}))},
+    condos:{color:'#22c55e',items:captData
+      .filter(d=>d.tipo&&!d.tipo.includes('Licit')&&!d.tipo.includes('Parceiro')&&
+        (d.tipo.includes('Adm')||d.tipo==='Condomínio'||d.tipo==='Facility'))
+      .map(d=>({nome:d.nome,meta:d.tipo+' · '+d.cidade,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||''}))},
+    sindicos:{color:'#f59e0b',items:captData
+      .filter(d=>d.tipo&&d.tipo.includes('Síndico'))
+      .map(d=>({nome:d.nome,meta:d.tipo,coord:coord(d.cidade,d.nome),tel:d.tel||'',wa:d.wa||''}))},
+    licit:{color:'#ef4444',items:licitData
+      .map(l=>({nome:l.orgao,meta:l.cidade+' · Risco '+l.risco,coord:mapCoords[l.cidade]||mapCoords['Curitiba'],tel:'',wa:'',link:l.link}))},
+    maoobra:{color:'#f97316',items:parcData
+      .filter(p=>execSegs.includes(p.seg))
+      .map(p=>({nome:p.nome,meta:p.seg+(p.nota?' · '+p.nota:''),coord:coord('Curitiba',p.nome),tel:p.tel||'',wa:''}))},
     obras:{color:'#8b5cf6',items:[
-      {nome:'Syndikos — Pintura Hall',meta:'🔥 Em execução · R$ 18k',coord:bairros['Rebouças'],tel:'(41) 3501-0084',wa:''},
-      {nome:'Inconal — Reforma Fachada',meta:'📋 Orçamento · R$ 25k',coord:bairros['Centro'],tel:'(41) 9 9900-3111',wa:'(41) 9 9900-3111'},
+      ...kanbanData
+        .filter(k=>['orcamento','fechado'].includes(k.stage))
+        .map(k=>({nome:k.nome,meta:'Pipeline · '+k.valor+(k.prob?' · '+k.prob+'%':''),coord:coord('Curitiba',k.nome),tel:k.tel||'',wa:''})),
+      ...osData
+        .map(o=>({nome:o.nome,meta:'OS Ativa · '+o.valor,coord:coord('Curitiba',o.nome),tel:'',wa:''}))
     ]},
   };
 
@@ -1166,9 +1170,10 @@ function initMap(){
     const grp=L.layerGroup();
     items.forEach(item=>{
       total++;
-      const mk=L.marker(item.coord||bairros['Curitiba'],{icon:cm(color)});
-      const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" class="map-popup" style="color:var(--g)">💬 WhatsApp</a>`:'';
-      mk.bindPopup(`<div class="map-popup"><h4>${item.nome}</h4><p>${item.meta}</p>${item.tel?`<p>📞 ${item.tel}</p>`:''}${wa}</div>`);
+      const mk=L.marker(item.coord,{icon:cm(color)});
+      const wa=item.wa&&!item.wa.includes('x')?`<a href="https://wa.me/55${item.wa.replace(/\D/g,'')}" target="_blank" style="color:#22c55e;font-size:11px;display:block;margin-top:4px">💬 WhatsApp</a>`:'';
+      const lk=item.link?`<a href="${item.link}" target="_blank" style="color:#6366f1;font-size:11px;display:block;margin-top:2px">🔗 Ver edital</a>`:'';
+      mk.bindPopup(`<div class="map-popup"><h4>${item.nome}</h4><p>${item.meta}</p>${item.tel?`<p>📞 ${item.tel}</p>`:''}${wa}${lk}</div>`);
       grp.addLayer(mk);
     });
     grp.addTo(mapInstance);
@@ -1176,22 +1181,30 @@ function initMap(){
   });
   document.getElementById('kMapTotal').textContent=total;
 
-  // Legend
   const legend=L.control({position:'bottomright'});
   legend.onAdd=()=>{
     const d=L.DomUtil.create('div');
-    d.style.cssText='background:#151822;border:1px solid #252840;border-radius:8px;padding:10px 14px;font-size:11px;color:#94a3b8;';
-    d.innerHTML=[['#3b82f6','Parceiros'],['#22c55e','Condomínios/Adm.'],['#f59e0b','Síndicos'],['#ef4444','Licitações'],['#f97316','Mão de obra'],['#8b5cf6','Obras indicadas']]
-      .map(([c,l])=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="width:9px;height:9px;border-radius:50%;background:${c}"></div>${l}</div>`).join('');
+    d.style.cssText='background:#151822;border:1px solid #252840;border-radius:8px;padding:10px 14px;font-size:11px;color:#94a3b8;line-height:1.7;';
+    d.innerHTML=[['#3b82f6','Parceiros estratégicos'],['#22c55e','Condomínios/Adm.'],['#f59e0b','Síndicos'],['#ef4444','Licitações'],['#f97316','Mão de obra'],['#8b5cf6','Obras indicadas']]
+      .map(([c,l])=>`<div style="display:flex;align-items:center;gap:7px"><div style="width:9px;height:9px;border-radius:50%;background:${c};flex-shrink:0"></div>${l}</div>`).join('');
     return d;
   };
   legend.addTo(mapInstance);
 }
 
+function reloadMap(){initMap(true);setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize();},80);toast('🗺️ Mapa recarregado com dados atuais!');}
+
 function toggleLayer(key,btn){
   const grp=layerGroups[key];if(!grp||!mapInstance)return;
-  if(mapInstance.hasLayer(grp)){mapInstance.removeLayer(grp);btn.classList.remove('on');btn.style.background='transparent';btn.style.borderColor='var(--border)';}
-  else{grp.addTo(mapInstance);btn.classList.add('on');}
+  const bgMap={parceiros:'rgba(59,130,246,.2)',condos:'rgba(34,197,94,.2)',sindicos:'rgba(245,158,11,.2)',licit:'rgba(239,68,68,.2)',maoobra:'rgba(249,115,22,.2)',obras:'rgba(139,92,246,.2)'};
+  const bdMap={parceiros:'var(--f)',condos:'var(--g)',sindicos:'var(--m)',licit:'var(--q)',maoobra:'var(--or)',obras:'var(--ac2)'};
+  if(mapInstance.hasLayer(grp)){
+    mapInstance.removeLayer(grp);btn.classList.remove('on');
+    btn.style.background='transparent';btn.style.borderColor='var(--border)';
+  } else {
+    grp.addTo(mapInstance);btn.classList.add('on');
+    btn.style.background=bgMap[key]||'rgba(99,102,241,.2)';btn.style.borderColor=bdMap[key]||'var(--ac)';
+  }
 }
 
 // ── NAVEGAÇÃO ──
