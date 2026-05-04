@@ -1489,9 +1489,9 @@ async function syncToSheets(){
     await fetch(SHEETS_URL,{
       method:'POST',
       mode:'no-cors',
-      body:JSON.stringify({captacao:captData,kanban:kanbanData,os:osData,parceiros:parcData,licitacoes:licitData})
+      body:JSON.stringify({captacao:captData,kanban:kanbanData,os:osData,parceiros:parcData,licitacoes:licitData,mkt_templates:mktTemplates,mkt_cadencias:mktCadencias,mkt_disparos:mktDisparos})
     });
-    toast('✅ 5 bases enviadas ao Google Sheets!');
+    toast('✅ 8 bases enviadas ao Google Sheets!');
   }catch(err){toast('Erro: '+err.message,'err');}
 }
 
@@ -1506,6 +1506,10 @@ async function loadFromSheets(){
       if(result.data.os&&result.data.os.length){osData=result.data.os;saveOSData();renderOS();}
       if(result.data.parceiros&&result.data.parceiros.length){parcData=result.data.parceiros;saveParc();renderParc();}
       if(result.data.licitacoes&&result.data.licitacoes.length){licitData=result.data.licitacoes;saveLicit();renderLicit();}
+      if(result.data.mkt_templates&&result.data.mkt_templates.length){mktTemplates=result.data.mkt_templates;saveMktT();}
+      if(result.data.mkt_cadencias&&result.data.mkt_cadencias.length){mktCadencias=result.data.mkt_cadencias;saveMktC();renderMktCad();}
+      if(result.data.mkt_disparos&&result.data.mkt_disparos.length){mktDisparos=result.data.mkt_disparos;saveMktD();}
+      renderMktKpis();
       toast('✅ Dados carregados do Google Sheets!');
     }else{toast('Erro: '+(result.erro||'desconhecido'),'err');}
   }catch(err){toast('Erro de conexão: '+err.message,'err');}
@@ -1517,7 +1521,7 @@ function gerarHTML(){
   // Remove embed anterior se existir
   html=html.replace(/\/\/ 💾 DATA EMBED[\s\S]*?\/\/ FIM DATA EMBED\n/g,'');
   // Monta o bloco de seed (roda antes do carregamento do localStorage)
-  const seed=`// 💾 DATA EMBED — ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\ntry{localStorage.setItem('co_capt_full',${JSON.stringify(JSON.stringify(captData))});localStorage.setItem('co_kanban_full',${JSON.stringify(JSON.stringify(kanbanData))});localStorage.setItem('co_os_full',${JSON.stringify(JSON.stringify(osData))});localStorage.setItem('co_parc_full',${JSON.stringify(JSON.stringify(parcData))});localStorage.setItem('co_licit_full',${JSON.stringify(JSON.stringify(licitData))});}catch(e){}\n// FIM DATA EMBED\n`;
+  const seed=`// 💾 DATA EMBED — ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\ntry{localStorage.setItem('co_capt_full',${JSON.stringify(JSON.stringify(captData))});localStorage.setItem('co_kanban_full',${JSON.stringify(JSON.stringify(kanbanData))});localStorage.setItem('co_os_full',${JSON.stringify(JSON.stringify(osData))});localStorage.setItem('co_parc_full',${JSON.stringify(JSON.stringify(parcData))});localStorage.setItem('co_licit_full',${JSON.stringify(JSON.stringify(licitData))});localStorage.setItem('co_mkt_tmpl',${JSON.stringify(JSON.stringify(mktTemplates))});localStorage.setItem('co_mkt_cad',${JSON.stringify(JSON.stringify(mktCadencias))});localStorage.setItem('co_mkt_disp',${JSON.stringify(JSON.stringify(mktDisparos))});}catch(e){}\n// FIM DATA EMBED\n`;
   // Injeta antes do carregamento das variáveis
   const alvo='// Carrega do localStorage (ou usa padrões acima)\nlet captData;';
   if(!html.includes(alvo)){toast('Erro ao gerar HTML.','err');return;}
@@ -1531,7 +1535,7 @@ function gerarHTML(){
 
 // ── EXPORT / IMPORT ──
 function exportData(){
-  const data={v:4,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData,capt:captData,parc:parcData,licit:licitData};
+  const data={v:5,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData,capt:captData,parc:parcData,licit:licitData,mktT:mktTemplates,mktC:mktCadencias,mktD:mktDisparos};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`capturaobra_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
@@ -1548,6 +1552,10 @@ function importData(e){
     if(d.capt){captData=d.capt;saveCaptData();renderCapt();}
     if(d.parc){parcData=d.parc;saveParc();renderParc();}
     if(d.licit){licitData=d.licit;saveLicit();renderLicit();}
+    if(d.mktT){mktTemplates=d.mktT;saveMktT();}
+    if(d.mktC){mktCadencias=d.mktC;saveMktC();renderMktCad();}
+    if(d.mktD){mktDisparos=d.mktD;saveMktD();}
+    renderMktKpis();
     toast('Dados importados com sucesso!');
   }catch(err){toast('Erro ao importar. Verifique o arquivo JSON.','err');}};
   r.readAsText(f);e.target.value='';
