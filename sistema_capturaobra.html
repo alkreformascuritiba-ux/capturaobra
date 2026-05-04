@@ -724,7 +724,7 @@ function deleteLead(id){
 function promoverParaKanban(id){
   const d=captData.find(x=>x.id===id);if(!d)return;
   const tm={'Administradora':'adm','Adm./Síndico':'adm','Síndico Prof.':'sind','Facility':'parc','Licitação':'licit','Parceiro':'parc','Condomínio':'adm'};
-  kanbanData.push({id:'k'+Date.now(),nome:d.nome,meta:d.tipo+(d.cidade?' · '+d.cidade:''),valor:'A confirmar',prob:50,tipo:tm[d.tipo]||'parc',stage:'novo',acao:'',resp:'',obs:''});
+  kanbanData.push({id:'k'+Date.now(),nome:d.nome,meta:d.tipo+(d.cidade?' · '+d.cidade:''),valor:'A confirmar',prob:50,tipo:tm[d.tipo]||'parc',stage:'contato',acao:'',resp:'',obs:''});
   saveKanban();buildKanban();
   const si=document.querySelector('.sb-item[data-title="Comercial — Pipeline"]');
   if(si)nav('comercial',si);
@@ -782,25 +782,25 @@ function renderCapt(){
 renderCapt();
 
 // ── KANBAN ──
-const stages=['novo','contato','reuniao','visita','orcamento','negociacao','fechado','perdido'];
-const stageLabels={novo:'Novo',contato:'Contato',reuniao:'Reunião',visita:'Visita',orcamento:'Orçamento',negociacao:'Negociação',fechado:'Fechado',perdido:'Perdido'};
+const stages=['contato','email','visita','orcamento','fechado','perdido'];
+const stageLabels={contato:'Contato',email:'Email c/ Apres.',visita:'Visita Marcada',orcamento:'Orçamento',fechado:'Fechado',perdido:'Perdido'};
 
 const _kanbanDef=[
-  {id:'k01',nome:'Providência Síndicos',meta:'Síndico · Batel',valor:'R$ 18.000',prob:75,tipo:'sind',stage:'novo',acao:'Ligar hoje',resp:'Sergio',obs:''},
-  {id:'k02',nome:'Pr1me Síndicos',meta:'Síndico · Jd. Sto. Antônio',valor:'R$ 25.000',prob:70,tipo:'sind',stage:'novo',acao:'WhatsApp',resp:'Sergio',obs:''},
-  {id:'k03',nome:'BA Síndicos Pro',meta:'Síndico · Curitiba',valor:'R$ 15.000',prob:68,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k04',nome:'Paulo Cesar Síndico',meta:'Síndico · CWB',valor:'R$ 12.000',prob:65,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k05',nome:'Inconal Adm.',meta:'Administradora · Centro',valor:'R$ 45.000',prob:60,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k06',nome:'Adm. Paraná',meta:'Administradora · Centro',valor:'R$ 60.000',prob:55,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k07',nome:'CMPremium',meta:'Administradora · PR',valor:'R$ 80.000',prob:50,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k08',nome:'TG Services',meta:'Facility · Portão',valor:'R$ 20.000',prob:60,tipo:'parc',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k09',nome:'Câmara Corbélia',meta:'Licitação · Risco Baixo',valor:'A confirmar',prob:40,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k10',nome:'COHAPAR Reforma',meta:'Licitação · Prorrogado',valor:'A confirmar',prob:35,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k11',nome:'CMC Manutenção',meta:'Licitação · Anual',valor:'A confirmar',prob:30,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k12',nome:'Fecci Engenharia',meta:'Parceria · Laudo→Obra',valor:'R$ 18.000',prob:55,tipo:'parc',stage:'contato',acao:'Reunião agendada',resp:'Sergio',obs:'Funil laudo→obra'},
-  {id:'k13',nome:'LEG Administradora',meta:'Administradora · Vila Izabel',valor:'R$ 40.000',prob:65,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k14',nome:'Vox Administradora',meta:'Administradora · CWB + Londrina',valor:'R$ 55.000',prob:60,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
-  {id:'k15',nome:'Champagnat Tower',meta:'Condomínio · Bigorrilho · 32 anos',valor:'R$ 35.000',prob:70,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k01',nome:'Providência Síndicos',meta:'Síndico · Batel',valor:'R$ 18.000',prob:75,tipo:'sind',stage:'contato',acao:'Ligar hoje',resp:'Sergio',obs:''},
+  {id:'k02',nome:'Pr1me Síndicos',meta:'Síndico · Jd. Sto. Antônio',valor:'R$ 25.000',prob:70,tipo:'sind',stage:'contato',acao:'WhatsApp',resp:'Sergio',obs:''},
+  {id:'k03',nome:'BA Síndicos Pro',meta:'Síndico · Curitiba',valor:'R$ 15.000',prob:68,tipo:'sind',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k04',nome:'Paulo Cesar Síndico',meta:'Síndico · CWB',valor:'R$ 12.000',prob:65,tipo:'sind',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k05',nome:'Inconal Adm.',meta:'Administradora · Centro',valor:'R$ 45.000',prob:60,tipo:'adm',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k06',nome:'Adm. Paraná',meta:'Administradora · Centro',valor:'R$ 60.000',prob:55,tipo:'adm',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k07',nome:'CMPremium',meta:'Administradora · PR',valor:'R$ 80.000',prob:50,tipo:'adm',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k08',nome:'TG Services',meta:'Facility · Portão',valor:'R$ 20.000',prob:60,tipo:'parc',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k09',nome:'Câmara Corbélia',meta:'Licitação · Risco Baixo',valor:'A confirmar',prob:40,tipo:'licit',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k10',nome:'COHAPAR Reforma',meta:'Licitação · Prorrogado',valor:'A confirmar',prob:35,tipo:'licit',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k11',nome:'CMC Manutenção',meta:'Licitação · Anual',valor:'A confirmar',prob:30,tipo:'licit',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k12',nome:'Fecci Engenharia',meta:'Parceria · Laudo→Obra',valor:'R$ 18.000',prob:55,tipo:'parc',stage:'email',acao:'Reunião agendada',resp:'Sergio',obs:'Funil laudo→obra'},
+  {id:'k13',nome:'LEG Administradora',meta:'Administradora · Vila Izabel',valor:'R$ 40.000',prob:65,tipo:'adm',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k14',nome:'Vox Administradora',meta:'Administradora · CWB + Londrina',valor:'R$ 55.000',prob:60,tipo:'adm',stage:'contato',acao:'',resp:'',obs:''},
+  {id:'k15',nome:'Champagnat Tower',meta:'Condomínio · Bigorrilho · 32 anos',valor:'R$ 35.000',prob:70,tipo:'sind',stage:'contato',acao:'',resp:'',obs:''},
 ];
 let kanbanData;
 try{const _s=localStorage.getItem('co_kanban_full');kanbanData=_s?JSON.parse(_s):[..._kanbanDef];}catch(e){kanbanData=[..._kanbanDef];}
@@ -880,7 +880,7 @@ function deleteCard(id){
 }
 function _openCardModal(d){
   const isNew=!d;
-  const v=d||{nome:'',meta:'',valor:'',prob:50,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''};
+  const v=d||{nome:'',meta:'',valor:'',prob:50,tipo:'sind',stage:'contato',acao:'',resp:'',obs:''};
   openModal(isNew?'+ Novo Card Kanban':'Editar Card',`
     <div class="mfr">
       <div class="mf"><label>Nome / Lead *</label><input id="mk-nome" value="${esc(v.nome)}" placeholder="Nome do lead"></div>
