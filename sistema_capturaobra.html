@@ -1059,9 +1059,9 @@ renderParc();
 
 // ── EXECUÇÃO / OS ──
 const _osDef=[
-  {id:'os01',nome:'Syndikos — Pintura Hall de Entrada',cliente:'Syndikos Gestão Condominial',valor:'R$ 18.000',resp:'Sergio Pessoa',prazo:'15/06/2026',
+  {id:'os01',nome:'Syndikos — Pintura Hall de Entrada',cliente:'Syndikos Gestão Condominial',valor:'R$ 18.000',resp:'Sergio Pessoa',prazo:'15/06/2026',vContrato:18000,vRecebido:9000,comissaoPct:10,statusPgto:'parcial',
    checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:true},{l:'Visita técnica',d:true},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
-  {id:'os02',nome:'Inconal — Reforma Fachada Bloco A',cliente:'Inconal Administradora',valor:'R$ 25.000',resp:'Sergio Pessoa',prazo:'30/07/2026',
+  {id:'os02',nome:'Inconal — Reforma Fachada Bloco A',cliente:'Inconal Administradora',valor:'R$ 25.000',resp:'Sergio Pessoa',prazo:'30/07/2026',vContrato:25000,vRecebido:0,comissaoPct:10,statusPgto:'aguardando',
    checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
 ];
 let osData;
@@ -1080,30 +1080,57 @@ function deleteOS(id){
   osData.splice(osData.findIndex(o=>o.id===id),1);
   saveOSData();renderOS();closeModal();toast('OS excluída.');
 }
+function _parseValorNum(s){if(!s)return 0;if(typeof s==='number')return s;return parseInt(s.replace(/\D/g,''))||0;}
+function _fmtBRL(n){return 'R$ '+(n||0).toLocaleString('pt-BR');}
+function updateOSFinanceiro(){
+  const vc=parseFloat(document.getElementById('mos-vcontrato')?.value)||0;
+  const vr=parseFloat(document.getElementById('mos-vrecebido')?.value)||0;
+  const pct=parseFloat(document.getElementById('mos-cpct')?.value)||10;
+  const ct=Math.round(vc*pct/100);const cr=Math.round(vr*pct/100);
+  const el=document.getElementById('mos-fin-preview');
+  if(el)el.innerHTML=`Comissão total: <b style="color:var(--tl)">${_fmtBRL(ct)}</b> &nbsp;|&nbsp; Comissão recebida: <b style="color:var(--g)">${_fmtBRL(cr)}</b>`;
+}
 function _openOSModal(d,pre){
   const isNew=!d;
   const v=d||{nome:pre.nome||'',cliente:pre.cliente||'',valor:pre.valor||'',resp:'Sergio Pessoa',prazo:'',parceiro:'',escopo:''};
+  const vContrato=v.vContrato||_parseValorNum(v.valor)||0;
   const parcOpts=parcData.map(p=>`<option value="${esc(p.nome)}"${v.parceiro===p.nome?' selected':''}>${p.nome} (${p.seg})</option>`).join('');
+  const pgOpts=[['aguardando','⏳ Aguardando'],['parcial','🔶 Parcial'],['pago','✅ Pago'],['inadimplente','🔴 Inadimplente']].map(([val,lbl])=>`<option value="${val}"${(v.statusPgto||'aguardando')===val?' selected':''}>${lbl}</option>`).join('');
   openModal(isNew?'+ Nova Ordem de Serviço':'Editar OS',`
     <div class="mf"><label>Nome da OS *</label><input id="mos-nome" value="${esc(v.nome)}" placeholder="Ex: Condomínio Silva — Pintura Fachada"></div>
     <div class="mfr">
       <div class="mf"><label>Cliente</label><input id="mos-cli" value="${esc(v.cliente||'')}" placeholder="Nome do condomínio"></div>
-      <div class="mf"><label>Valor</label><input id="mos-val" value="${esc(v.valor||'')}" placeholder="R$ 15.000"></div>
+      <div class="mf"><label>Responsável</label><input id="mos-resp" value="${esc(v.resp||'Sergio Pessoa')}"></div>
     </div>
     <div class="mfr">
-      <div class="mf"><label>Responsável</label><input id="mos-resp" value="${esc(v.resp||'Sergio Pessoa')}"></div>
       <div class="mf"><label>Prazo</label><input id="mos-prazo" value="${esc(v.prazo||'')}" placeholder="DD/MM/AAAA"></div>
+      <div class="mf"><label>Parceiro Executor</label><select id="mos-parc"><option value="">— Sem parceiro —</option>${parcOpts}</select></div>
     </div>
-    <div class="mf"><label>Parceiro Executor</label><select id="mos-parc"><option value="">— Sem parceiro definido —</option>${parcOpts}</select></div>
-    <div class="mf"><label>Escopo / Descrição do Serviço</label><textarea id="mos-escopo" placeholder="Ex: Pintura completa fachada + hall, 3 demãos Suvinil, andaime incluso...">${esc(v.escopo||'')}</textarea></div>
+    <div class="mf"><label>Escopo / Descrição</label><textarea id="mos-escopo" placeholder="Ex: Pintura fachada, 3 demãos Suvinil, andaime incluso...">${esc(v.escopo||'')}</textarea></div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">💰 Financeiro</div>
+      <div class="mfr">
+        <div class="mf"><label>Valor Contratado (R$)</label><input id="mos-vcontrato" type="number" value="${vContrato}" placeholder="18000" oninput="updateOSFinanceiro()"></div>
+        <div class="mf"><label>Comissão CAPTURAOBRA (%)</label><input id="mos-cpct" type="number" min="0" max="100" step="0.5" value="${v.comissaoPct||10}" oninput="updateOSFinanceiro()"></div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Valor Recebido até hoje (R$)</label><input id="mos-vrecebido" type="number" value="${v.vRecebido||0}" placeholder="0" oninput="updateOSFinanceiro()"></div>
+        <div class="mf"><label>Status Pagamento</label><select id="mos-statusPgto">${pgOpts}</select></div>
+      </div>
+      <div style="background:var(--card2);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--mu2)" id="mos-fin-preview">
+        Comissão total: <b style="color:var(--tl)">${_fmtBRL(Math.round(vContrato*(v.comissaoPct||10)/100))}</b> &nbsp;|&nbsp; Comissão recebida: <b style="color:var(--g)">${_fmtBRL(Math.round((v.vRecebido||0)*(v.comissaoPct||10)/100))}</b>
+      </div>
+    </div>
     ${!isNew?`<div class="mo-del"><button class="btn-d" onclick="deleteOS('${d.id}')">🗑 Excluir OS</button></div>`:''}
   `,function(){
     const nome=document.getElementById('mos-nome').value.trim();
     if(!nome)return toast('Nome é obrigatório','err');
+    const vC=parseFloat(document.getElementById('mos-vcontrato').value)||0;
+    const fin={vContrato:vC,vRecebido:parseFloat(document.getElementById('mos-vrecebido').value)||0,comissaoPct:parseFloat(document.getElementById('mos-cpct').value)||10,statusPgto:document.getElementById('mos-statusPgto').value,valor:_fmtBRL(vC)||'A confirmar'};
     if(isNew){
-      osData.push({id:'os'+Date.now(),nome,cliente:document.getElementById('mos-cli').value,valor:document.getElementById('mos-val').value||'A confirmar',resp:document.getElementById('mos-resp').value||'Sergio Pessoa',prazo:document.getElementById('mos-prazo').value,parceiro:document.getElementById('mos-parc').value,escopo:document.getElementById('mos-escopo').value,checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]});
+      osData.push({id:'os'+Date.now(),nome,cliente:document.getElementById('mos-cli').value,resp:document.getElementById('mos-resp').value||'Sergio Pessoa',prazo:document.getElementById('mos-prazo').value,parceiro:document.getElementById('mos-parc').value,escopo:document.getElementById('mos-escopo').value,...fin,checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]});
     } else {
-      d.nome=nome;d.cliente=document.getElementById('mos-cli').value;d.valor=document.getElementById('mos-val').value;d.resp=document.getElementById('mos-resp').value;d.prazo=document.getElementById('mos-prazo').value;d.parceiro=document.getElementById('mos-parc').value;d.escopo=document.getElementById('mos-escopo').value;
+      Object.assign(d,{nome,cliente:document.getElementById('mos-cli').value,resp:document.getElementById('mos-resp').value,prazo:document.getElementById('mos-prazo').value,parceiro:document.getElementById('mos-parc').value,escopo:document.getElementById('mos-escopo').value,...fin});
     }
     saveOSData();renderOS();closeModal();toast(isNew?'OS criada!':'OS atualizada!');
   });
@@ -1126,6 +1153,22 @@ function renderOS(){
       </div>
       <div class="os-prog-wrap"><div class="os-prog-lbl">${done}/${total} etapas concluídas</div><div class="os-prog-bar"><div class="os-prog-fill" style="width:${pct}%"></div></div></div>
       <div class="checklist">${os.checks.map((c,i)=>`<div class="ci${c.d?' done':''}" onclick="toggleCheck('${os.id}',${i})"><div class="ci-box">${c.d?'✓':''}</div><span class="ci-label">${c.l}</span></div>`).join('')}</div>
+      ${(()=>{
+        const vc=os.vContrato||0;const vr=os.vRecebido||0;const pct=os.comissaoPct||10;
+        if(!vc)return '';
+        const ct=Math.round(vc*pct/100);const cr=Math.round(vr*pct/100);
+        const pgLbl={aguardando:'⏳ Aguardando',parcial:'🔶 Parcial',pago:'✅ Pago',inadimplente:'🔴 Inadimplente'};
+        const pgClr={aguardando:'var(--mu)',parcial:'var(--m)',pago:'var(--g)',inadimplente:'var(--q)'};
+        const st=os.statusPgto||'aguardando';
+        const pctReceb=vc>0?Math.round(vr/vc*100):0;
+        return`<div style="margin-top:10px;padding:10px 14px;background:var(--card2);border-radius:8px;border:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px 20px;font-size:12px;align-items:center">
+          <div><span style="color:var(--mu)">Contratado</span><br><b>${_fmtBRL(vc)}</b></div>
+          <div><span style="color:var(--mu)">Recebido</span><br><b style="color:${vr>=vc?'var(--g)':'var(--m)'}">${_fmtBRL(vr)}</b> <span style="color:var(--mu2);font-size:10px">(${pctReceb}%)</span></div>
+          <div><span style="color:var(--mu)">Comissão ${pct}%</span><br><b style="color:var(--tl)">${_fmtBRL(ct)}</b></div>
+          <div><span style="color:var(--mu)">Comissão recebida</span><br><b style="color:var(--g)">${_fmtBRL(cr)}</b></div>
+          <div style="margin-left:auto"><span style="font-weight:700;color:${pgClr[st]}">${pgLbl[st]}</span></div>
+        </div>`;
+      })()}
     </div>`;
   }).join('');
 }
