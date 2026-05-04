@@ -235,6 +235,31 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 .lx-btn:hover{opacity:.88;}
 .lx-err{font-size:12px;color:var(--q);margin-top:10px;text-align:center;display:none;}
 .lx-foot{font-size:10px;color:var(--mu);text-align:center;margin-top:18px;}
+
+/* ─── MODAL ─── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:800;display:none;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mo-box{background:var(--card);border:1px solid var(--border);border-radius:16px;width:540px;max-width:96vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.65);display:flex;flex-direction:column;}
+.mo-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.mo-hd h3{font-size:15px;font-weight:700;}
+.mo-x{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer;padding:2px 7px;border-radius:6px;line-height:1;}
+.mo-x:hover{background:rgba(239,68,68,.1);color:var(--q);}
+.mo-body{padding:20px 22px;flex:1;}
+.mo-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;}
+.mf{margin-bottom:13px;}
+.mf label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mu2);margin-bottom:5px;}
+.mf input,.mf select,.mf textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--tx);outline:none;font-family:inherit;transition:border-color .15s;}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:rgba(99,102,241,.5);}
+.mf textarea{resize:vertical;min-height:68px;}
+.mf select option{background:var(--card2);}
+.mfr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-p{padding:9px 18px;background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.btn-p:hover{opacity:.85;}
+.btn-s{padding:9px 16px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--mu2);font-size:12px;font-weight:600;cursor:pointer;}
+.btn-s:hover{border-color:rgba(99,102,241,.3);color:var(--tx);}
+.btn-d{padding:7px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:var(--q);font-size:11px;font-weight:600;cursor:pointer;}
+.btn-d:hover{background:rgba(239,68,68,.18);}
+.mo-del{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
 </style>
 </head>
 <body>
@@ -327,12 +352,12 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <div class="kpi kq"><div class="kpi-l">🔴 Leads Quentes</div><div class="kpi-v">19</div><div class="kpi-s">Ação imediata</div></div>
       <div class="kpi km"><div class="kpi-l">Licitações</div><div class="kpi-v">11</div><div class="kpi-s">R$ 9mi+ viável</div></div>
       <div class="kpi kg"><div class="kpi-l">Parceiros Mapeados</div><div class="kpi-v">15</div><div class="kpi-s">Alto potencial: 6</div></div>
-      <div class="kpi kt"><div class="kpi-l">Receita Prevista</div><div class="kpi-v" style="font-size:22px">R$117k</div><div class="kpi-s">Cenário conservador</div></div>
+      <div class="kpi kt"><div class="kpi-l">Receita Prevista</div><div class="kpi-v" style="font-size:22px">R$169k</div><div class="kpi-s">Cenário conservador</div></div>
       <div class="kpi ko"><div class="kpi-l">Custo de Captação</div><div class="kpi-v">R$ 0</div><div class="kpi-s">ROI = ∞%</div></div>
     </div>
 
     <div class="ins-strip">
-      <div class="ins-item"><div class="ins-h">⚡ Ação imediata</div><p>19 leads quentes com contato confirmado. 9 com WhatsApp direto. Iniciar contatos hoje: Providência (41) 9 9982-9789, Pr1me (41) 99595-3560, Paulo Cesar (41) 99929-8991.</p></div>
+      <div class="ins-item"><div class="ins-h">⚡ Ação imediata</div><p>20 leads quentes com contato confirmado. 10 com WhatsApp direto. Prioridade: LEG Adm. (41) 99932-5158, Providência (41) 9 9982-9789, Pr1me (41) 99595-3560, Paulo Cesar (41) 99929-8991.</p></div>
       <div class="ins-item"><div class="ins-h">🏆 Maior oportunidade pública</div><p>Censes/SEJU — R$ 6,7 milhões em 28 unidades socioeducativas, 7 lotes regionais. Contratos em 30 dias. Monitorar subcontratações no portal SEJU.</p></div>
       <div class="ins-item"><div class="ins-h">🤝 Parceria mais estratégica</div><p>Fecci Engenharia (41) 9649-0220 — faz laudo de inspeção predial. Após o laudo, o cliente precisa contratar a obra. Funil automático para ALK.</p></div>
     </div>
@@ -390,7 +415,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <div class="kpi kg"><div class="kpi-l">Com WhatsApp</div><div class="kpi-v">9</div><div class="kpi-s">Contato imediato</div></div>
     </div>
     <div class="card">
-      <div class="sec-hd"><h2>📥 Todos os Leads — Score Automático</h2></div>
+      <div class="sec-hd"><h2>📥 Todos os Leads — Score Automático</h2><button onclick="novoLead()" style="padding:6px 16px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--ac);cursor:pointer">+ Novo Lead</button></div>
       <div class="frow">
         <button class="ftab fa" onclick="fc('ALL',this)">Todos</button>
         <button class="ftab fq" onclick="fc('Q',this)">🔴 Quentes (≥70)</button>
@@ -401,7 +426,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
         <button class="ftab" onclick="fc('parc',this)">Parceiro</button>
       </div>
       <div class="tbl-wrap">
-        <table><thead><tr><th>#</th><th>Lead</th><th>Tipo</th><th>Origem</th><th>Telefone</th><th>WhatsApp</th><th>E-mail</th><th>Site</th><th>Cidade</th><th>Score</th><th>Status</th></tr></thead>
+        <table><thead><tr><th>#</th><th>Lead</th><th>Tipo</th><th>Origem</th><th>Telefone</th><th>WhatsApp</th><th>E-mail</th><th>Site</th><th>Cidade</th><th>Score</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tbCapt"></tbody></table>
       </div>
     </div>
@@ -503,7 +528,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       <div class="kpi kg"><div class="kpi-l">Custo Captação</div><div class="kpi-v">R$ 0</div><div class="kpi-s">IA = custo zero</div></div>
       <div class="kpi kq"><div class="kpi-l">Receita Prevista</div><div class="kpi-v" style="font-size:22px">R$117k</div><div class="kpi-s">Cenário conservador</div></div>
       <div class="kpi km"><div class="kpi-l">ROI</div><div class="kpi-v">∞%</div><div class="kpi-s">Custo=R$0</div></div>
-      <div class="kpi kt"><div class="kpi-l">Custo por Lead</div><div class="kpi-v">R$ 0</div><div class="kpi-s">53 leads · zero custo</div></div>
+      <div class="kpi kt"><div class="kpi-l">Custo por Lead</div><div class="kpi-v">R$ 0</div><div class="kpi-s">56 leads · zero custo</div></div>
     </div>
     <div class="row2">
       <div class="card"><div class="card-t">Receita prevista por canal (R$)</div><div class="chart-h"><canvas id="cROIcanal"></canvas></div></div>
@@ -523,6 +548,15 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 
   </div><!-- /content -->
 </div><!-- /main -->
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeModal()">
+  <div class="mo-box">
+    <div class="mo-hd"><h3 id="mo-title">Formulário</h3><button class="mo-x" onclick="closeModal()">✕</button></div>
+    <div class="mo-body" id="mo-body"></div>
+    <div class="mo-foot"><button class="btn-s" onclick="closeModal()">Cancelar</button><button class="btn-p" id="mo-save" onclick="submitModal()">Salvar</button></div>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════════
@@ -561,11 +595,36 @@ if(sessionStorage.getItem('co_auth')!=='1'){
 }
 
 // ═══════════════════════════════════════
+//  UTILITÁRIOS
+// ═══════════════════════════════════════
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+let _moSave=null;
+function openModal(title,body,saveFn){
+  document.getElementById('mo-title').textContent=title;
+  document.getElementById('mo-body').innerHTML=body;
+  _moSave=saveFn||null;
+  const btn=document.getElementById('mo-save');
+  if(btn)btn.style.display=saveFn?'':'none';
+  document.getElementById('mo').classList.add('open');
+  setTimeout(()=>{const f=document.querySelector('#mo-body input,#mo-body select,#mo-body textarea');if(f)f.focus();},60);
+}
+function closeModal(){document.getElementById('mo').classList.remove('open');_moSave=null;}
+function submitModal(){if(_moSave)_moSave();}
+
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;right:24px;z-index:9500;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:opacity .4s;background:'+(type==='err'?'#ef4444':'#22c55e');
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2600);
+}
+
+// ═══════════════════════════════════════
 //  DADOS
 // ═══════════════════════════════════════
 
 // ── CAPTAÇÃO ──
-const captData = [
+const _captDef = [
   // ADMINISTRADORAS
   {id:'c01',nome:'Administradora Paraná',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3883-1700',wa:'',email:'',site:'administradoraparana.com.br',cidade:'Curitiba'},
   {id:'c02',nome:'Inconal Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3223-8551',wa:'(41) 9 9900-3111',email:'contato@inconal.com.br',site:'inconal.com.br',cidade:'Curitiba'},
@@ -579,7 +638,7 @@ const captData = [
   // SÍNDICOS
   {id:'c10',nome:'Providência Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 3117-9801',wa:'(41) 9 9982-9789',email:'contato@providenciasindicos.com.br',site:'providenciasindicos.com.br',cidade:'Curitiba'},
   {id:'c11',nome:'Pr1me Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 99595-3560',wa:'(41) 99595-3560',email:'contato@pr1mesindicos.com.br',site:'pr1mesindicos.com.br',cidade:'Curitiba'},
-  {id:'c12',nome:'Positiva Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 2391-0843',wa:'',email:'contato@positivasindicos.com.br',site:'positivasindicos.com.br',cidade:'Curitiba'},
+  {id:'c12',nome:'Positiva Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 2391-0843 / (41) 3086-0103',wa:'',email:'contato@positivasindicos.com.br',site:'positivasindicos.com.br',cidade:'Curitiba'},
   {id:'c13',nome:'BA Síndicos Pro',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 98777-1119',wa:'(41) 98777-1119',email:'',site:'basindicospro.com.br',cidade:'Curitiba'},
   {id:'c14',nome:'Inconal Síndico',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 3223-8551',wa:'(41) 9 9900-3111',email:'contato@inconal.com.br',site:'inconal.com.br',cidade:'Curitiba'},
   {id:'c15',nome:'Síndico Paulo Cesar',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'(41) 99929-8991',wa:'(41) 99929-8991',email:'sindicopaulocesar@gmail.com',site:'sindlink.com',cidade:'Curitiba'},
@@ -590,6 +649,9 @@ const captData = [
   {id:'c20',nome:'Paulo Pinheiro Síndico',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'sindicopaulopinheiro.com.br',cidade:'Curitiba'},
   {id:'c21',nome:'Assessoria Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'assessoriasindicos.com.br',cidade:'Curitiba'},
   {id:'c22',nome:'Becker Síndicos',tipo:'Síndico Prof.',origem:'CONDOObra',tel:'',wa:'',email:'',site:'beckersa.com.br',cidade:'Curitiba'},
+  {id:'c27',nome:'LEG Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3018-8448',wa:'(41) 99932-5158',email:'contato@legadministradora.com.br',site:'legadministradora.com.br',cidade:'Curitiba'},
+  {id:'c28',nome:'Vox Administradora',tipo:'Administradora',origem:'CONDOObra',tel:'(41) 3319-0969',wa:'',email:'',site:'voxcondominios.com.br',cidade:'Curitiba'},
+  {id:'c29',nome:'Champagnat Tower',tipo:'Condomínio',origem:'CONDOObra',tel:'',wa:'',email:'',site:'prediosdecuritiba.com.br',cidade:'Curitiba'},
   // FACILITIES
   {id:'c23',nome:'TG Services',tipo:'Facility',origem:'CONDOObra',tel:'(41) 3203-9462',wa:'',email:'tgservices@tgservices.com.br',site:'tgservices.com.br',cidade:'Curitiba'},
   {id:'c24',nome:'Melucky Engenharia',tipo:'Facility',origem:'CONDOObra',tel:'',wa:'',email:'',site:'melucky.com.br',cidade:'Curitiba'},
@@ -615,6 +677,56 @@ const captData = [
   {id:'p09',nome:'Fibersals Impermeabilização',tipo:'Parceiro',origem:'MAPSParcerias',tel:'0800 600 1488',wa:'',email:'',site:'fibersals.com.br',cidade:'Curitiba'},
   {id:'p10',nome:'Ambiental Engenharia',tipo:'Parceiro',origem:'MAPSParcerias',tel:'(41) 3349-xxxx',wa:'',email:'',site:'ambientalimper.com.br',cidade:'Curitiba'},
 ];
+// Carrega do localStorage (ou usa padrões acima)
+let captData;
+try{const _s=localStorage.getItem('co_capt_full');captData=_s?JSON.parse(_s):[..._captDef];}catch(e){captData=[..._captDef];}
+function saveCaptData(){try{localStorage.setItem('co_capt_full',JSON.stringify(captData));}catch(e){}}
+
+// ── CRUD CAPTAÇÃO ──
+function novoLead(){
+  openModal('+ Novo Lead',`
+    <div class="mfr"><div class="mf"><label>Nome *</label><input id="mc-nome" placeholder="Ex: Condomínio Silva"></div>
+    <div class="mf"><label>Tipo</label><select id="mc-tipo"><option>Administradora</option><option>Síndico Prof.</option><option>Facility</option><option>Licitação</option><option>Parceiro</option><option>Adm./Síndico</option><option>Condomínio</option></select></div></div>
+    <div class="mfr"><div class="mf"><label>Origem</label><input id="mc-orig" value="Manual"></div><div class="mf"><label>Cidade</label><input id="mc-cid" value="Curitiba"></div></div>
+    <div class="mfr"><div class="mf"><label>Telefone</label><input id="mc-tel" placeholder="(41) 99999-9999"></div><div class="mf"><label>WhatsApp</label><input id="mc-wa" placeholder="(41) 99999-9999"></div></div>
+    <div class="mfr"><div class="mf"><label>E-mail</label><input id="mc-email" type="email"></div><div class="mf"><label>Site</label><input id="mc-site" placeholder="site.com.br"></div></div>
+  `,function(){
+    const nome=document.getElementById('mc-nome').value.trim();
+    if(!nome)return toast('Nome é obrigatório','err');
+    captData.push({id:'c'+Date.now(),nome,tipo:document.getElementById('mc-tipo').value,origem:document.getElementById('mc-orig').value||'Manual',tel:document.getElementById('mc-tel').value,wa:document.getElementById('mc-wa').value,email:document.getElementById('mc-email').value,site:document.getElementById('mc-site').value,cidade:document.getElementById('mc-cid').value||'Curitiba'});
+    saveCaptData();renderCapt();closeModal();toast('Lead adicionado!');
+  });
+}
+function editLead(id){
+  const d=captData.find(x=>x.id===id);if(!d)return;
+  openModal('Editar Lead',`
+    <div class="mfr"><div class="mf"><label>Nome *</label><input id="mc-nome" value="${esc(d.nome)}"></div>
+    <div class="mf"><label>Tipo</label><select id="mc-tipo">${['Administradora','Síndico Prof.','Facility','Licitação','Parceiro','Adm./Síndico','Condomínio'].map(t=>`<option${t===d.tipo?' selected':''}>${t}</option>`).join('')}</select></div></div>
+    <div class="mfr"><div class="mf"><label>Origem</label><input id="mc-orig" value="${esc(d.origem||'')}"></div><div class="mf"><label>Cidade</label><input id="mc-cid" value="${esc(d.cidade||'Curitiba')}"></div></div>
+    <div class="mfr"><div class="mf"><label>Telefone</label><input id="mc-tel" value="${esc(d.tel||'')}"></div><div class="mf"><label>WhatsApp</label><input id="mc-wa" value="${esc(d.wa||'')}"></div></div>
+    <div class="mfr"><div class="mf"><label>E-mail</label><input id="mc-email" value="${esc(d.email||'')}"></div><div class="mf"><label>Site</label><input id="mc-site" value="${esc(d.site||'')}"></div></div>
+    <div class="mo-del"><button class="btn-d" onclick="deleteLead('${id}')">🗑 Excluir Lead</button></div>
+  `,function(){
+    const nome=document.getElementById('mc-nome').value.trim();if(!nome)return toast('Nome é obrigatório','err');
+    d.nome=nome;d.tipo=document.getElementById('mc-tipo').value;d.origem=document.getElementById('mc-orig').value;d.cidade=document.getElementById('mc-cid').value;
+    d.tel=document.getElementById('mc-tel').value;d.wa=document.getElementById('mc-wa').value;d.email=document.getElementById('mc-email').value;d.site=document.getElementById('mc-site').value;
+    saveCaptData();renderCapt();closeModal();toast('Lead atualizado!');
+  });
+}
+function deleteLead(id){
+  if(!confirm('Excluir este lead?'))return;
+  captData.splice(captData.findIndex(x=>x.id===id),1);
+  saveCaptData();renderCapt();closeModal();toast('Lead excluído.');
+}
+function promoverParaKanban(id){
+  const d=captData.find(x=>x.id===id);if(!d)return;
+  const tm={'Administradora':'adm','Adm./Síndico':'adm','Síndico Prof.':'sind','Facility':'parc','Licitação':'licit','Parceiro':'parc','Condomínio':'adm'};
+  kanbanData.push({id:'k'+Date.now(),nome:d.nome,meta:d.tipo+(d.cidade?' · '+d.cidade:''),valor:'A confirmar',prob:50,tipo:tm[d.tipo]||'parc',stage:'novo',acao:'',resp:'',obs:''});
+  saveKanban();buildKanban();
+  const si=document.querySelector('.sb-item[data-title="Comercial — Pipeline"]');
+  if(si)nav('comercial',si);
+  toast('Lead enviado para o Kanban!');
+}
 
 function calcScore(d){
   let s=0;
@@ -638,18 +750,19 @@ function renderCapt(){
   if(captFilter==='Q') data=captData.filter(d=>calcScore(d)>=70);
   else if(captFilter==='M') data=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;});
   else if(captFilter==='F') data=captData.filter(d=>calcScore(d)<40);
-  else if(captFilter==='condo') data=captData.filter(d=>d.tipo.includes('Admin')||d.tipo.includes('Síndico')||d.tipo.includes('Facility')||d.tipo.includes('Adm'));
+  else if(captFilter==='condo') data=captData.filter(d=>d.tipo.includes('Admin')||d.tipo.includes('Síndico')||d.tipo.includes('Facility')||d.tipo.includes('Adm')||d.tipo==='Condomínio');
   else if(captFilter==='licit') data=captData.filter(d=>d.tipo==='Licitação');
   else if(captFilter==='parc') data=captData.filter(d=>d.tipo==='Parceiro');
   const q=captData.filter(d=>calcScore(d)>=70).length;
   const m=captData.filter(d=>{const s=calcScore(d);return s>=40&&s<70;}).length;
-  document.getElementById('kCaptQte').textContent=q;
-  document.getElementById('kCaptMrn').textContent=m;
+  const el1=document.getElementById('kCaptQte');if(el1)el1.textContent=q;
+  const el2=document.getElementById('kCaptMrn');if(el2)el2.textContent=m;
+  const badge=document.getElementById('badge-captacao');if(badge)badge.textContent=captData.length;
   document.getElementById('tbCapt').innerHTML=data.map((d,i)=>`<tr>
     <td style="color:var(--mu);font-size:11px">${i+1}</td>
-    <td style="font-size:13px;font-weight:600">${d.nome}</td>
+    <td><span style="font-size:13px;font-weight:600;cursor:pointer;color:var(--tx)" onclick="editLead('${d.id}')" title="Editar lead">${esc(d.nome)}</span></td>
     <td><span class="pill pT" style="font-size:9px">${d.tipo}</span></td>
-    <td style="font-size:11px;color:var(--mu2)">${d.origem}</td>
+    <td style="font-size:11px;color:var(--mu2)">${d.origem||'—'}</td>
     <td style="color:var(--ac);font-size:12px">${d.tel||'<span style="color:var(--mu)">—</span>'}</td>
     <td>${d.wa&&!d.wa.includes('xx')?`<a href="https://wa.me/55${d.wa.replace(/\D/g,'')}" target="_blank" style="color:var(--g);font-size:12px">💬 ${d.wa}</a>`:'<span style="color:var(--mu)">—</span>'}</td>
     <td style="font-size:11px;color:var(--tl)">${d.email||'<span style="color:var(--mu)">—</span>'}</td>
@@ -657,6 +770,10 @@ function renderCapt(){
     <td style="font-size:11px;color:var(--mu2)">${d.cidade||'—'}</td>
     <td>${scoreBar(calcScore(d))}</td>
     <td>${scorePill(calcScore(d))}</td>
+    <td style="white-space:nowrap">
+      <button onclick="promoverParaKanban('${d.id}')" style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--ac);cursor:pointer;margin-right:4px" title="Enviar para Kanban">→ Kanban</button>
+      <button onclick="editLead('${d.id}')" style="padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;border:1px solid var(--border);background:transparent;color:var(--mu2);cursor:pointer">✎</button>
+    </td>
   </tr>`).join('');
 }
 renderCapt();
@@ -665,20 +782,25 @@ renderCapt();
 const stages=['novo','contato','reuniao','visita','orcamento','negociacao','fechado','perdido'];
 const stageLabels={novo:'Novo',contato:'Contato',reuniao:'Reunião',visita:'Visita',orcamento:'Orçamento',negociacao:'Negociação',fechado:'Fechado',perdido:'Perdido'};
 
-let kanbanData=[
-  {id:'k01',nome:'Providência Síndicos',meta:'Síndico · Batel',valor:'R$ 18.000',prob:75,tipo:'sind',stage:'novo'},
-  {id:'k02',nome:'Pr1me Síndicos',meta:'Síndico · Jd. Sto. Antônio',valor:'R$ 25.000',prob:70,tipo:'sind',stage:'novo'},
-  {id:'k03',nome:'BA Síndicos Pro',meta:'Síndico · Curitiba',valor:'R$ 15.000',prob:68,tipo:'sind',stage:'novo'},
-  {id:'k04',nome:'Paulo Cesar Síndico',meta:'Síndico · CWB',valor:'R$ 12.000',prob:65,tipo:'sind',stage:'novo'},
-  {id:'k05',nome:'Inconal Adm.',meta:'Administradora · Centro',valor:'R$ 45.000',prob:60,tipo:'adm',stage:'novo'},
-  {id:'k06',nome:'Adm. Paraná',meta:'Administradora · Centro',valor:'R$ 60.000',prob:55,tipo:'adm',stage:'novo'},
-  {id:'k07',nome:'CMPremium',meta:'Administradora · PR',valor:'R$ 80.000',prob:50,tipo:'adm',stage:'novo'},
-  {id:'k08',nome:'TG Services',meta:'Facility · Portão',valor:'R$ 20.000',prob:60,tipo:'parc',stage:'novo'},
-  {id:'k09',nome:'Câmara Corbélia',meta:'Licitação · Risco Baixo',valor:'A confirmar',prob:40,tipo:'licit',stage:'novo'},
-  {id:'k10',nome:'COHAPAR Reforma',meta:'Licitação · Prorrogado',valor:'A confirmar',prob:35,tipo:'licit',stage:'novo'},
-  {id:'k11',nome:'CMC Manutenção',meta:'Licitação · Anual',valor:'A confirmar',prob:30,tipo:'licit',stage:'novo'},
-  {id:'k12',nome:'Fecci Engenharia',meta:'Parceria · Laudo→Obra',valor:'R$ 18.000',prob:55,tipo:'parc',stage:'contato'},
+const _kanbanDef=[
+  {id:'k01',nome:'Providência Síndicos',meta:'Síndico · Batel',valor:'R$ 18.000',prob:75,tipo:'sind',stage:'novo',acao:'Ligar hoje',resp:'Sergio',obs:''},
+  {id:'k02',nome:'Pr1me Síndicos',meta:'Síndico · Jd. Sto. Antônio',valor:'R$ 25.000',prob:70,tipo:'sind',stage:'novo',acao:'WhatsApp',resp:'Sergio',obs:''},
+  {id:'k03',nome:'BA Síndicos Pro',meta:'Síndico · Curitiba',valor:'R$ 15.000',prob:68,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k04',nome:'Paulo Cesar Síndico',meta:'Síndico · CWB',valor:'R$ 12.000',prob:65,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k05',nome:'Inconal Adm.',meta:'Administradora · Centro',valor:'R$ 45.000',prob:60,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k06',nome:'Adm. Paraná',meta:'Administradora · Centro',valor:'R$ 60.000',prob:55,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k07',nome:'CMPremium',meta:'Administradora · PR',valor:'R$ 80.000',prob:50,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k08',nome:'TG Services',meta:'Facility · Portão',valor:'R$ 20.000',prob:60,tipo:'parc',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k09',nome:'Câmara Corbélia',meta:'Licitação · Risco Baixo',valor:'A confirmar',prob:40,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k10',nome:'COHAPAR Reforma',meta:'Licitação · Prorrogado',valor:'A confirmar',prob:35,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k11',nome:'CMC Manutenção',meta:'Licitação · Anual',valor:'A confirmar',prob:30,tipo:'licit',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k12',nome:'Fecci Engenharia',meta:'Parceria · Laudo→Obra',valor:'R$ 18.000',prob:55,tipo:'parc',stage:'contato',acao:'Reunião agendada',resp:'Sergio',obs:'Funil laudo→obra'},
+  {id:'k13',nome:'LEG Administradora',meta:'Administradora · Vila Izabel',valor:'R$ 40.000',prob:65,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k14',nome:'Vox Administradora',meta:'Administradora · CWB + Londrina',valor:'R$ 55.000',prob:60,tipo:'adm',stage:'novo',acao:'',resp:'',obs:''},
+  {id:'k15',nome:'Champagnat Tower',meta:'Condomínio · Bigorrilho · 32 anos',valor:'R$ 35.000',prob:70,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''},
 ];
+let kanbanData;
+try{const _s=localStorage.getItem('co_kanban_full');kanbanData=_s?JSON.parse(_s):[..._kanbanDef];}catch(e){kanbanData=[..._kanbanDef];}
 
 function buildKanban(){
   const kb=document.getElementById('kanban');
@@ -696,7 +818,21 @@ function buildKanban(){
       e.preventDefault();zone.classList.remove('dov');
       const id=e.dataTransfer.getData('text');
       const card=document.getElementById(id);
-      if(card){zone.appendChild(card);const d=kanbanData.find(c=>c.id===id);if(d)d.stage=s;updateKanbanKPIs();saveKanban();}
+      if(card){
+        zone.appendChild(card);
+        const d=kanbanData.find(c=>c.id===id);
+        if(d){
+          const prev=d.stage; d.stage=s;
+          updateKanbanKPIs(); saveKanban();
+          if(s==='fechado'&&prev!=='fechado'){
+            setTimeout(()=>{
+              if(confirm(`🎉 "${d.nome}" foi para Fechado!\n\nDeseja criar uma OS de Execução agora?`)){
+                _openOSModal(null,{nome:d.nome+' — OS',cliente:d.nome,valor:d.valor});
+              }
+            },200);
+          }
+        }
+      }
     });
     cards.forEach(c=>zone.appendChild(makeCard(c)));
   });
@@ -705,7 +841,17 @@ function buildKanban(){
 function makeCard(d){
   const el=document.createElement('div');
   el.className='k-card';el.id=d.id;el.draggable=true;
-  el.innerHTML=`<div class="k-card-name">${d.nome}</div><div class="k-card-meta">${d.meta}</div><div class="k-card-val">${d.valor}</div><div class="k-card-prob-bar"><div class="k-card-prob-fill" style="width:${d.prob}%"></div></div><div class="k-card-ft"><span class="k-card-prob">Prob: <b>${d.prob}%</b></span><span class="k-type ${d.tipo}">${d.tipo==='sind'?'Síndico':d.tipo==='adm'?'Adm.':d.tipo==='licit'?'Licitação':'Parceria'}</span></div>`;
+  const acaoHtml=d.acao?`<div style="font-size:10px;color:var(--tl);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">→ ${esc(d.acao)}</div>`:'';
+  el.innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px">
+      <div class="k-card-name" style="margin-bottom:3px;flex:1">${esc(d.nome)}</div>
+      <button onclick="editCard('${d.id}')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 2px;flex-shrink:0;line-height:1" title="Editar card">✎</button>
+    </div>
+    <div class="k-card-meta">${esc(d.meta)}</div>
+    <div class="k-card-val">${esc(d.valor)}</div>
+    <div class="k-card-prob-bar"><div class="k-card-prob-fill" style="width:${d.prob}%"></div></div>
+    <div class="k-card-ft"><span class="k-card-prob">Prob: <b>${d.prob}%</b></span><span class="k-type ${d.tipo}">${d.tipo==='sind'?'Síndico':d.tipo==='adm'?'Adm.':d.tipo==='licit'?'Licitação':'Parceria'}</span></div>
+    ${acaoHtml}`;
   el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',d.id);el.classList.add('dragging');});
   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
   return el;
@@ -719,10 +865,52 @@ function updateKanbanKPIs(){
   document.getElementById('kComValor').textContent=v?`R$ ${(v/1000).toFixed(0)}k`:'—';
   stages.forEach(s=>{const el=document.getElementById('cnt-'+s);if(el)el.textContent=kanbanData.filter(c=>c.stage===s).length;});
 }
-// ── PERSISTÊNCIA — KANBAN ──
-function saveKanban(){try{localStorage.setItem('co_kanban',JSON.stringify(kanbanData.map(c=>({id:c.id,stage:c.stage}))));}catch(e){}}
-function loadKanban(){try{const s=localStorage.getItem('co_kanban');if(s){JSON.parse(s).forEach(x=>{const d=kanbanData.find(c=>c.id===x.id);if(d)d.stage=x.stage;});}}catch(e){}}
-loadKanban();
+function saveKanban(){try{localStorage.setItem('co_kanban_full',JSON.stringify(kanbanData));}catch(e){}}
+
+// ── CRUD KANBAN ──
+function novoCard(){_openCardModal(null);}
+function editCard(id){const d=kanbanData.find(c=>c.id===id);if(d)_openCardModal(d);}
+function deleteCard(id){
+  if(!confirm('Excluir este card?'))return;
+  kanbanData.splice(kanbanData.findIndex(c=>c.id===id),1);
+  saveKanban();buildKanban();closeModal();toast('Card excluído.');
+}
+function _openCardModal(d){
+  const isNew=!d;
+  const v=d||{nome:'',meta:'',valor:'',prob:50,tipo:'sind',stage:'novo',acao:'',resp:'',obs:''};
+  openModal(isNew?'+ Novo Card Kanban':'Editar Card',`
+    <div class="mfr">
+      <div class="mf"><label>Nome / Lead *</label><input id="mk-nome" value="${esc(v.nome)}" placeholder="Nome do lead"></div>
+      <div class="mf"><label>Tipo</label><select id="mk-tipo">
+        <option value="sind"${v.tipo==='sind'?' selected':''}>Síndico</option>
+        <option value="adm"${v.tipo==='adm'?' selected':''}>Administradora</option>
+        <option value="licit"${v.tipo==='licit'?' selected':''}>Licitação</option>
+        <option value="parc"${v.tipo==='parc'?' selected':''}>Parceria</option>
+      </select></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Descrição</label><input id="mk-meta" value="${esc(v.meta)}" placeholder="Ex: Síndico · Batel"></div>
+      <div class="mf"><label>Estágio</label><select id="mk-stage">${stages.map(s=>`<option value="${s}"${v.stage===s?' selected':''}>${stageLabels[s]}</option>`).join('')}</select></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Valor Estimado</label><input id="mk-valor" value="${esc(v.valor)}" placeholder="R$ 15.000"></div>
+      <div class="mf"><label>Probabilidade (%)</label><input id="mk-prob" type="number" min="0" max="100" value="${v.prob}"></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Próxima Ação</label><input id="mk-acao" value="${esc(v.acao||'')}" placeholder="Ex: Ligar segunda-feira"></div>
+      <div class="mf"><label>Responsável</label><input id="mk-resp" value="${esc(v.resp||'')}" placeholder="Nome"></div>
+    </div>
+    <div class="mf"><label>Observações</label><textarea id="mk-obs">${esc(v.obs||'')}</textarea></div>
+    ${!isNew?`<div class="mo-del"><button class="btn-d" onclick="deleteCard('${d.id}')">🗑 Excluir Card</button></div>`:''}
+  `,function(){
+    const nome=document.getElementById('mk-nome').value.trim();
+    if(!nome)return toast('Nome é obrigatório','err');
+    const obj={nome,meta:document.getElementById('mk-meta').value,valor:document.getElementById('mk-valor').value||'A confirmar',prob:parseInt(document.getElementById('mk-prob').value)||50,tipo:document.getElementById('mk-tipo').value,stage:document.getElementById('mk-stage').value,acao:document.getElementById('mk-acao').value,resp:document.getElementById('mk-resp').value,obs:document.getElementById('mk-obs').value};
+    if(isNew){kanbanData.push({id:'k'+Date.now(),...obj});}
+    else{Object.assign(d,obj);}
+    saveKanban();buildKanban();closeModal();toast(isNew?'Card criado!':'Card atualizado!');
+  });
+}
 buildKanban();
 
 // ── PARCEIROS ──
@@ -768,29 +956,74 @@ function renderParc(){
 renderParc();
 
 // ── EXECUÇÃO / OS ──
-const osData=[
+const _osDef=[
   {id:'os01',nome:'Syndikos — Pintura Hall de Entrada',cliente:'Syndikos Gestão Condominial',valor:'R$ 18.000',resp:'Sergio Pessoa',prazo:'15/06/2026',
    checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:true},{l:'Visita técnica',d:true},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
   {id:'os02',nome:'Inconal — Reforma Fachada Bloco A',cliente:'Inconal Administradora',valor:'R$ 25.000',resp:'Sergio Pessoa',prazo:'30/07/2026',
    checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]},
 ];
+let osData;
+try{const _s=localStorage.getItem('co_os_full');osData=_s?JSON.parse(_s):[..._osDef];}catch(e){osData=[..._osDef];}
+function saveOSData(){try{localStorage.setItem('co_os_full',JSON.stringify(osData));}catch(e){}}
+
 function toggleCheck(osId,idx){
-  const os=osData.find(o=>o.id===osId);if(os){os.checks[idx].d=!os.checks[idx].d;saveOS();}renderOS();
+  const os=osData.find(o=>o.id===osId);
+  if(os){os.checks[idx].d=!os.checks[idx].d;saveOSData();}
+  renderOS();
+}
+function novaOS(){_openOSModal(null,{});}
+function editOS(id){const d=osData.find(o=>o.id===id);if(d)_openOSModal(d,{});}
+function deleteOS(id){
+  if(!confirm('Excluir esta OS?'))return;
+  osData.splice(osData.findIndex(o=>o.id===id),1);
+  saveOSData();renderOS();closeModal();toast('OS excluída.');
+}
+function _openOSModal(d,pre){
+  const isNew=!d;
+  const v=d||{nome:pre.nome||'',cliente:pre.cliente||'',valor:pre.valor||'',resp:'Sergio Pessoa',prazo:''};
+  openModal(isNew?'+ Nova Ordem de Serviço':'Editar OS',`
+    <div class="mf"><label>Nome da OS *</label><input id="mos-nome" value="${esc(v.nome)}" placeholder="Ex: Condomínio Silva — Pintura Fachada"></div>
+    <div class="mfr">
+      <div class="mf"><label>Cliente</label><input id="mos-cli" value="${esc(v.cliente||'')}" placeholder="Nome do condomínio"></div>
+      <div class="mf"><label>Valor</label><input id="mos-val" value="${esc(v.valor||'')}" placeholder="R$ 15.000"></div>
+    </div>
+    <div class="mfr">
+      <div class="mf"><label>Responsável</label><input id="mos-resp" value="${esc(v.resp||'Sergio Pessoa')}"></div>
+      <div class="mf"><label>Prazo</label><input id="mos-prazo" value="${esc(v.prazo||'')}" placeholder="DD/MM/AAAA"></div>
+    </div>
+    ${!isNew?`<div class="mo-del"><button class="btn-d" onclick="deleteOS('${d.id}')">🗑 Excluir OS</button></div>`:''}
+  `,function(){
+    const nome=document.getElementById('mos-nome').value.trim();
+    if(!nome)return toast('Nome é obrigatório','err');
+    if(isNew){
+      osData.push({id:'os'+Date.now(),nome,cliente:document.getElementById('mos-cli').value,valor:document.getElementById('mos-val').value||'A confirmar',resp:document.getElementById('mos-resp').value||'Sergio Pessoa',prazo:document.getElementById('mos-prazo').value,checks:[{l:'OS criada',d:true},{l:'Contrato assinado',d:false},{l:'Visita técnica',d:false},{l:'Orçamento final',d:false},{l:'Aditivos',d:false},{l:'Medições',d:false},{l:'Recebimentos',d:false},{l:'Comissão recebida',d:false}]});
+    } else {
+      d.nome=nome;d.cliente=document.getElementById('mos-cli').value;d.valor=document.getElementById('mos-val').value;d.resp=document.getElementById('mos-resp').value;d.prazo=document.getElementById('mos-prazo').value;
+    }
+    saveOSData();renderOS();closeModal();toast(isNew?'OS criada!':'OS atualizada!');
+  });
 }
 function renderOS(){
-  document.getElementById('osList').innerHTML=osData.map(os=>{
+  document.getElementById('osList').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <p style="font-size:12px;color:var(--mu2)">${osData.length} ordem(ns) de serviço</p>
+      <button onclick="novaOS()" style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--g);cursor:pointer">+ Nova OS</button>
+    </div>
+  `+osData.map(os=>{
     const done=os.checks.filter(c=>c.d).length;const total=os.checks.length;const pct=Math.round(done/total*100);
     return`<div class="os-card">
-      <div class="os-hd"><div><div class="os-title">${os.nome}</div><div class="os-meta">${os.cliente} · ${os.valor} · Resp: ${os.resp} · Prazo: ${os.prazo}</div></div><span class="pill ${pct===100?'pG':'pM'}">${pct}%</span></div>
+      <div class="os-hd">
+        <div><div class="os-title">${esc(os.nome)}</div><div class="os-meta">${esc(os.cliente)} · ${esc(os.valor)} · Resp: ${esc(os.resp)} · Prazo: ${esc(os.prazo||'A definir')}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="pill ${pct===100?'pG':'pM'}">${pct}%</span>
+          <button onclick="editOS('${os.id}')" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--mu2);cursor:pointer;padding:3px 9px;font-size:11px">✎ Editar</button>
+        </div>
+      </div>
       <div class="os-prog-wrap"><div class="os-prog-lbl">${done}/${total} etapas concluídas</div><div class="os-prog-bar"><div class="os-prog-fill" style="width:${pct}%"></div></div></div>
       <div class="checklist">${os.checks.map((c,i)=>`<div class="ci${c.d?' done':''}" onclick="toggleCheck('${os.id}',${i})"><div class="ci-box">${c.d?'✓':''}</div><span class="ci-label">${c.l}</span></div>`).join('')}</div>
     </div>`;
   }).join('');
 }
-// ── PERSISTÊNCIA — OS ──
-function saveOS(){try{localStorage.setItem('co_os',JSON.stringify(osData.map(o=>({id:o.id,checks:o.checks}))));}catch(e){}}
-function loadOS(){try{const s=localStorage.getItem('co_os');if(s){JSON.parse(s).forEach(x=>{const d=osData.find(o=>o.id===x.id);if(d)d.checks=x.checks;});}}catch(e){}}
-loadOS();
 renderOS();
 
 // ── LICITAÇÕES ──
@@ -934,38 +1167,26 @@ function nav(id,el){
 
 // ── EXPORT / IMPORT ──
 function exportData(){
-  const data={v:2,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData};
+  const data={v:3,date:new Date().toLocaleDateString('pt-BR'),kanban:kanbanData,os:osData,capt:captData};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`capturaobra_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Backup exportado!');
 }
 function importData(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{try{
     const d=JSON.parse(ev.target.result);
-    if(d.kanban)d.kanban.forEach(s=>{const c=kanbanData.find(c=>c.id===s.id);if(c)c.stage=s.stage;});
-    if(d.os)d.os.forEach(s=>{const o=osData.find(o=>o.id===s.id);if(o)o.checks=s.checks;});
-    saveKanban();saveOS();buildKanban();renderOS();
-    alert('✅ Dados importados com sucesso!');
-  }catch(err){alert('❌ Erro ao importar. Verifique o arquivo JSON.');}};
+    if(d.kanban){kanbanData=d.kanban;saveKanban();buildKanban();}
+    if(d.os){osData=d.os;saveOSData();renderOS();}
+    if(d.capt){captData=d.capt;saveCaptData();renderCapt();}
+    toast('Dados importados com sucesso!');
+  }catch(err){toast('Erro ao importar. Verifique o arquivo JSON.','err');}};
   r.readAsText(f);e.target.value='';
 }
 
-// ── NOVO CARD KANBAN ──
-function novoCard(){
-  const nome=prompt('Nome do lead/oportunidade:');if(!nome)return;
-  const valor=prompt('Valor estimado (ex: R$ 15.000):','R$ 0');
-  const tipos=['sind','adm','licit','parc'];const tNomes=['Síndico','Adm.','Licitação','Parceria'];
-  let tipoIdx=0;
-  const tipoStr=prompt('Tipo: 1=Síndico, 2=Adm., 3=Licitação, 4=Parceria','1');
-  tipoIdx=parseInt(tipoStr)-1;if(tipoIdx<0||tipoIdx>3)tipoIdx=0;
-  const prob=parseInt(prompt('Probabilidade % (0-100):','50'))||50;
-  const id='k'+(Date.now());
-  kanbanData.push({id,nome,meta:'Novo lead',valor:valor||'A confirmar',prob,tipo:tipos[tipoIdx],stage:'novo'});
-  saveKanban();buildKanban();
-}
 
 // ── CHARTS ──
 const co={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11},padding:10}}}};
