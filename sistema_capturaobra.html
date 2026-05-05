@@ -321,6 +321,36 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 .btn-d{padding:7px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:var(--q);font-size:11px;font-weight:600;cursor:pointer;}
 .btn-d:hover{background:rgba(239,68,68,.18);}
 .mo-del{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
+
+/* ─── EQUIPE DE AGENTES ─── */
+.ag-page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.ag-page-hd-left h2{font-size:17px;font-weight:800;}
+.ag-page-hd-left p{font-size:11px;color:var(--mu2);margin-top:2px;}
+.ag-stats{display:flex;gap:8px;}
+.ag-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 18px;text-align:center;min-width:70px;}
+.ag-stat-v{font-size:22px;font-weight:800;}
+.ag-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--mu2);margin-top:1px;}
+.ag-dept{margin-bottom:30px;}
+.ag-dept-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:11px 16px;background:var(--card);border:1px solid var(--border);border-left-width:3px;border-radius:10px;}
+.ag-dept-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.ag-dept-info{flex:1;}
+.ag-dept-name{font-size:12px;font-weight:700;}
+.ag-dept-desc{font-size:10px;color:var(--mu2);margin-top:1px;}
+.ag-cnt-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--card2);border:1px solid var(--border);color:var(--mu);}
+.ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:9px;}
+.ag-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:all .18s;position:relative;overflow:hidden;}
+.ag-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ag-c,var(--ac));opacity:0;transition:opacity .18s;}
+.ag-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.28);border-color:rgba(255,255,255,.1);}
+.ag-card:hover::before{opacity:1;}
+.ag-card.chief{border-color:rgba(99,102,241,.22);background:linear-gradient(160deg,rgba(99,102,241,.06),transparent 60%);}
+.ag-card.chief::before{opacity:1;}
+.ag-figure{display:flex;flex-direction:column;align-items:center;gap:0;margin-bottom:2px;}
+.ag-av{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;position:relative;box-shadow:0 3px 10px rgba(0,0,0,.25);border:2px solid rgba(255,255,255,.06);}
+.ag-av-dot{position:absolute;bottom:2px;right:2px;width:13px;height:13px;border-radius:50%;border:2px solid var(--card);}
+.ag-body{width:28px;height:9px;border-radius:0 0 14px 14px;opacity:.18;margin-top:-3px;}
+.ag-name{font-size:11px;font-weight:700;line-height:1.3;color:var(--tx);}
+.ag-role{font-size:9px;color:var(--mu2);line-height:1.4;}
+.ag-chief-tag{font-size:8px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(99,102,241,.15);color:var(--ac);border:1px solid rgba(99,102,241,.28);}
 </style>
 </head>
 <body>
@@ -386,6 +416,9 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   <div class="sb-section">Ferramentas IA</div>
   <div class="sb-item" onclick="nav('orcamentista',this)" data-title="Orçamentista IA" data-sub="SINAPI · TCPO · SEOP-PR · Mercado Paraná">
     <span class="sb-icon">🧮</span>Orçamentista IA
+  </div>
+  <div class="sb-item" onclick="nav('agentes',this)" data-title="Equipe de Agentes" data-sub="92 especialistas IA organizados por departamento">
+    <span class="sb-icon">🤖</span>Equipe de Agentes<span class="sb-badge g">92</span>
   </div>
 
   <div class="sb-footer">
@@ -768,6 +801,254 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
   </div>
+
+  <!-- ══════ PAGE: AGENTES ══════ -->
+  <div class="page" id="page-agentes">
+
+    <div class="ag-page-hd">
+      <div class="ag-page-hd-left">
+        <h2>🤖 Equipe de Agentes IA</h2>
+        <p>Todos os especialistas disponíveis — organizados por departamento</p>
+      </div>
+      <div class="ag-stats">
+        <div class="ag-stat"><div class="ag-stat-v" style="color:var(--ac)">92</div><div class="ag-stat-l">Agentes</div></div>
+        <div class="ag-stat"><div class="ag-stat-v" style="color:var(--g)">10</div><div class="ag-stat-l">Departamentos</div></div>
+      </div>
+    </div>
+
+    <!-- ── ESTRATÉGIA & NEGÓCIOS ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#6366f1">
+        <div class="ag-dept-icon" style="background:rgba(99,102,241,.14)">🏢</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#818cf8">Estratégia & Negócios</div>
+          <div class="ag-dept-desc">Conselho consultivo estratégico e liderança C-Level</div>
+        </div>
+        <div class="ag-cnt-badge">12 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.16)">🏛️<div class="ag-av-dot" style="background:#6366f1"></div></div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Board Chair</div><div class="ag-role">Presidente do Conselho</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">📊</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Ray Dalio</div><div class="ag-role">Princípios & investimento</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">🧠</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Charlie Munger</div><div class="ag-role">Mental models & decisão</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">🚀</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Reid Hoffman</div><div class="ag-role">Estratégia de escala</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">⚡</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Naval Ravikant</div><div class="ag-role">Leverage & riqueza</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">💡</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Simon Sinek</div><div class="ag-role">Propósito & liderança</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">💎</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Peter Thiel</div><div class="ag-role">Monopólio & inovação</div></div>
+        <div class="ag-card" style="--ag-c:#6366f1"><div class="ag-figure"><div class="ag-av" style="background:rgba(99,102,241,.1)">🎯</div><div class="ag-body" style="background:#6366f1"></div></div><div class="ag-name">Derek Sivers</div><div class="ag-role">Simplicidade & foco</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.12)">⚙️</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">COO Orchestrator</div><div class="ag-role">Operações & processos</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.12)">📣</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">CMO Architect</div><div class="ag-role">Marketing estratégico</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.12)">💻</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">CTO Architect</div><div class="ag-role">Arquitetura técnica</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.12)">🤖</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">CAIO Architect</div><div class="ag-role">IA & automação</div></div>
+      </div>
+    </div>
+
+    <!-- ── MARKETING & TRÁFEGO ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#f97316">
+        <div class="ag-dept-icon" style="background:rgba(249,115,22,.14)">📣</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#fb923c">Marketing & Tráfego</div>
+          <div class="ag-dept-desc">Performance em mídia paga, anúncios e escala de campanhas</div>
+        </div>
+        <div class="ag-cnt-badge">10 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.16)">🎯<div class="ag-av-dot" style="background:#f97316"></div></div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Traffic Chief</div><div class="ag-role">Orquestrador de tráfego</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">📣</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Molly Pittman</div><div class="ag-role">Estratégia de tráfego</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">🔥</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Ralph Burns</div><div class="ag-role">Facebook Ads expert</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">📊</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Depesh Mandalia</div><div class="ag-role">Estrutura de campanha</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">🇧🇷</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Pedro Sobral</div><div class="ag-role">Tráfego Brasil</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">📱</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Nicholas Kusmich</div><div class="ag-role">Engajamento & leads</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">🔍</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Kasim Aslam</div><div class="ag-role">Google Ads & ROI</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">🎬</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Tom Breeze</div><div class="ag-role">YouTube Ads</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">💸</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Media Buyer</div><div class="ag-role">Compra de mídia</div></div>
+        <div class="ag-card" style="--ag-c:#f97316"><div class="ag-figure"><div class="ag-av" style="background:rgba(249,115,22,.1)">📈</div><div class="ag-body" style="background:#f97316"></div></div><div class="ag-name">Ads Analyst</div><div class="ag-role">Análise de performance</div></div>
+      </div>
+    </div>
+
+    <!-- ── COPY & PERSUASÃO ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#f59e0b">
+        <div class="ag-dept-icon" style="background:rgba(245,158,11,.14)">✍️</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#fbbf24">Copy & Persuasão</div>
+          <div class="ag-dept-desc">Os maiores redatores do mundo em um único time</div>
+        </div>
+        <div class="ag-cnt-badge">12 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.16)">✍️<div class="ag-av-dot" style="background:#f59e0b"></div></div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Copy Chief</div><div class="ag-role">Orquestrador de copy</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">💰</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Alex Hormozi</div><div class="ag-role">Copy de ofertas</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">📝</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Dan Kennedy</div><div class="ag-role">Copy de resposta direta</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🖊️</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Gary Halbert</div><div class="ag-role">Copywriting clássico</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">📚</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Eugene Schwartz</div><div class="ag-role">Consciência do mercado</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🎩</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">David Ogilvy</div><div class="ag-role">Publicidade & marca</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🚀</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Russell Brunson</div><div class="ag-role">Funnels & VSL</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🇧🇷</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Evaldo Albuquerque</div><div class="ag-role">Copy em português</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🧲</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Robert Cialdini</div><div class="ag-role">Influência & persuasão</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🎯</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Frank Kern</div><div class="ag-role">Copy conversacional</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">🧠</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Dan Koe</div><div class="ag-role">Personal brand & copy</div></div>
+        <div class="ag-card" style="--ag-c:#f59e0b"><div class="ag-figure"><div class="ag-av" style="background:rgba(245,158,11,.1)">📧</div><div class="ag-body" style="background:#f59e0b"></div></div><div class="ag-name">Ben Settle</div><div class="ag-role">Email marketing</div></div>
+      </div>
+    </div>
+
+    <!-- ── GROWTH & OFERTAS ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#22c55e">
+        <div class="ag-dept-icon" style="background:rgba(34,197,94,.14)">💪</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#4ade80">Growth & Ofertas</div>
+          <div class="ag-dept-desc">Framework Hormozi — captação, oferta, escala e retenção</div>
+        </div>
+        <div class="ag-cnt-badge">10 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.16)">💪<div class="ag-av-dot" style="background:#22c55e"></div></div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Chief</div><div class="ag-role">Orquestrador de growth</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">🎁</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Offers</div><div class="ag-role">Construção de oferta</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">💲</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Pricing</div><div class="ag-role">Estratégia de preço</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">📥</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Leads</div><div class="ag-role">Geração de leads</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">🤝</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Closer</div><div class="ag-role">Fechamento de vendas</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">✍️</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Copy</div><div class="ag-role">Textos persuasivos</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">📣</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Ads</div><div class="ag-role">Anúncios de alta conversão</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">🔄</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Retention</div><div class="ag-role">Retenção de clientes</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">📈</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Scale</div><div class="ag-role">Escalada de negócio</div></div>
+        <div class="ag-card" style="--ag-c:#22c55e"><div class="ag-figure"><div class="ag-av" style="background:rgba(34,197,94,.1)">🏫</div><div class="ag-body" style="background:#22c55e"></div></div><div class="ag-name">Hormozi Workshop</div><div class="ag-role">Workshops & eventos</div></div>
+      </div>
+    </div>
+
+    <!-- ── DESIGN & UX ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#ec4899">
+        <div class="ag-dept-icon" style="background:rgba(236,72,153,.14)">🎨</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#f472b6">Design & UX</div>
+          <div class="ag-dept-desc">Design systems, experiência do usuário e produção visual</div>
+        </div>
+        <div class="ag-cnt-badge">7 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.16)">🎨<div class="ag-av-dot" style="background:#ec4899"></div></div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">Design Chief</div><div class="ag-role">Orquestrador de design</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">🔬</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">UX Designer</div><div class="ag-role">Pesquisa & jornadas</div></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">🖼️</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">Visual Generator</div><div class="ag-role">Direção visual</div></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">⚛️</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">Brad Frost</div><div class="ag-role">Atomic Design</div></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">🏗️</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">Dan Mall</div><div class="ag-role">Design systems</div></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">⚙️</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">Dave Malouf</div><div class="ag-role">Design operations</div></div>
+        <div class="ag-card" style="--ag-c:#ec4899"><div class="ag-figure"><div class="ag-av" style="background:rgba(236,72,153,.1)">💻</div><div class="ag-body" style="background:#ec4899"></div></div><div class="ag-name">UI Engineer</div><div class="ag-role">Componentes & código</div></div>
+      </div>
+    </div>
+
+    <!-- ── BRANDING & IDENTIDADE ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#14b8a6">
+        <div class="ag-dept-icon" style="background:rgba(20,184,166,.14)">🏷️</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#2dd4bf">Branding & Identidade</div>
+          <div class="ag-dept-desc">Posicionamento, identidade de marca e arquitetura de nome</div>
+        </div>
+        <div class="ag-cnt-badge">7 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.16)">🏷️<div class="ag-av-dot" style="background:#14b8a6"></div></div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Brand Chief</div><div class="ag-role">Orquestrador de marca</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">📊</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">David Aaker</div><div class="ag-role">Brand equity</div></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">✨</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Marty Neumeier</div><div class="ag-role">Brand gap</div></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">💭</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Naming Strategist</div><div class="ag-role">Arquitetura de nome</div></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">🎭</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Archetype Consultant</div><div class="ag-role">Arquétipos de marca</div></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">🎯</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Al Ries</div><div class="ag-role">Posicionamento</div></div>
+        <div class="ag-card" style="--ag-c:#14b8a6"><div class="ag-figure"><div class="ag-av" style="background:rgba(20,184,166,.1)">📖</div><div class="ag-body" style="background:#14b8a6"></div></div><div class="ag-name">Donald Miller</div><div class="ag-role">StoryBrand</div></div>
+      </div>
+    </div>
+
+    <!-- ── DADOS & ANÁLISE ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#3b82f6">
+        <div class="ag-dept-icon" style="background:rgba(59,130,246,.14)">📊</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#60a5fa">Dados & Análise</div>
+          <div class="ag-dept-desc">Métricas de crescimento, retenção e inteligência de mercado</div>
+        </div>
+        <div class="ag-cnt-badge">8 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.16)">📊<div class="ag-av-dot" style="background:#3b82f6"></div></div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Data Chief</div><div class="ag-role">Orquestrador de dados</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">📈</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Sean Ellis</div><div class="ag-role">Growth hacking</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">🔍</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Avinash Kaushik</div><div class="ag-role">Analytics & KPIs</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">💰</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Peter Fader</div><div class="ag-role">Customer lifetime value</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">📉</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Data Analyst</div><div class="ag-role">Análise exploratória</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">🔬</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Research Analyst</div><div class="ag-role">Pesquisa & insights</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">💼</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Business Analyst</div><div class="ag-role">Processos de negócio</div></div>
+        <div class="ag-card" style="--ag-c:#3b82f6"><div class="ag-figure"><div class="ag-av" style="background:rgba(59,130,246,.1)">🌐</div><div class="ag-body" style="background:#3b82f6"></div></div><div class="ag-name">Market Researcher</div><div class="ag-role">Inteligência de mercado</div></div>
+      </div>
+    </div>
+
+    <!-- ── CONTEÚDO & NARRATIVA ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#8b5cf6">
+        <div class="ag-dept-icon" style="background:rgba(139,92,246,.14)">📖</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#a78bfa">Conteúdo & Narrativa</div>
+          <div class="ag-dept-desc">Storytelling, escrita persuasiva e movimento de marca</div>
+        </div>
+        <div class="ag-cnt-badge">9 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.16)">📖<div class="ag-av-dot" style="background:#8b5cf6"></div></div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Story Chief</div><div class="ag-role">Orquestrador narrativo</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">🏺</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Joseph Campbell</div><div class="ag-role">Jornada do herói</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">📊</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Nancy Duarte</div><div class="ag-role">Apresentações & slides</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">🎬</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Dan Harmon</div><div class="ag-role">Story circle</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">🌊</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Movement Chief</div><div class="ag-role">Movimentos de marca</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">📝</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Technical Writer</div><div class="ag-role">Documentação técnica</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">📱</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Content Marketer</div><div class="ag-role">Conteúdo para redes</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">🔎</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">SEO Specialist</div><div class="ag-role">Busca orgânica</div></div>
+        <div class="ag-card" style="--ag-c:#8b5cf6"><div class="ag-figure"><div class="ag-av" style="background:rgba(139,92,246,.1)">🧑‍💼</div><div class="ag-body" style="background:#8b5cf6"></div></div><div class="ag-name">Product Manager</div><div class="ag-role">Produto & roadmap</div></div>
+      </div>
+    </div>
+
+    <!-- ── TECNOLOGIA & IA ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#06b6d4">
+        <div class="ag-dept-icon" style="background:rgba(6,182,212,.14)">🤖</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#22d3ee">Tecnologia & IA</div>
+          <div class="ag-dept-desc">Claude Code Mastery, AIOX e engenharia de agentes</div>
+        </div>
+        <div class="ag-cnt-badge">10 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.16)">🤖<div class="ag-av-dot" style="background:#06b6d4"></div></div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">Claude Mastery Chief</div><div class="ag-role">Orquestrador Claude Code</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card chief" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.16)">🚀<div class="ag-av-dot" style="background:#06b6d4"></div></div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX Master</div><div class="ag-role">Orquestrador AIOX</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">⚙️</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">Config Engineer</div><div class="ag-role">Configuração Claude Code</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">🔌</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">Hooks Architect</div><div class="ag-role">Automação via hooks</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">🔗</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">MCP Integrator</div><div class="ag-role">Integrações MCP</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">👨‍💻</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX Dev</div><div class="ag-role">Desenvolvimento full-stack</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">🛠️</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX DevOps</div><div class="ag-role">Infraestrutura & deploy</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">✅</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX QA</div><div class="ag-role">Qualidade & testes</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">🏗️</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX Architect</div><div class="ag-role">Arquitetura de sistema</div></div>
+        <div class="ag-card" style="--ag-c:#06b6d4"><div class="ag-figure"><div class="ag-av" style="background:rgba(6,182,212,.1)">📋</div><div class="ag-body" style="background:#06b6d4"></div></div><div class="ag-name">AIOX PO</div><div class="ag-role">Product Owner IA</div></div>
+      </div>
+    </div>
+
+    <!-- ── SEGURANÇA & PENTEST ── -->
+    <div class="ag-dept">
+      <div class="ag-dept-hd" style="border-left-color:#ef4444">
+        <div class="ag-dept-icon" style="background:rgba(239,68,68,.14)">🛡️</div>
+        <div class="ag-dept-info">
+          <div class="ag-dept-name" style="color:#f87171">Segurança & Pentest</div>
+          <div class="ag-dept-desc">Auditoria de segurança, análise de vulnerabilidades e testes</div>
+        </div>
+        <div class="ag-cnt-badge">7 agentes</div>
+      </div>
+      <div class="ag-grid">
+        <div class="ag-card chief" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.16)">🛡️<div class="ag-av-dot" style="background:#ef4444"></div></div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Cyber Chief</div><div class="ag-role">Orquestrador de segurança</div><span class="ag-chief-tag">CHIEF</span></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">🥷</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Rogue</div><div class="ag-role">Ofensiva & red team</div></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">🗺️</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Cartographer</div><div class="ag-role">Mapeamento de ativos</div></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">💻</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Georgia Weidman</div><div class="ag-role">Pentest móvel</div></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">🔐</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Omar Santos</div><div class="ag-role">Defesa & resposta</div></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">🔧</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Fuzzer</div><div class="ag-role">Fuzzing & vulnerabilidades</div></div>
+        <div class="ag-card" style="--ag-c:#ef4444"><div class="ag-figure"><div class="ag-av" style="background:rgba(239,68,68,.1)">🔑</div><div class="ag-body" style="background:#ef4444"></div></div><div class="ag-name">Ripper</div><div class="ag-role">Análise de credenciais</div></div>
+      </div>
+    </div>
+
+  </div><!-- /page-agentes -->
 
   </div><!-- /content -->
 </div><!-- /main -->
