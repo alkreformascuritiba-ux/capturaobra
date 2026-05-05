@@ -2308,19 +2308,26 @@ REGRAS:
 - Se faltar info, adote premissas razoáveis e declare
 - Seja profissional, técnico e objetivo`;
 
-let ORC_API_URL = (localStorage.getItem('orc_api_url') || 'http://localhost:3333') + '/api/chat';
+const ORC_DEFAULT_URL = 'https://capturaobra-api.onrender.com';
+function orcGetApiUrl(){
+  const saved=(localStorage.getItem('orc_api_url')||'').trim();
+  if(saved && (saved.startsWith('https://') || saved.startsWith('http://'))) return saved+'/api/chat';
+  return ORC_DEFAULT_URL+'/api/chat';
+}
+let ORC_API_URL = orcGetApiUrl();
 function orcSaveUrl(){
   const v=(document.getElementById('orcUrlInput').value||'').trim().replace(/\/+$/,'');
   if(!v)return toast('Cole a URL do servidor antes de salvar.','err');
+  if(!v.startsWith('http://') && !v.startsWith('https://')) return toast('URL inválida — deve começar com https://','err');
   localStorage.setItem('orc_api_url',v);
   ORC_API_URL=v+'/api/chat';
-  toast('URL salva! A IA agora aponta para '+v);
+  toast('URL salva! Apontando para: '+v);
   document.getElementById('orcServerWarn').style.display='none';
 }
 function orcInitUrl(){
   const saved=localStorage.getItem('orc_api_url')||'';
   const inp=document.getElementById('orcUrlInput');
-  if(inp)inp.value=saved;
+  if(inp) inp.value = saved || ORC_DEFAULT_URL;
 }
 document.addEventListener('DOMContentLoaded',orcInitUrl);
 let orcHistory=[];
