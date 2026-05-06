@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Skills — Construção Civil & Contratos</title>
+<style>
+  :root {
+    --laranja: #e8650a;
+    --laranja-claro: #fef3ec;
+    --cinza-escuro: #1a1a2e;
+    --cinza-medio: #2d2d44;
+    --cinza-claro: #f5f5f7;
+    --branco: #ffffff;
+    --verde: #16a34a;
+    --azul: #1d4ed8;
+    --roxo: #7c3aed;
+    --texto: #1e293b;
+    --texto-suave: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--cinza-claro);
+    color: var(--texto);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--cinza-escuro);
+    color: white;
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: var(--laranja);
+    opacity: 0.12;
+    border-radius: 50%;
+  }
+  header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  header h1 span { color: var(--laranja); }
+  header p { color: #94a3b8; font-size: 1.05rem; max-width: 620px; }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    margin-top: 20px;
+    margin-right: 8px;
+  }
+  .header-badge strong { color: var(--laranja); }
+
+  /* NAV LATERAL */
+  .layout { display: flex; min-height: calc(100vh - 160px); }
+
+  nav {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--cinza-medio);
+    padding: 28px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  nav .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-top: 16px;
+  }
+  nav a {
+    display: block;
+    padding: 8px 24px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.88rem;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  nav a:hover {
+    color: white;
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--laranja);
+  }
+
+  /* MAIN CONTENT */
+  main {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 1000px;
+  }
+
+  /* SEÇÃO */
+  .section {
+    margin-bottom: 60px;
+    scroll-margin-top: 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 1.4rem; font-weight: 700; }
+  .section-header p { font-size: 0.88rem; color: var(--texto-suave); margin-top: 2px; }
+
+  /* CARD DE SKILL */
+  .skill-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 22px 26px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .skill-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-color: #cbd5e1;
+  }
+  .skill-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .skill-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cinza-escuro);
+  }
+  .skill-command {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    background: var(--cinza-escuro);
+    color: var(--laranja);
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .skill-desc {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    margin-bottom: 10px;
+    line-height: 1.55;
+  }
+  .skill-uso {
+    font-size: 0.85rem;
+    color: var(--texto);
+    background: var(--laranja-claro);
+    border-left: 3px solid var(--laranja);
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    line-height: 1.5;
+  }
+  .skill-uso strong { color: var(--laranja); }
+
+  /* TAGS */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+  .tag-verde { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+  .tag-azul  { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .tag-roxo  { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+  .tag-cinza { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+  .tag-laranja { background: var(--laranja-claro); color: var(--laranja); border-color: #fed7aa; }
+
+  /* DESTAQUE CWICR */
+  .cwicr-intro {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .cwicr-intro h3 { font-size: 1.1rem; margin-bottom: 8px; }
+  .cwicr-intro p { color: #94a3b8; font-size: 0.88rem; line-height: 1.6; }
+  .cwicr-intro .numero { font-size: 2rem; font-weight: 800; color: var(--laranja); }
+
+  /* TABELA DE REFERÊNCIA RÁPIDA */
+  .quick-ref {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .quick-ref table { width: 100%; border-collapse: collapse; }
+  .quick-ref th {
+    background: var(--cinza-escuro);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .quick-ref td {
+    padding: 11px 16px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  .quick-ref tr:last-child td { border-bottom: none; }
+  .quick-ref tr:hover td { background: #f8fafc; }
+  .mono {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--laranja);
+    background: var(--cinza-escuro);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* NOTA SOBRE PYTHON */
+  .nota-python {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 40px;
+    font-size: 0.88rem;
+    color: #92400e;
+  }
+  .nota-python strong { color: #78350f; }
+
+  /* FOOTER */
+  footer {
+    background: var(--cinza-escuro);
+    color: #64748b;
+    text-align: center;
+    padding: 28px;
+    font-size: 0.82rem;
+  }
+  footer strong { color: #94a3b8; }
+
+  @media (max-width: 768px) {
+    nav { display: none; }
+    main { padding: 24px 20px; }
+    header { padding: 32px 20px 24px; }
+    header h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Guia de Skills — <span>Construção Civil & Contratos</span></h1>
+  <p>Manual de referência para todas as skills instaladas no Claude Code. Use este guia para saber qual skill chamar em cada situação da sua obra ou empresa.</p>
+  <div>
+    <span class="header-badge">Grupo <strong>ddc-obra</strong> — 43 skills</span>
+    <span class="header-badge">Grupo <strong>contratos-obra</strong> — 6 skills</span>
+    <span class="header-badge">Total <strong>49 skills</strong> de construção</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <nav>
+    <div class="nav-section">Campo & Obra</div>
+    <a href="#campo">Relatórios de Campo</a>
+    <a href="#seguranca">Segurança e Inspeção</a>
+    <a href="#fotos">Fotos de Progresso</a>
+
+    <div class="nav-section">Financeiro</div>
+    <a href="#custos">Controle de Custos</a>
+    <a href="#fluxo">Fluxo de Caixa</a>
+    <a href="#medicoes">Medições e Pagamentos</a>
+
+    <div class="nav-section">Cronograma</div>
+    <a href="#cronograma">Gestão de Cronograma</a>
+    <a href="#kpis">KPIs e Analytics</a>
+
+    <div class="nav-section">Documentação</div>
+    <a href="#documentos">Documentos de Obra</a>
+    <a href="#rfi">RFI e Submittals</a>
+    <a href="#asbuilt">As-Built e Encerramento</a>
+
+    <div class="nav-section">Suprimentos & RH</div>
+    <a href="#suprimentos">Compras e Fornecedores</a>
+    <a href="#rh">Mão de Obra e Equipamentos</a>
+
+    <div class="nav-section">Banco de Custos CWICR</div>
+    <a href="#cwicr-busca">Busca e Precificação</a>
+    <a href="#cwicr-gestao">Gestão de Contratos</a>
+    <a href="#cwicr-analise">Análise e Relatórios</a>
+
+    <div class="nav-section">Contratos de Obra</div>
+    <a href="#escopo">Escopo de Trabalho</a>
+    <a href="#estimativas">Estimativas de Custo</a>
+  </nav>
+
+  <main>
+
+    <div class="nota-python">
+      <strong>Como usar estas skills:</strong> No chat do Claude Code, digite <code>/</code> seguido do nome da skill. Exemplo: <code>/ddc-obra:ddc-daily-report-generator</code>. Algumas skills geram código Python — você pode pedir ao Claude para adaptar a lógica em português sem precisar rodar o código. O importante é o conteúdo estruturado que a skill produz.
+    </div>
+
+    <!-- ======================================= -->
+    <!-- CAMPO & OBRA -->
+    <!-- ======================================= -->
+
+    <section class="section" id="campo">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef3ec;">🏗️</div>
+        <div>
+          <h2>Relatórios de Campo</h2>
+          <p>Geração e acompanhamento de diários e relatórios da obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gerador de Diário de Obra</div>
+          <div class="skill-command">/ddc-obra:ddc-daily-report-generator</div>
+        </div>
+        <div class="skill-desc">Gera automaticamente o Diário de Obra completo a partir de dados do campo: equipe presente, clima, atividades executadas, horas trabalhadas e fotos. Produz documento profissional em PDF.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar montar o diário de obra do dia sem perder tempo digitando. Cole os dados brutos (quantos pedreiros, o que foi feito, clima) e a skill estrutura tudo.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Campo</span>
+          <span class="tag tag-azul">Documentação</span>
+          <span class="tag tag-cinza">Diário</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Relatório Diário de Progresso</div>
+          <div class="skill-command">/ddc-obra:ddc-daily-progress-report</div>
+        </div>
+        <div class="skill-desc">Gera relatório automatizado de progresso diário com rastreamento de trabalho concluído, horas de mão de obra, uso de equipamentos e condições climáticas.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar de um relatório de progresso mais analítico — com gráficos e comparativo do planejado x executado. Diferente do diário, foca em dados de avanço.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Campo</span>
+          <span class="tag tag-azul">Analytics</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="seguranca">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef9ec;">⛑️</div>
+        <div>
+          <h2>Segurança e Inspeção</h2>
+          <p>Checklists de segurança, NRs e gestão de não conformidades</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Inspeção de Segurança</div>
+          <div class="skill-command">/ddc-obra:ddc-safety-inspection</div>
+        </div>
+        <div class="skill-desc">Sistema digital de inspeção de segurança para canteiro de obras. Gera checklists, rastreamento de riscos, registro de incidentes e documentação de conformidade (NRs).</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar fazer DDS (Diálogo Diário de Segurança), vistoria de segurança da obra, ou registrar um incidente/quase-acidente. Cobre NR-18 e NR-35.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Segurança</span>
+          <span class="tag tag-cinza">NR-18</span>
+          <span class="tag tag-cinza">Compliance</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Lista de Pendências (Punch List)</div>
+          <div class="skill-command">/ddc-obra:ddc-punch-list-manager</div>
+        </div>
+        <div class="skill-desc">Gestão digital de punch list para encerramento de obra. Rastreia deficiências, atribui correções, documenta com fotos e verifica conclusão.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Estiver na fase de acabamento e precisar listar todos os itens que faltam, quem é responsável por corrigir e prazo. Perfeito para vistoria de entrega.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Encerramento</span>
+          <span class="tag tag-azul">Qualidade</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fotos">
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📸</div>
+        <div>
+          <h2>Fotos de Progresso</h2>
+          <p>Organização e análise de registro fotográfico da obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Fotos de Progresso</div>
+          <div class="skill-command">/ddc-obra:ddc-progress-photo-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa fotos de campo da obra. Cataloga, aplica tags por etapa/serviço e compara com o progresso planejado, gerando linha do tempo visual.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver fotos da obra acumuladas e precisar organizar por data/fase, ou quando quiser criar um relatório fotográfico para o cliente mostrando a evolução da obra.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Fotos</span>
+          <span class="tag tag-cinza">Documentação</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- FINANCEIRO -->
+    <!-- ======================================= -->
+
+    <section class="section" id="custos">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">💰</div>
+        <div>
+          <h2>Controle de Custos</h2>
+          <p>Análise de desvios orçamentários e controle financeiro da obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Variação de Orçamento</div>
+          <div class="skill-command">/ddc-obra:ddc-budget-variance-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa as diferenças entre orçamento previsto e custo real. Identifica estouro em itens específicos, projeta custo final da obra e gera relatório de variação.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Perceber que a obra está estourando o orçamento e precisar identificar onde está o desvio. Cole a planilha com previsto x realizado e a skill aponta os problemas.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Financeiro</span>
+          <span class="tag tag-azul">Orçamento</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Processador de Aditivos (Change Orders)</div>
+          <div class="skill-command">/ddc-obra:ddc-change-order-processor</div>
+        </div>
+        <div class="skill-desc">Processa e gerencia ordens de mudança na obra (aditivos de contrato). Rastreia custos adicionais, aprovações e impacto no prazo e no orçamento total.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> O cliente pedir um serviço extra não previsto em contrato e precisar formalizar o aditivo com valor, justificativa e impacto no prazo. Gera documento pronto para assinar.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Financeiro</span>
+          <span class="tag tag-laranja">Contrato</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fluxo">
+      <div class="section-header">
+        <div class="section-icon" style="background:#faf5ff;">📈</div>
+        <div>
+          <h2>Fluxo de Caixa</h2>
+          <p>Projeção financeira e curva S da obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Projetor de Fluxo de Caixa</div>
+          <div class="skill-command">/ddc-obra:ddc-cash-flow-forecaster</div>
+        </div>
+        <div class="skill-desc">Projeta o fluxo de caixa da obra com base no cronograma e nos dados de custo. Gera curva S e projeções de pagamento mês a mês.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar mostrar para o cliente ou sócio como o dinheiro vai entrar e sair durante a obra, ou para planejar o capital de giro necessário em cada fase.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Financeiro</span>
+          <span class="tag tag-roxo">Planejamento</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="medicoes">
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">🧾</div>
+        <div>
+          <h2>Medições e Pagamentos</h2>
+          <p>Boletins de medição, pagamentos a subempreiteiros e retenção</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gerador de Boletim de Medição</div>
+          <div class="skill-command">/ddc-obra:ddc-payment-application-generator</div>
+        </div>
+        <div class="skill-desc">Gera boletins de medição/solicitação de pagamento. Rastreia planilha de valores, calcula retenção e produz documentação de cobrança completa.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For emitir medição mensal para o cliente. Informe o que foi executado no período e a skill gera o documento formal de cobrança com cronograma de valores.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Financeiro</span>
+          <span class="tag tag-azul">Medição</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de Pagamentos a Subempreiteiros</div>
+          <div class="skill-command">/ddc-obra:ddc-subcontractor-payment-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia pagamentos a subempreiteiros, controle de recibos/RPS, conformidade trabalhista e cronograma de pagamentos.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver múltiplos pedreiros/subempreiteiros e precisar saber quem já foi pago, quem está em aberto e quais documentos faltam (recibo, nota, cessão de direitos).</div>
+        <div class="tags">
+          <span class="tag tag-verde">Financeiro</span>
+          <span class="tag tag-cinza">Subempreiteiros</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de Entrega de Materiais</div>
+          <div class="skill-command">/ddc-obra:ddc-material-delivery-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia entregas de materiais, gerencia estoque e coordena logística. Monitora cronograma de entrega e armazenagem no canteiro.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar controlar o que já chegou de material, o que está pendente de entrega e evitar paradas por falta de insumo.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Materiais</span>
+          <span class="tag tag-azul">Logística</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- CRONOGRAMA -->
+    <!-- ======================================= -->
+
+    <section class="section" id="cronograma">
+      <div class="section-header">
+        <div class="section-icon" style="background:#faf5ff;">📅</div>
+        <div>
+          <h2>Gestão de Cronograma</h2>
+          <p>Caminho crítico, atrasos e integração com BIM</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Caminho Crítico</div>
+          <div class="skill-command">/ddc-obra:ddc-critical-path-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa o caminho crítico do cronograma da obra. Identifica atividades críticas, calcula folgas e avalia risco de atraso.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar saber quais etapas da obra, se atrasarem, vão comprometer a entrega final. Liste as atividades e dependências e a skill calcula o caminho crítico.</div>
+        <div class="tags">
+          <span class="tag tag-roxo">Cronograma</span>
+          <span class="tag tag-laranja">Risco</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Atrasos</div>
+          <div class="skill-command">/ddc-obra:ddc-schedule-delay-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa atrasos no cronograma, identifica causas e calcula impactos de tempo usando métodos reconhecidos de análise de delay.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> A obra já está atrasada e precisar justificar o atraso (chuva, falta de material, problema do cliente) e calcular quantos dias de prorrogação de prazo são devidos.</div>
+        <div class="tags">
+          <span class="tag tag-roxo">Cronograma</span>
+          <span class="tag tag-laranja">Jurídico</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">BIM para Cronograma 4D</div>
+          <div class="skill-command">/ddc-obra:ddc-bim-to-schedule-4d</div>
+        </div>
+        <div class="skill-desc">Converte modelo BIM em cronograma 4D, vinculando elementos do modelo a atividades do cronograma para simular a sequência construtiva.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver projetos em Revit/IFC e quiser simular a sequência de execução da obra com visualização 4D.</div>
+        <div class="tags">
+          <span class="tag tag-roxo">BIM</span>
+          <span class="tag tag-cinza">Avançado</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="kpis">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">📊</div>
+        <div>
+          <h2>KPIs e Analytics</h2>
+          <p>Painel de indicadores e análise de produtividade</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Dashboard de KPIs da Obra</div>
+          <div class="skill-command">/ddc-obra:ddc-project-kpi-dashboard</div>
+        </div>
+        <div class="skill-desc">Cria painéis interativos de KPIs para a obra. Rastreia em tempo real: prazo, custo, qualidade e indicadores de segurança.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser ter uma visão executiva da obra em um só lugar. Ótimo para apresentar ao cliente ou ao sócio o status geral da obra de forma visual.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Gestão</span>
+          <span class="tag tag-azul">Dashboard</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Produtividade</div>
+          <div class="skill-command">/ddc-obra:ddc-productivity-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa produtividade da mão de obra a partir dos dados do canteiro. Compara planejado x realizado, identifica tendências e benchmarks do setor.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser saber se sua equipe está produzindo bem ou se há desperdício de horas. Útil para negociar pagamento por produção ou identificar gargalos.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Produtividade</span>
+          <span class="tag tag-cinza">RH</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- DOCUMENTAÇÃO -->
+    <!-- ======================================= -->
+
+    <section class="section" id="documentos">
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📋</div>
+        <div>
+          <h2>Documentos de Obra</h2>
+          <p>Atas, análise de contratos e geração de documentação técnica</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gerador de Ata de Reunião</div>
+          <div class="skill-command">/ddc-obra:ddc-meeting-minutes-generator</div>
+        </div>
+        <div class="skill-desc">Gera atas estruturadas de reunião de obra. Rastreia itens de ação, decisões tomadas e lista de presentes.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Terminar uma reunião com o cliente ou com a equipe e precisar registrar o que foi decidido, quem é responsável por cada ação e o prazo. Protege em caso de disputas futuras.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Documentação</span>
+          <span class="tag tag-laranja">Jurídico</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Cláusulas Contratuais</div>
+          <div class="skill-command">/ddc-obra:ddc-contract-clause-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa cláusulas de contrato de construção. Identifica riscos, obrigações e termos-chave usando processamento de linguagem natural.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Receber um contrato para assinar e quiser entender os riscos antes de assinar. Cole o texto do contrato e a skill aponta cláusulas perigosas e obrigações ocultas.</div>
+        <div class="tags">
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-roxo">Jurídico</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rfi">
+      <div class="section-header">
+        <div class="section-icon" style="background:#faf5ff;">📨</div>
+        <div>
+          <h2>RFI e Submittals</h2>
+          <p>Pedidos de informação ao projetista e controle de aprovações</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gestão de RFI</div>
+          <div class="skill-command">/ddc-obra:ddc-rfi-management</div>
+        </div>
+        <div class="skill-desc">Sistema completo de RFI (Pedido de Informação). Cria, rastreia, encaminha e analisa RFIs com notificações automáticas e prazo de resposta.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> O projeto tiver uma informação faltando (detalhe construtivo, especificação de material, dimensão não cotada) e precisar formalizar a pergunta ao arquiteto/engenheiro com prazo de resposta.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Documentação</span>
+          <span class="tag tag-cinza">Projeto</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de Submittals</div>
+          <div class="skill-command">/ddc-obra:ddc-submittal-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia aprovações de materiais e amostras durante a obra. Gerencia revisões, aprovações e conformidade técnica.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar controlar a aprovação de materiais pelo arquiteto (amostra de piso, tinta, revestimento). Evita comprar material antes da aprovação formal.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Materiais</span>
+          <span class="tag tag-azul">Aprovações</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="asbuilt">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">🗂️</div>
+        <div>
+          <h2>As-Built e Encerramento</h2>
+          <p>Documentação final, garantias e entrega da obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Documentação As-Built</div>
+          <div class="skill-command">/ddc-obra:ddc-as-built-documentation</div>
+        </div>
+        <div class="skill-desc">Gerencia documentação as-built para encerramento de obra. Rastreia marcações em plantas, coordena atualizações e verifica completude.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For montar o dossiê final da obra para entregar ao cliente — plantas com o que foi realmente executado (nem sempre igual ao projeto original).</div>
+        <div class="tags">
+          <span class="tag tag-verde">Encerramento</span>
+          <span class="tag tag-azul">Projeto</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de As-Built</div>
+          <div class="skill-command">/ddc-obra:ddc-as-built-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia status de entrega dos documentos as-built e desenhos de registro. Monitora submissão, revisões e completude para entrega.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For fazer o checklist de entrega — quais documentos já foram atualizados, quais faltam e o que ainda precisa ser submetido para liberação do saldo final.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Encerramento</span>
+          <span class="tag tag-cinza">Checklist</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de Garantias</div>
+          <div class="skill-command">/ddc-obra:ddc-warranty-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia e gerencia garantias de construção. Monitora datas de vencimento, acionamentos de garantia e documentação dos fabricantes.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar controlar as garantias que você deu ao cliente (impermeabilização 5 anos, elétrica 1 ano) e as garantias dos fornecedores que cobrem você. Evita ser acionado por algo que o fabricante deve cobrir.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Pós-obra</span>
+          <span class="tag tag-laranja">Jurídico</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- SUPRIMENTOS & RH -->
+    <!-- ======================================= -->
+
+    <section class="section" id="suprimentos">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef3ec;">🛒</div>
+        <div>
+          <h2>Compras e Fornecedores</h2>
+          <p>Comparação de propostas, compras de material e qualificação de subempreiteiros</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Comparador de Propostas (Concorrência)</div>
+          <div class="skill-command">/ddc-obra:ddc-bid-analysis-comparator</div>
+        </div>
+        <div class="skill-desc">Compara e analisa propostas de fornecedores/subempreiteiros. Pontua propostas, identifica lacunas de escopo e recomenda o melhor custo-benefício.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Receber 3 orçamentos de marmoraria, elétrica, etc. e quiser uma análise comparativa técnica — não apenas pelo preço, mas pelo que cada um inclui ou deixa de fora.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Compras</span>
+          <span class="tag tag-azul">Análise</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Rastreador de Compra de Materiais</div>
+          <div class="skill-command">/ddc-obra:ddc-material-procurement-tracker</div>
+        </div>
+        <div class="skill-desc">Rastreia o processo de compra de materiais desde a requisição até a entrega. Monitora lead times, fornecedores e custos.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser ter controle de tudo que foi pedido, quando vai chegar e quanto custou — evitando surpresas de falta de material no meio da obra.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Compras</span>
+          <span class="tag tag-azul">Logística</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Pré-Qualificação de Subempreiteiros</div>
+          <div class="skill-command">/ddc-obra:ddc-subcontractor-prequalification</div>
+        </div>
+        <div class="skill-desc">Pré-qualifica subempreiteiros com base em critérios de segurança, capacidade financeira e histórico de desempenho.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For contratar um novo subempreiteiro e quiser fazer uma triagem antes — verificar histórico, regularidade, capacidade para a obra. Evita dor de cabeça no meio do serviço.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Subempreiteiros</span>
+          <span class="tag tag-laranja">Risco</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rh">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">👷</div>
+        <div>
+          <h2>Mão de Obra e Equipamentos</h2>
+          <p>Gestão de equipe, produtividade e frota de equipamentos</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Alocação de Mão de Obra</div>
+          <div class="skill-command">/ddc-obra:ddc-labor-allocation</div>
+        </div>
+        <div class="skill-desc">Aloca e rastreia recursos de mão de obra por atividade da obra. Equilibra carga de trabalho, controla frequência e otimiza composição de equipes.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar distribuir sua equipe entre várias frentes de serviço ao mesmo tempo, ou controlar ponto/presença dos colaboradores por etapa da obra.</div>
+        <div class="tags">
+          <span class="tag tag-verde">RH</span>
+          <span class="tag tag-cinza">Equipe</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Produtividade de Mão de Obra</div>
+          <div class="skill-command">/ddc-obra:ddc-labor-productivity-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa produtividade de mão de obra por função, atividade e localização na obra. Rastreia eficiência e identifica oportunidades de melhoria.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser saber se o pedreiro está rendendo o esperado — m² por dia, tempo por tarefa. Útil para comparar equipes ou decidir se compensa pagar por produção.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Produtividade</span>
+          <span class="tag tag-cinza">RH</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gestão de Equipamentos</div>
+          <div class="skill-command">/ddc-obra:ddc-equipment-fleet-manager</div>
+        </div>
+        <div class="skill-desc">Gerencia frota de equipamentos de construção. Rastreia utilização, manutenção e alocação por obra/atividade.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver betoneira, andaime, compressor, etc. e precisar controlar onde cada equipamento está, quando foi a última manutenção e se precisa alugar mais.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Equipamentos</span>
+          <span class="tag tag-azul">Manutenção</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- BANCO DE CUSTOS CWICR -->
+    <!-- ======================================= -->
+
+    <section class="section" id="cwicr-busca">
+      <div class="section-header">
+        <div class="section-icon" style="background:#1a1a2e; font-size:1.3rem;">🗄️</div>
+        <div>
+          <h2>Banco de Custos CWICR — Busca e Precificação</h2>
+          <p>55.719 itens de custo de construção em 30 regiões do mundo</p>
+        </div>
+      </div>
+
+      <div class="cwicr-intro">
+        <h3>O que é o banco CWICR?</h3>
+        <p>O CWICR (Construction Work Items Cost Reference) é uma base de dados com <span class="numero">55.719</span> itens de custo de construção, com preços de mão de obra, material e equipamento por região. As skills CWICR permitem usar esse banco para orçar, comparar e validar preços de serviços de obra. <strong style="color:#e8650a;">Importante:</strong> os preços são americanos — use como referência estrutural e adapte para preços regionais brasileiros.</p>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Busca Semântica no Banco CWICR</div>
+          <div class="skill-command">/ddc-obra:ddc-semantic-search-cwicr</div>
+        </div>
+        <div class="skill-desc">Busca no banco de dados CWICR usando busca semântica por vetores. Encontra itens de serviço similares e recursos para composição de custo.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser encontrar a composição de custo de qualquer serviço de obra — ex: "revestimento cerâmico 60x60" ou "impermeabilização de laje". A busca entende o que você quer mesmo sem o termo exato.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-azul">Banco de dados</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Calculadora de Custos CWICR</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-cost-calculator</div>
+        </div>
+        <div class="skill-desc">Calcula custos usando metodologia de composição do CWICR. Decompõe em mão de obra, materiais e equipamentos com preços transparentes.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar montar uma composição de custo unitário para um serviço específico, decompondo em insumos — similar ao que faz o SINAPI, mas com estrutura mais detalhada.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-azul">Composição</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Combinador de Quantidades com CWICR</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-quantity-matcher</div>
+        </div>
+        <div class="skill-desc">Combina quantitativos do projeto com itens do banco CWICR. Mapeia categorias de elementos a códigos de custo e gera orçamento vinculado a quantidades.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver o levantamento de quantitativos (m², m³, un.) e quiser gerar automaticamente o orçamento vinculando cada serviço ao seu custo unitário.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-roxo">Quantitativo</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">BIM + Orçamento Automático (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-bim-cost-estimation-cwicr</div>
+        </div>
+        <div class="skill-desc">Orçamento automatizado a partir de modelos BIM usando o banco CWICR com 55.719 itens. Classificação por IA + busca vetorial para precificação precisa.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver um modelo BIM (Revit/IFC) e quiser gerar orçamento automaticamente, sem precisar lançar item por item manualmente.</div>
+        <div class="tags">
+          <span class="tag tag-roxo">BIM</span>
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-cinza">Avançado</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cwicr-gestao">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef3ec;">⚙️</div>
+        <div>
+          <h2>CWICR — Gestão de Contratos e Equipes</h2>
+          <p>Aditivos, subempreiteiros, equipes e overhead usando o banco de dados</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Processador de Aditivos CWICR</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-change-order</div>
+        </div>
+        <div class="skill-desc">Processa aditivos de contrato usando dados do banco CWICR. Calcula impacto no custo, compara com estimativa original e gera documentação do aditivo.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For formalizar um aditivo e precisar justificar o valor com base em preços de mercado — a skill busca o custo de referência no banco e monta a justificativa técnica.</div>
+        <div class="tags">
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-verde">Orçamento</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Otimizador de Equipe (Crew Optimizer)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-crew-optimizer</div>
+        </div>
+        <div class="skill-desc">Otimiza a composição de equipes usando normas de produtividade do CWICR. Equilibra produtividade, custo e requisitos de qualificação.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For montar uma equipe para uma tarefa específica e quiser saber a composição ideal (ex: quantos serventes por pedreiro, qual o encarregado certo).</div>
+        <div class="tags">
+          <span class="tag tag-verde">RH</span>
+          <span class="tag tag-cinza">Produtividade</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">BDI e Overhead (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-overhead-markup</div>
+        </div>
+        <div class="skill-desc">Aplica BDI (Benefícios e Despesas Indiretas), lucro e encargos a estimativas do CWICR. Calcula custos indiretos, condições gerais e margem do empreiteiro.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Tiver o custo direto da obra calculado e precisar adicionar BDI, administração central, lucro e impostos para chegar ao preço de venda.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-azul">BDI</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Análise de Subempreiteiros (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-subcontractor</div>
+        </div>
+        <div class="skill-desc">Analisa e compara propostas de subempreiteiros contra benchmarks do banco CWICR. Identifica outliers de preço e apoia a negociação.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Receber uma proposta de subempreiteiro que parece cara ou barata demais e quiser validar se o preço está dentro do mercado com dados de referência.</div>
+        <div class="tags">
+          <span class="tag tag-cinza">Subempreiteiros</span>
+          <span class="tag tag-azul">Análise</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cwicr-analise">
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📉</div>
+        <div>
+          <h2>CWICR — Análise e Relatórios</h2>
+          <p>Riscos, engenharia de valor, histórico e relatórios executivos</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Analisador de Propostas (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-bid-analyzer</div>
+        </div>
+        <div class="skill-desc">Analisa propostas de empreiteiros comparando com benchmarks do CWICR. Identifica anomalias de preço e apoia a decisão de contratação.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Receber várias propostas para uma mesma obra e quiser uma análise técnica — não só o menor preço, mas o que está adequado em termos de composição de custo.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Análise</span>
+          <span class="tag tag-cinza">Licitação</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Calculadora de Riscos (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-risk-calculator</div>
+        </div>
+        <div class="skill-desc">Calcula estimativas de custo ajustadas por risco usando dados do CWICR. Aplica contingências e simulações de probabilidade (Monte Carlo) ao orçamento.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For fazer um orçamento para uma obra com muitas incertezas (demolição, obra histórica, subsolo desconhecido) e precisar definir a contingência correta.</div>
+        <div class="tags">
+          <span class="tag tag-laranja">Risco</span>
+          <span class="tag tag-verde">Orçamento</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Engenharia de Valor (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-value-engineering</div>
+        </div>
+        <div class="skill-desc">Realiza análise de engenharia de valor usando dados do CWICR. Identifica alternativas mais baratas que mantêm a função e qualidade do projeto.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> O orçamento da obra estourou e precisar sugerir ao cliente alternativas de menor custo sem perder a qualidade — ex: trocar mármore por porcelanato similar, repensar estrutura.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Economia</span>
+          <span class="tag tag-azul">Projeto</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Histórico de Custos (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-historical-cost</div>
+        </div>
+        <div class="skill-desc">Rastreia e analisa histórico de custos usando o banco CWICR. Compara custos realizados x estimados, constrói banco de dados próprio de obras e melhora estimativas futuras.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Quiser construir um histórico de custos das suas obras para orçar futuras obras com base em dados reais da ALK — não em tabelas genéricas.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Histórico</span>
+          <span class="tag tag-azul">Melhoria contínua</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Gerador de Relatórios (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-report-generator</div>
+        </div>
+        <div class="skill-desc">Gera relatórios profissionais de estimativa de custo a partir dos cálculos do CWICR. Saídas em HTML, PDF e Excel com gráficos e tabelas detalhadas.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar entregar ao cliente um orçamento detalhado e bem formatado — não só uma planilha, mas um documento profissional com gráficos e composições.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Relatório</span>
+          <span class="tag tag-cinza">PDF / Excel</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">WBS — Estrutura Analítica (CWICR)</div>
+          <div class="skill-command">/ddc-obra:ddc-cwicr-work-breakdown</div>
+        </div>
+        <div class="skill-desc">Decompõe itens de serviço do CWICR em recursos componentes. Quebra itens agregados para análise detalhada de composição de custo.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar entender em detalhe do que é composto um serviço — mão de obra, material, equipamento, tempo. Útil para negociar insumo por insumo com fornecedores.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-roxo">Análise</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================= -->
+    <!-- CONTRATOS DE OBRA -->
+    <!-- ======================================= -->
+
+    <section class="section" id="escopo">
+      <div class="section-header">
+        <div class="section-icon" style="background:#faf5ff;">📝</div>
+        <div>
+          <h2>Escopo de Trabalho</h2>
+          <p>Geração de escopo técnico e descrição de projetos para contratos</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Construtor de Escopo (SOW/PWS)</div>
+          <div class="skill-command">/contratos-obra:contrato-sow-pws-builder</div>
+        </div>
+        <div class="skill-desc">Gera Descrição do Escopo de Trabalho (SOW) ou Declaração de Desempenho (PWS) para contratos, através de um fluxo estruturado de decisão que produz documento pronto para contrato.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For redigir o escopo de serviços do contrato com o cliente — o que está e o que não está incluído na obra. Essa skill guia você pelas perguntas certas e monta o documento final.</div>
+        <div class="tags">
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-azul">Escopo</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Descrição de Projeto por Etapas</div>
+          <div class="skill-command">/contratos-obra:contrato-ot-project-description-builder</div>
+        </div>
+        <div class="skill-desc">Constrói descrições de projeto por milestones/etapas, com entregáveis claros por fase da obra.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Precisar estruturar o contrato por fases (etapa 1: demolição e fundação; etapa 2: estrutura; etc.) com o que será entregue em cada fase e o pagamento correspondente.</div>
+        <div class="tags">
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-roxo">Fases</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="estimativas">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">🧮</div>
+        <div>
+          <h2>Estimativas de Custo para Contratos</h2>
+          <p>Modelos de precificação para diferentes tipos de contrato de obra</p>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Estimativa — Preço Fechado (FFP)</div>
+          <div class="skill-command">/contratos-obra:contrato-igce-builder-ffp</div>
+        </div>
+        <div class="skill-desc">Constrói estimativa de custo para contratos de preço fixo (empreitada global). Estrutura composição de custos com encargos, overhead, lucro e impostos.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For montar o preço para um contrato de empreitada global — onde você cobra um valor fixo pela obra toda. A skill ajuda a calcular o preço certo sem deixar dinheiro na mesa nem se prejudicar.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-cinza">Preço Fixo</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Estimativa — Hora + Material (T&M)</div>
+          <div class="skill-command">/contratos-obra:contrato-igce-builder-lh-tm</div>
+        </div>
+        <div class="skill-desc">Constrói estimativa para contratos por hora trabalhada + material (administração). Calcula taxas por categoria de mão de obra com composição de encargos.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For trabalhar em regime de administração — onde o cliente paga as horas trabalhadas + materiais ao custo. Ajuda a definir o valor da hora de cada função e a margem de administração.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-cinza">Administração</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Estimativa — Custo + Reembolso</div>
+          <div class="skill-command">/contratos-obra:contrato-igce-builder-cr</div>
+        </div>
+        <div class="skill-desc">Constrói estimativa para contratos CPFF/CPAF (custo reembolsável + fee). Suporta diferentes estruturas de honorários sobre o custo direto.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> For fazer um contrato onde o cliente reembolsa os custos + paga uma taxa de administração/honorário. Comum em reformas de alto padrão com escopo indefinido no início.</div>
+        <div class="tags">
+          <span class="tag tag-verde">Orçamento</span>
+          <span class="tag tag-laranja">Contrato</span>
+          <span class="tag tag-cinza">Honorários</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-top">
+          <div class="skill-name">Análise de Razoabilidade de Preço</div>
+          <div class="skill-command">/contratos-obra:contrato-ot-cost-analysis</div>
+        </div>
+        <div class="skill-desc">Estimativas de "should-cost" (quanto deveria custar) e análises de razoabilidade de preço — ideal para verificar se uma proposta recebida está justa.</div>
+        <div class="skill-uso"><strong>Use quando:</strong> Receber uma proposta de empreiteiro/fornecedor e quiser verificar se o preço é justo antes de aceitar. A skill faz a análise de "quanto isso deveria custar" com base em dados de mercado.</div>
+        <div class="tags">
+          <span class="tag tag-azul">Análise</span>
+          <span class="tag tag-laranja">Negociação</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELA DE REFERÊNCIA RÁPIDA -->
+    <section class="section" id="referencia">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f5f5f7; font-size:1.4rem;">⚡</div>
+        <div>
+          <h2>Referência Rápida — Por Situação</h2>
+          <p>Qual skill usar em cada situação do dia a dia da obra</p>
+        </div>
+      </div>
+
+      <div class="quick-ref">
+        <table>
+          <tr>
+            <th>Situação</th>
+            <th>Skill</th>
+          </tr>
+          <tr>
+            <td>Montar o diário de obra do dia</td>
+            <td><span class="mono">/ddc-obra:ddc-daily-report-generator</span></td>
+          </tr>
+          <tr>
+            <td>Fazer DDS ou vistoria de segurança</td>
+            <td><span class="mono">/ddc-obra:ddc-safety-inspection</span></td>
+          </tr>
+          <tr>
+            <td>Listar pendências antes de entregar a obra</td>
+            <td><span class="mono">/ddc-obra:ddc-punch-list-manager</span></td>
+          </tr>
+          <tr>
+            <td>Descobrir onde a obra está estourando o orçamento</td>
+            <td><span class="mono">/ddc-obra:ddc-budget-variance-analyzer</span></td>
+          </tr>
+          <tr>
+            <td>Formalizar um serviço extra (aditivo)</td>
+            <td><span class="mono">/ddc-obra:ddc-change-order-processor</span></td>
+          </tr>
+          <tr>
+            <td>Emitir medição mensal para o cliente</td>
+            <td><span class="mono">/ddc-obra:ddc-payment-application-generator</span></td>
+          </tr>
+          <tr>
+            <td>Controlar pagamentos aos subempreiteiros</td>
+            <td><span class="mono">/ddc-obra:ddc-subcontractor-payment-tracker</span></td>
+          </tr>
+          <tr>
+            <td>Planejar o fluxo de caixa da obra</td>
+            <td><span class="mono">/ddc-obra:ddc-cash-flow-forecaster</span></td>
+          </tr>
+          <tr>
+            <td>Saber se a obra vai atrasar e por quê</td>
+            <td><span class="mono">/ddc-obra:ddc-schedule-delay-analyzer</span></td>
+          </tr>
+          <tr>
+            <td>Identificar a etapa que vai travar tudo</td>
+            <td><span class="mono">/ddc-obra:ddc-critical-path-analyzer</span></td>
+          </tr>
+          <tr>
+            <td>Comparar 3 orçamentos de fornecedores</td>
+            <td><span class="mono">/ddc-obra:ddc-bid-analysis-comparator</span></td>
+          </tr>
+          <tr>
+            <td>Analisar se proposta do empreiteiro está justa</td>
+            <td><span class="mono">/contratos-obra:contrato-ot-cost-analysis</span></td>
+          </tr>
+          <tr>
+            <td>Registrar o que foi decidido em reunião</td>
+            <td><span class="mono">/ddc-obra:ddc-meeting-minutes-generator</span></td>
+          </tr>
+          <tr>
+            <td>Revisar um contrato antes de assinar</td>
+            <td><span class="mono">/ddc-obra:ddc-contract-clause-analyzer</span></td>
+          </tr>
+          <tr>
+            <td>Montar o escopo do contrato com o cliente</td>
+            <td><span class="mono">/contratos-obra:contrato-sow-pws-builder</span></td>
+          </tr>
+          <tr>
+            <td>Orçar uma obra nova por preço fixo</td>
+            <td><span class="mono">/contratos-obra:contrato-igce-builder-ffp</span></td>
+          </tr>
+          <tr>
+            <td>Calcular o custo unitário de um serviço</td>
+            <td><span class="mono">/ddc-obra:ddc-cwicr-cost-calculator</span></td>
+          </tr>
+          <tr>
+            <td>Buscar preço de referência para qualquer serviço</td>
+            <td><span class="mono">/ddc-obra:ddc-semantic-search-cwicr</span></td>
+          </tr>
+          <tr>
+            <td>Sugerir alternativas mais baratas ao cliente</td>
+            <td><span class="mono">/ddc-obra:ddc-cwicr-value-engineering</span></td>
+          </tr>
+          <tr>
+            <td>Calcular BDI e preço de venda final</td>
+            <td><span class="mono">/ddc-obra:ddc-cwicr-overhead-markup</span></td>
+          </tr>
+          <tr>
+            <td>Organizar documentação final para entrega</td>
+            <td><span class="mono">/ddc-obra:ddc-as-built-documentation</span></td>
+          </tr>
+          <tr>
+            <td>Controlar garantias dadas ao cliente</td>
+            <td><span class="mono">/ddc-obra:ddc-warranty-tracker</span></td>
+          </tr>
+          <tr>
+            <td>Painel de status geral da obra</td>
+            <td><span class="mono">/ddc-obra:ddc-project-kpi-dashboard</span></td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <strong>ALK Reformas de Alto Padrão</strong> · Skills instaladas em maio/2026 ·
+  Fonte: <a href="https://github.com/datadrivenconstruction/DDC_Skills_for_AI_Agents_in_Construction" style="color:#e8650a;">DDC Skills</a> +
+  <a href="https://github.com/1102tools/federal-contracting-skills" style="color:#e8650a;">1102tools</a>
+</footer>
+
+</body>
+</html>

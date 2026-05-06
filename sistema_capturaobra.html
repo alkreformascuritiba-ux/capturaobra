@@ -227,6 +227,7 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
 
 /* ─── ORÇAMENTISTA IA ─── */
 #page-orcamentista.active{display:flex;flex-direction:row;height:calc(100vh - 98px);overflow:hidden;}
+#page-guia-skills.active{display:flex;flex-direction:column;height:calc(100vh - 98px);overflow:hidden;}
 .orc-chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;}
 .orc-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;}
 .orc-msg{display:flex;gap:10px;align-items:flex-start;animation:orcIn .2s ease;}
@@ -419,6 +420,9 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
   </div>
   <div class="sb-item" onclick="nav('agentes',this)" data-title="Equipe de Agentes" data-sub="92 especialistas IA organizados por departamento">
     <span class="sb-icon">🤖</span>Equipe de Agentes<span class="sb-badge g">92</span>
+  </div>
+  <div class="sb-item" onclick="nav('guia-skills',this)" data-title="Guia de Skills" data-sub="49 skills de construção civil instaladas no Claude Code">
+    <span class="sb-icon">📚</span>Guia de Skills<span class="sb-badge" style="background:rgba(99,102,241,.2);color:#818cf8">49</span>
   </div>
 
   <div class="sb-footer">
@@ -1049,6 +1053,23 @@ tbody td{padding:9px 11px;font-size:12px;vertical-align:middle;}
     </div>
 
   </div><!-- /page-agentes -->
+
+  <div class="page" id="page-guia-skills">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-shrink:0;">
+      <div>
+        <div style="font-size:1.25rem;font-weight:700;color:var(--tx)">📚 Guia de Skills — Construção Civil</div>
+        <div style="font-size:0.82rem;color:var(--mu);margin-top:3px">49 skills instaladas no Claude Code · DDC Construction + Contratos de Obra</div>
+      </div>
+      <a href="guia-skills.html" target="_blank"
+         style="font-size:0.8rem;color:var(--ac);background:rgba(99,102,241,.12);padding:7px 14px;border-radius:8px;text-decoration:none;border:1px solid rgba(99,102,241,.25);">
+        ↗ Abrir em nova aba
+      </a>
+    </div>
+    <iframe src="guia-skills.html"
+            style="flex:1;width:100%;border:none;border-radius:12px;background:#fff;"
+            title="Guia de Skills de Obras">
+    </iframe>
+  </div><!-- /page-guia-skills -->
 
   </div><!-- /content -->
 </div><!-- /main -->
